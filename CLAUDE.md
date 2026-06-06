@@ -13,7 +13,6 @@ This file is the entry point for every Claude Code session under Design Forge go
 @./knowledge/PROJECT_SCAFFOLD.md
 @./knowledge/SKILLS.md
 @./knowledge/UX_RESEARCH_GUIDE.md
-@./knowledge/PPT_TEMPLATE.md
 @./knowledge/FULLSTACK_WORKFLOW.md
 @./knowledge/FEATURE_WORKFLOW.md
 
