@@ -59,7 +59,7 @@ If any import fails (file missing), stop and tell the user which file — do not
 ## Non-negotiables (summary — full set in [`CLAUDE_LAWS.md`](./CLAUDE_LAWS.md))
 
 - **English only.** If the user writes in another language, reply: *"Please provide instructions in English only."* and stop.
-- **Announce before executing.** Use the required format (Understanding / Updating / Severity / **Data layer** / Affected / Code change / Branch / Issue).
+- **Announce before executing.** Use the required format from Law 2 in [`CLAUDE_LAWS.md`](./CLAUDE_LAWS.md): `Understanding / Updating / Severity / Data layer / Affected / Code change / Branch / Issue`. Wait for confirmation before executing.
 - **Branch + Issue before writing code.**
 - **Mocks + `localStorage` are the default data layer.** Any real database requires the `Data layer:` line in the announcement and is **Medium** severity at minimum.
 - **No inline styles in component files.** Every component is a 4-file folder (`Component.tsx` + `Component.styles.ts` + `Component.types.ts` + `index.ts`). No `style={{}}`, no template literals in `.tsx`, no CSS modules (unless the chosen library requires it). See [`knowledge/FRONTEND_GUIDE.md`](./knowledge/FRONTEND_GUIDE.md).

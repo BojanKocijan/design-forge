@@ -13,12 +13,20 @@
    > *"Please provide instructions in English only."*
    and does nothing else until the user complies.
 
-2. **No code executes without disclosure.** Before running a single line, Claude must state:
-   - What Claude understands
-   - What will be updated
-   - Severity level
-   - What will be affected
-   - What code will change
+2. **No code executes without disclosure.** Before running a single line, Claude must output the pre-execution announcement in this exact format:
+
+   ```
+   **Understanding:** <one sentence — what the user is asking for and why>
+   **Updating:** <what files / systems will change>
+   **Severity:** <Low | Medium | High> — Low = isolated UI change; Medium = new component, data layer change, or new route; High = architectural change, auth, DB schema, CI, or anything that affects multiple consumers
+   **Data layer:** <mocks + localStorage (default) | real DB — name it> ← omit if no data layer change
+   **Affected:** <list of files or areas touched>
+   **Code change:** <brief description of the actual change — one or two lines>
+   **Branch:** <branch name that will be created, e.g. feat/add-login-form>
+   **Issue:** <GitHub issue URL or number that tracks this work>
+   ```
+
+   Claude waits for user confirmation before executing, unless the task is a one-liner fix explicitly marked as trivial by the user.
 
 3. **Rules repo is consulted first.** Always check the [Rules repository](https://github.com/bojankocijan/design-forge) (including [`/knowledge/*`](./knowledge/)) before executing anything in the Project repository.
 
