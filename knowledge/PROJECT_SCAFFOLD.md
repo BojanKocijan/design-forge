@@ -36,6 +36,7 @@ gh api user --jq '"Authenticated as: " + .login'
 **Step 0 — Ask which kind of project (UX vs Fullstack).**
 
 > *"Two project types are supported:*
+>
 > 1. **UX project** (default) — mockups, prototypes, UI exploration. Frontend persona stays default.
 > 2. **Fullstack project** — production code, real backend, real DB. Activates the Fullstack persona.
 >
@@ -78,7 +79,7 @@ AskUserQuestion({
 Store the answer as **Platform** in `PROJECT_KNOWLEDGE.md §5`. This choice gates which scaffold branch runs — jump to the matching section:
 
 | Answer | Go to |
-|---|---|
+| --- | --- |
 | Web app — React | §1-React onwards (existing flow) |
 | Hybrid app — React Native / Expo | §1-RN onwards |
 | Web app — Angular | §1-Angular onwards |
@@ -251,7 +252,7 @@ Then proceed to **§2-Angular**.
 
 Every component is a 4-file folder:
 
-```
+```text
 ComponentName/
   ComponentName.tsx        # logic + JSX only
   ComponentName.styles.ts  # all styled-components declarations
@@ -263,7 +264,7 @@ Banned in `.tsx`: `style={{}}`, CSS template literals, `styled.*` declarations, 
 
 ### Folder skeleton
 
-```
+```text
 <project-name>/
 ├── src/
 │   ├── components/
@@ -492,7 +493,7 @@ Setup: app.netlify.com → Add new site → Import from GitHub → Deploy.
 
 ## 2-RN. Hybrid app — React Native / Expo scaffold procedure
 
-### Base stack
+### Base stack (React Native)
 
 1. Expo (latest) + TypeScript + Expo Router (file-based routing)
 2. React Native `StyleSheet` — the RN equivalent of styled-components (see Law 12-RN below)
@@ -507,15 +508,16 @@ Setup: app.netlify.com → Add new site → Import from GitHub → Deploy.
 React Native has no DOM, so `styled-components` is not used. The equivalent pattern:
 
 | Web React (Law 12) | React Native equivalent |
-|---|---|
+| --- | --- |
 | `Component.styles.ts` with `styled.*` | `Component.styles.ts` with `StyleSheet.create({})` |
 | Theme via `ThemeProvider` | `constants/theme.ts` imported directly |
-| `style={{}}` inline — **banned** | `style={styles.foo}` via local StyleSheet — **allowed** if the StyleSheet lives in `.styles.ts` |
+| `style={{}}` inline — **banned** | `style={styles.foo}` — allowed if StyleSheet is in `.styles.ts` |
 | Tailwind `className` — project-dependent | NativeWind `className` — project-dependent |
 
 **The rule:** no raw inline style objects in `.tsx` files. All `StyleSheet.create()` declarations live in the colocated `.styles.ts` file.
 
 **Allowed in `.tsx`:**
+
 ```tsx
 import { styles } from './MyComponent.styles';
 <View style={styles.container} />           // ✅ reference to StyleSheet
@@ -523,18 +525,21 @@ import { styles } from './MyComponent.styles';
 ```
 
 **Banned in `.tsx`:**
+
 ```tsx
 <View style={{ padding: 16 }} />             // ❌ raw object — move to .styles.ts
 <View style={{ backgroundColor: accent }} /> // ❌ dynamic inline — use style prop pattern below
 ```
 
 **Dynamic values** flow as a second argument to the styles function:
+
 ```ts
 // MyComponent.styles.ts
 export const makeStyles = (accent: string) => StyleSheet.create({
   accentBar: { backgroundColor: accent },
 });
 ```
+
 ```tsx
 // MyComponent.tsx
 const styles = makeStyles(props.accent);
@@ -543,7 +548,7 @@ const styles = makeStyles(props.accent);
 
 ### Folder skeleton (React Native)
 
-```
+```text
 <project-name>/
 ├── app/                          # Expo Router pages (file-based)
 │   ├── (auth)/
@@ -633,6 +638,7 @@ npm install -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
 ```
 
 For NativeWind (if chosen):
+
 ```bash
 npm install nativewind && npm install -D tailwindcss
 npx tailwindcss init
@@ -708,7 +714,7 @@ React Native has no single Vite URL. Instead:
 
 Every response while editing source ends with:
 
-```
+```text
 Preview: http://localhost:8081/  ·  status: up   (web)
 Mobile: expo start → scan QR
 ```
@@ -726,7 +732,7 @@ Mobile: expo start → scan QR
 
 ## 2-Angular. Web app — Angular scaffold procedure
 
-### Base stack
+### Base stack (Angular)
 
 1. Angular CLI (latest) + TypeScript
 2. SCSS (default Angular styling)
@@ -740,7 +746,7 @@ Mobile: expo start → scan QR
 
 Angular's `@Component` already enforces `templateUrl` + `styleUrls` separation — this satisfies the spirit of Law 12. Every component lives in its own folder:
 
-```
+```text
 ComponentName/
   component-name.component.ts
   component-name.component.html
