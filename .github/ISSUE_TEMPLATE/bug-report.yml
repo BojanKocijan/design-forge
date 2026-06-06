@@ -1,0 +1,51 @@
+name: Bug Report
+description: Report a law, skill, or knowledge file that isn't behaving correctly
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please fill in as much detail as you can.
+
+  - type: input
+    id: affected-file
+    attributes:
+      label: Affected file
+      description: Which file is the problem in? (e.g., CLAUDE_LAWS.md Law 12, knowledge/FRONTEND_GUIDE.md §4.2)
+      placeholder: e.g., skills/scaffold-react-project/SKILL.md
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did Claude do that violated the expected behavior?
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should Claude have done instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: How to reproduce
+      description: Prompt or session context that triggers the bug.
+    validations:
+      required: false
+
+  - type: input
+    id: rules-version
+    attributes:
+      label: Design Forge version
+      description: From the session-start confirmation line ("Rules loaded: DESIGN_FORGE v...")
+      placeholder: e.g., 1.0.0
+    validations:
+      required: false
