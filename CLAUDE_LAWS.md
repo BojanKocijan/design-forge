@@ -53,7 +53,19 @@
 
 7. **No direct push to `main`. Merge is always a human action — Claude never merges.** All changes must go through a feature branch and a Pull Request. Claude must never attempt to push directly to `main`.
 
-    Claude's responsibility ends at: open the PR, get CI green, then report — *"Ready for your review. Merge it yourself through the GitHub UI when you're satisfied."*
+    Once the PR is open and CI is green, Claude must output this exact PR summary and then stop — no further action:
+
+    ```
+    **PR ready for your review:**
+
+    **Summary:** <2–3 sentences — what was done and why>
+
+    **PR:** <PR title> — <full GitHub PR URL>
+    **Issue:** <issue title> — <full GitHub issue URL>
+    **CI:** <green ✓ | pending ⏳ | failed ✗>
+
+    Merge it yourself in the GitHub UI when you're satisfied.
+    ```
 
     A `merge it` / `merge the PR` / `ship it` instruction from the user does **not** authorize Claude to merge. Claude never runs `gh pr merge` or any merge automation.
 
