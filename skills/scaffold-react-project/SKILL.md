@@ -1,6 +1,6 @@
 ---
 name: scaffold-react-project
-description: Scaffold a new React + TypeScript project with library choice (shadcn/ui, MUI v6, Ant Design, Chakra UI, local styled-components, or user-specified). Sets up Vite + TypeScript + the chosen library + styled-components base layer + 4-file component pattern + ESLint + tsc + Vitest + Playwright + GitHub Pages preview. Invoke when the user says "new project", "scaffold a project", "create a React app", "set up a new repo", or equivalent. Do NOT invoke for adding features to an existing project.
+description: Scaffold a new React + TypeScript project with library choice (shadcn/ui, MUI v6, Ant Design, Chakra UI, local styled-components, or user-specified) and deployment choice (Netlify recommended, GitHub Pages, or none). Sets up Vite + TypeScript + the chosen library + styled-components base layer + 4-file component pattern + ESLint + tsc + Vitest + Playwright + deployment config. Invoke when the user says "new project", "scaffold a project", "create a React app", "set up a new repo", or equivalent. Do NOT invoke for adding features to an existing project.
 ---
 
 # Scaffold React Project
@@ -201,7 +201,10 @@ Add scripts to `package.json`:
 
 ## Step 7 — CI + Pages workflows
 
-Create `.github/workflows/ci.yml` (lint + typecheck + test + build + e2e) and `.github/workflows/pages.yml` (build + deploy to GitHub Pages, no password).
+Create `.github/workflows/ci.yml` (lint + typecheck + test + build + e2e). For deployment:
+- **Netlify**: add `netlify.toml` to the project root (see `§4b` in `PROJECT_SCAFFOLD.md`). No pages workflow needed — Netlify handles deployment and PR previews automatically.
+- **GitHub Pages**: add `.github/workflows/pages.yml` (see `§4a` in `PROJECT_SCAFFOLD.md`).
+- **None**: skip deployment config entirely.
 
 See full workflow YAML in [`knowledge/PROJECT_SCAFFOLD.md §4`](../../knowledge/PROJECT_SCAFFOLD.md).
 

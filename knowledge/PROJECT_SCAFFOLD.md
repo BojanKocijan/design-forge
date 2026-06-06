@@ -96,6 +96,40 @@ Wait for the answer before proceeding.
 
 Store the answer in `PROJECT_KNOWLEDGE.md §9 GitHub Issues repo`. If the user presses Enter or says "this repo" / "same repo", default to the current project repo. Claude will use `gh issue create --repo <owner/repo>` for all issue creation.
 
+**Step 4 — Ask for deployment target.** Run an `AskUserQuestion` call:
+
+```ts
+AskUserQuestion({
+  questions: [
+    {
+      header: "Deployment",
+      question: "Where should this project be deployed for preview?",
+      options: [
+        {
+          label: "Netlify",
+          description: "Recommended. Continuous deployment from main, instant preview URLs per PR, free tier. Requires a Netlify account."
+        },
+        {
+          label: "GitHub Pages",
+          description: "No extra account needed. Deploys from main via GitHub Actions. Single URL, no per-PR previews."
+        },
+        {
+          label: "None — I'll set up deployment later",
+          description: "Skip deployment setup. Claude will scaffold the app only; you wire deployment yourself."
+        }
+      ],
+      multiSelect: false
+    }
+  ]
+});
+```
+
+- **Netlify**: add a `netlify.toml` to the project root and a `netlify.yml` CI workflow. No `pages.yml` workflow. See §4b.
+- **GitHub Pages**: add `.github/workflows/pages.yml` as before. See §4a.
+- **None**: skip all deployment config.
+
+Store the choice in `PROJECT_KNOWLEDGE.md §10 Deployment`.
+
 ---
 
 ## 2. Scaffold procedure (all library choices)
@@ -107,7 +141,7 @@ Store the answer in `PROJECT_KNOWLEDGE.md §9 GitHub Issues repo`. If the user p
 3. ESLint + TypeScript ESLint + Prettier
 4. Vitest + React Testing Library + vitest-axe (unit + component + a11y)
 5. Playwright + @axe-core/playwright (E2E + full-page accessibility)
-6. GitHub Pages preview (no password — personal use)
+6. Deployment: per user choice (Netlify / GitHub Pages / none)
 
 ### Full folder skeleton
 
@@ -141,7 +175,8 @@ Store the answer in `PROJECT_KNOWLEDGE.md §9 GitHub Issues repo`. If the user p
 ├── .github/
 │   └── workflows/
 │       ├── ci.yml
-│       └── pages.yml
+│       └── pages.yml          ← GitHub Pages only
+├── netlify.toml               ← Netlify only
 ├── .eslintrc.cjs
 ├── .prettierrc
 ├── tsconfig.json
@@ -354,7 +389,7 @@ jobs:
       - run: npm run test:e2e
 ```
 
-### `.github/workflows/pages.yml`
+### §4a — GitHub Pages: `.github/workflows/pages.yml`
 
 ```yaml
 name: Deploy to GitHub Pages
@@ -392,6 +427,40 @@ jobs:
       - id: deployment
         uses: actions/deploy-pages@v4
 ```
+
+Enable GitHub Pages in the repo settings: **Settings → Pages → Source: GitHub Actions**.
+
+---
+
+### §4b — Netlify: `netlify.toml` + deploy setup
+
+**`netlify.toml`** in the project root:
+
+```toml
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
+
+The `[[redirects]]` rule is required for client-side routing (React Router, etc.) — without it, refreshing any non-root URL returns a 404.
+
+**Setup steps (one-time, done by the user):**
+1. Go to [app.netlify.com](https://app.netlify.com) → **Add new site → Import an existing project**
+2. Connect to GitHub, pick the repo
+3. Build command: `npm run build` · Publish directory: `dist` (Netlify auto-detects from `netlify.toml`)
+4. Click **Deploy site**
+
+Netlify automatically creates **preview deployments for every PR** — no extra workflow needed. The main branch deploys to the site's production URL.
+
+**No CI workflow file needed for deployment** — Netlify handles it. The existing `ci.yml` (lint + typecheck + tests) still runs on GitHub Actions independently.
 
 ---
 
@@ -469,11 +538,15 @@ After the scaffold lands:
 <!-- Where Claude opens issues: owner/repo format. Defaults to this repo. -->
 none yet
 
-## 10. Handoffs shipped
+## 10. Deployment
+<!-- Netlify | GitHub Pages | none -->
+none yet
+
+## 11. Handoffs shipped
 | Date | ID | Title | PR |
 |---|---|---|---|
 
-## 11. Active feature
+## 12. Active feature
 | ID | Title | Status | Branch | JTBD |
 |---|---|---|---|---|
 
