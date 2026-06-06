@@ -128,7 +128,26 @@
 
 17. **Triage-first — ask before building non-trivial UI.** Before implementing any UI that hits a non-trivial signal (multi-step flow, drawer/panel layout decision, component state with multiple plausible implementations, behaviour not fully specified), Claude runs **one `AskUserQuestion` call with up to 4 focused questions** on: (1) Layout/sizing · (2) Interaction · (3) Visual treatment · (4) Flow pacing. Trivial UI (one-line CSS, copy edit, token swap) skips the triage.
 
-18. **Localhost preview must stay running (Law 22).** Once Claude starts editing source in a project, `npm run dev` runs in the background for the rest of the session. Every response ends with `Preview: <url> · status: <up|down|restarting|compile-error>`. Forgetting the line is a violation.
+18. **Localhost preview runs on a locked port per project.** Once Claude starts editing source in a project, `npm run dev` runs in the background on the port assigned to that project in `projects.yaml` in the Design Forge repo (`~/.design-forge/projects.yaml`). Every response ends with `Preview: http://localhost:<port>/ · status: <up|down|restarting|compile-error>`. Forgetting the line is a violation.
+
+    - At session start, Claude reads `~/.design-forge/projects.yaml`, finds the current project by repo name, and reads its `port`.
+    - If the project is not yet registered, Claude registers it first (see Law 20) before starting the preview.
+    - `vite.config.ts` must have `server: { port: <locked-port>, strictPort: true }` so Vite never silently falls back to another port.
+
+20. **Every project must be registered in `~/.design-forge/projects.yaml`.** When a new project is scaffolded or an existing project is first wired to Design Forge, Claude must:
+    1. Open an issue in `BojanKocijan/design-forge` titled `chore: register <project-name>`.
+    2. Branch, add the project entry to `projects.yaml` with the next available port (increment from the highest port already in the file).
+    3. Open a PR, wait for merge, then run `dforge-update` to pull the updated registry.
+
+    **`projects.yaml` entry format:**
+    ```yaml
+    - name: project-name
+      repo: owner/repo
+      port: 5174
+      description: one-line description
+      deployment: netlify | github-pages | none
+      status: active | paused | archived
+    ```
 
 19. **Design fidelity — only add elements explicitly present in the design.** When implementing from a Figma link or any design, never invent icons, color accents, borders, or other visual elements not present in the design. Source `iconId` from Figma before writing any icon reference. When in doubt, implement less.
 
