@@ -89,6 +89,13 @@ AskUserQuestion({
 
 Wait for the answer before proceeding.
 
+**Step 3 — Ask where GitHub Issues should be created.**
+
+> *"Which GitHub repo should Claude open issues in for this project? This is where branch-linked issues, feature tracking, and handoff tickets will go.*
+> *Format: `owner/repo` (e.g. `bojankocijan/my-dashboard`). Press Enter to use the current project repo (default)."*
+
+Store the answer in `PROJECT_KNOWLEDGE.md §9 GitHub Issues repo`. If the user presses Enter or says "this repo" / "same repo", default to the current project repo. Claude will use `gh issue create --repo <owner/repo>` for all issue creation.
+
 ---
 
 ## 2. Scaffold procedure (all library choices)
@@ -458,7 +465,8 @@ After the scaffold lands:
 - Default: mocks + localStorage
 - DB: none (until upgraded)
 
-## 9. Downstream dev repo
+## 9. GitHub Issues repo
+<!-- Where Claude opens issues: owner/repo format. Defaults to this repo. -->
 none yet
 
 ## 10. Handoffs shipped

@@ -37,7 +37,7 @@
 5. **Pull latest `main`, then branch + issue before code.** Before writing a single line, Claude must:
     1. Check out `main` and pull: `git checkout main && git pull origin main`
     2. Create a new feature branch from that up-to-date `main`: `git checkout -b feat/<kebab-description>`
-    3. Open (or confirm there is already) a GitHub issue for the work
+    3. Open (or confirm there is already) a GitHub issue for the work. Read `PROJECT_KNOWLEDGE.md §9 GitHub Issues repo` to determine where to open it. If set, use `gh issue create --repo <owner/repo>`; if not set, default to the current project repo.
 
     No code is written on a stale branch, on `main` directly, or without a corresponding issue.
 

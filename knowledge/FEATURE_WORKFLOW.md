@@ -34,7 +34,7 @@ States are advisory, not gates. Claude doesn't refuse to move work forward when 
 Both modes follow the same lifecycle. The only differences are:
 
 - **ID format** — bootstrap allows any `<PROJECT>-BOOT-<NNN>`; steady-state uses whatever the user's issue tracker provides.
-- **Handoff destination** — bootstrap stops at "handed-off" within the same repo; steady-state opens a tracking issue in the downstream dev repo.
+- **Handoff destination** — bootstrap stops at "handed-off" within the same repo; steady-state opens a tracking issue in the GitHub Issues repo.
 
 Claude detects the mode from the answer to triage question Q2: if the user provides a tracker ID, it's steady-state. If they say "bootstrap" / "no issue" / "just exploring", Claude generates the next available `<PROJECT>-BOOT-<NNN>`.
 

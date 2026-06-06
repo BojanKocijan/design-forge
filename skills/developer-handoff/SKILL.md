@@ -1,6 +1,6 @@
 ---
 name: developer-handoff
-description: Package a completed UX design for developer implementation — generates docs/handoffs/<id>.md (13-section template) and opens a tracking issue in the downstream dev repo. Invoke when the user says "hand off", "ship to dev", "create the handoff for <id>", or runs the `handoff <id>` trigger. Never reply with chat-only links — always generate the file and the issue.
+description: Package a completed UX design for developer implementation — generates docs/handoffs/<id>.md (13-section template) and opens a tracking issue in the GitHub Issues repo. Invoke when the user says "hand off", "ship to dev", "create the handoff for <id>", or runs the `handoff <id>` trigger. Never reply with chat-only links — always generate the file and the issue.
 ---
 
 # Developer Handoff
@@ -11,7 +11,7 @@ The user says: "hand off", "ship to dev", "prepare handoff", "create the handoff
 
 ## Prerequisites (check before generating)
 
-1. Read `PROJECT_KNOWLEDGE.md §9` for the downstream dev repo. If it says "none yet", ask the user to provide the repo before proceeding.
+1. Read `PROJECT_KNOWLEDGE.md §9` for the GitHub Issues repo. If it says "none yet", ask the user to provide the repo before proceeding.
 2. Read `PROJECT_KNOWLEDGE.md §11 Active feature` for the story ID and title.
 
 ## What to generate (two surfaces — both required)
@@ -20,11 +20,11 @@ The user says: "hand off", "ship to dev", "prepare handoff", "create the handoff
 
 Create the file in the project repo using the 13-section template below.
 
-### Surface 2: Tracking issue in the downstream dev repo
+### Surface 2: Tracking issue in the GitHub Issues repo
 
 ```bash
 gh issue create \
-  -R <downstream-dev-repo> \
+  -R <issues-repo> \
   --title "feat(<scope>): <title> [design handoff]" \
   --body "Design handoff ready for implementation.
 
@@ -135,7 +135,7 @@ Any architectural notes, edge cases, or gotchas the dev should know before start
 - [ ] Unit tests written for every new component
 - [ ] E2E smoke test updated if a new route or flow was added
 - [ ] PR reviewed, CI green, merged to main
-- [ ] Downstream issue closed with a link to the merge commit
+- [ ] GitHub Issues issue closed with a link to the merge commit
 ```
 
 ---
