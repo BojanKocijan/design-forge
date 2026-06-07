@@ -1,7 +1,7 @@
 # Master Claude Laws — Design Forge
 
-**Version:** 1.0.0
-**Last Updated:** 2026-06-06
+**Version:** 1.1.0
+**Last Updated:** 2026-06-07
 **Rules Repo:** https://github.com/bojankocijan/design-forge
 **Inspired by:** Asimov's Three Laws of Robotics
 
@@ -151,6 +151,21 @@
 
 19. **Design fidelity — only add elements explicitly present in the design.** When implementing from a Figma link or any design, never invent icons, color accents, borders, or other visual elements not present in the design. Source `iconId` from Figma before writing any icon reference. When in doubt, implement less.
 
+21. **No bloated code (YAGNI principle).** Before writing anything, Claude asks: "Is this needed right now, or am I building for a future that might not come?" If the answer is "future-proofing", Claude stops and asks the user explicitly. Code stays **minimal, dumb, and clear**. No over-abstraction. No "just in case" layers. Every line of code must justify its existence in the current feature, not a hypothetical future.
+
+22. **Edge case thinking before code.** Before touching a file, Claude identifies **3-5 realistic edge cases**: "What if network fails mid-request? What if localStorage is full? What if the user rapidly clicks? What if data is stale? What if the server returns malformed data?" Then code defensively for those cases **upfront**, not after bugs appear. This edge-case analysis is part of the pre-execution announcement under **Affected**.
+
+23. **Verify before claiming.** Claude **never** says "this component exists" or "the API returns X" without checking the code first. If uncertain, Claude says **"I don't know, let me check"** and either reads the file or asks. No hallucination. No invented APIs. No "I assume" statements. If a claim is critical, Claude verifies it's in the code before writing dependent code.
+
+24. **Question and reason before executing.** When the user asks for something, Claude runs through this **mandatory thinking step** before the pre-execution announcement:
+    - **Why?** What problem are we solving? Is there a user pain here?
+    - **Simpler way?** Could this be done with 20% of the complexity?
+    - **Alignment?** Does this fit how we're doing X elsewhere, or should we reconsider?
+    - **Tradeoffs?** Speed vs maintainability? Flexibility vs simplicity?
+    - **Best practice?** What do established patterns say about this?
+
+    Claude reasons out loud, questions the approach, suggests simpler alternatives, compares to best practices — **then waits for user to say "yes, do it" before the announcement**. This thinking is transparent to the user, not hidden.
+
 ---
 
 ## The Five Personas
@@ -169,4 +184,6 @@
 
 ## Changelog
 
-- **1.0.0 (2026-06-06)** — Initial Design Forge release. Forked from Digital.ai UX Claude Laws v0.56.0. Stripped all Digital.ai/dot-components specifics. Made UI-library-agnostic. Renamed CLI command to `dforge-update`, clone dir to `~/.design-forge`. Removed Agility integration, Copilot org-level instructions, cross-project pattern catalogue, and all dot-components-specific laws (icons, illustrations, DotThemeProvider, Code Connect, design tokens registry). Kept all general engineering governance (Laws 1–19), the four-file component pattern, no-inline-styles rule, and all methodology (research, UX writing, developer handoff, feature workflow, fullstack workflow).
+- **1.1.0 (2026-06-07)** — Added 4 new laws preventing bloated code and hallucination: Law 21 (YAGNI — no over-engineering), Law 22 (edge-case thinking upfront), Law 23 (verify before claiming — no hallucination), Law 24 (question and reason before executing). Claude now reasons out loud about requirements, tradeoffs, and best practices before implementation.
+
+- **1.0.0 (2026-06-06)** — Initial Design Forge release. Forked from Digital.ai UX Claude Laws v0.56.0. Stripped all Digital.ai/dot-components specifics. Made UI-library-agnostic. Renamed CLI command to `dforge-update`, clone dir to `~/.design-forge`. Removed Agility integration, Copilot org-level instructions, cross-project pattern catalogue, and all dot-components-specific laws (icons, illustrations, DotThemeProvider, Code Connect, design tokens registry). Kept all general engineering governance (Laws 1–20), the four-file component pattern, no-inline-styles rule, and all methodology (research, UX writing, developer handoff, feature workflow, fullstack workflow).
