@@ -15,6 +15,7 @@ This file is the entry point for every Claude Code session under Design Forge go
 @./knowledge/UX_RESEARCH_GUIDE.md
 @./knowledge/FULLSTACK_WORKFLOW.md
 @./knowledge/FEATURE_WORKFLOW.md
+@./knowledge/COMPONENT_PATTERNS.md
 
 ---
 
