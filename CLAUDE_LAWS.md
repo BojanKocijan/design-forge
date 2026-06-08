@@ -186,7 +186,17 @@
 
 ---
 
+25. **Session start — pull main and check open PRs.** At the start of every session, before any code work:
+    1. `git checkout main && git pull origin main` — never work on stale local state.
+    2. `gh pr list --repo <owner/repo>` — surface any open PRs and report them in the confirmation line.
+
+    If a PR exists, flag it before starting new work. Never push to a branch that has already been merged.
+
+---
+
 ## Changelog
+
+- **1.2.0 (2026-06-08)** — Added Law 25: session-start checklist — always pull main and check open PRs before any code work.
 
 - **1.1.0 (2026-06-07)** — Added 4 new laws preventing bloated code and hallucination: Law 21 (YAGNI — no over-engineering), Law 22 (edge-case thinking upfront), Law 23 (verify before claiming — no hallucination), Law 24 (question and reason before executing). Claude now reasons out loud about requirements, tradeoffs, and best practices before implementation.
 
