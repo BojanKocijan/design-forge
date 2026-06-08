@@ -799,6 +799,10 @@ Law 18 preview URL: `http://localhost:4200/`
 ```markdown
 # PROJECT_KNOWLEDGE — <project-name>
 
+**This project is governed by [Design Forge](https://github.com/bojankocijan/design-forge) — see [`CLAUDE.md`](./CLAUDE.md) for rules and [`~/.design-forge`](https://github.com/bojankocijan/design-forge/tree/main) for the knowledge base.**
+
+---
+
 ## 1. Project purpose
 <one-line description>
 
