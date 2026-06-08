@@ -1,7 +1,7 @@
 # Component Patterns — Design Forge
 
-**Version:** 1.0.0
-**Last Updated:** 2026-06-06
+**Version:** 1.2.0
+**Last Updated:** 2026-06-08
 **Binding:** Yes — these patterns represent validated, reusable solutions established across projects. Apply them before building from scratch.
 
 ---
@@ -308,7 +308,93 @@ function save() {
 
 ---
 
+## 13. Desktop "Add new" popover — mirrors mobile FAB
+
+The desktop sidebar primary CTA must offer the same actions as the mobile speed-dial FAB, presented as a `DropdownMenu` popover.
+
+**Rule:** One mental model across breakpoints — the user always reaches "create something" from the same conceptual button, just rendered differently.
+
+| Surface | Component | Trigger |
+|---|---|---|
+| Mobile | Speed-dial FAB (bottom-right, fixed) | `+` button expands upward |
+| Desktop | `DropdownMenu` in the sidebar | `Add new` button with chevron |
+
+**Standard items (order fixed):**
+1. **Send Invoice** — primary action, always first
+2. **New Client** — secondary
+3. **New Project** — disabled with "soon" label until the feature ships
+
+```tsx
+// Desktop sidebar
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <button className="w-full flex items-center justify-between ... bg-primary text-white">
+      <span className="flex items-center gap-2.5">
+        <Plus className="w-4 h-4" /> Add new
+      </span>
+      <ChevronDown className="w-4 h-4 opacity-70" />
+    </button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent side="bottom" align="start" className="w-52">
+    <DropdownMenuItem onClick={onGetPaid}>
+      <CreditCard className="w-4 h-4 mr-3" /> Send Invoice
+    </DropdownMenuItem>
+    <DropdownMenuItem onClick={onAddClient}>
+      <Users className="w-4 h-4 mr-3" /> New Client
+    </DropdownMenuItem>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem disabled>
+      <FolderOpen className="w-4 h-4 mr-3" /> New Project
+      <span className="ml-auto text-[11px]">soon</span>
+    </DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+**Why:** Users switching between phone and desktop should find the same creation flow. Never put a single hard-coded action (e.g. "Send Invoice") in the primary sidebar CTA — always use the shared menu so new entity types can be added in one place.
+
+---
+
+## 14. Fixed FAB — pointer-events and scroll clearance
+
+Two rules that must always be applied together when using a fixed FAB over scrollable content.
+
+### 14a. Container must be `pointer-events-none`
+
+A fixed FAB container has a large bounding box that swallows pointer events even when the FAB is closed and actions are invisible. This blocks clicks on cards beneath it.
+
+```tsx
+// ✅ Correct — container is transparent to events, only the button catches them
+<div className="fixed right-4 bottom-[80px] z-50 flex flex-col items-end gap-3 pointer-events-none">
+  <div className={fabOpen ? 'pointer-events-auto ...' : 'pointer-events-none ...'}>
+    {/* speed dial actions */}
+  </div>
+  <button className="w-14 h-14 ... pointer-events-auto">
+    {/* FAB toggle */}
+  </button>
+</div>
+
+// ❌ Wrong — container has no pointer-events-none, blocks entire bottom-right zone
+<div className="fixed right-4 bottom-[80px] z-50 ...">
+```
+
+### 14b. Scrollable lists need `pb-28` FAB clearance
+
+The FAB (56px tall, `bottom-[80px]`) overlaps the bottom ~72px of the content area. Without bottom padding the last list item is permanently obscured.
+
+```tsx
+// Every scrollable list on a page with a FAB
+<div className="flex-1 overflow-y-auto pb-28">
+  {items.map(...)}
+</div>
+```
+
+`pb-28` = 112px — enough to scroll the last item fully above the FAB even accounting for safe-area-inset.
+
+---
+
 ## Changelog
 
+- **1.2.0 (2026-06-08)** — Added Pattern 13 (Desktop Add new popover mirrors mobile FAB) and Pattern 14 (FAB pointer-events-none + pb-28 scroll clearance). Extracted from ReMoDo fix/mobile-layout and feat/sidebar-add-new.
 - **1.1.0 (2026-06-08)** — Added Pattern 12: Create = Edit (one component per entity). Extracted from ReMoDo feat/invoice-edit-mode. Binding rule going forward.
 - **1.0.0 (2026-06-06)** — Initial version. Patterns extracted from ReMoDo project (invoicing SaaS for Dutch contractors). Covers: ResponsiveModal, speed-dial FAB, breakpoint view toggle, underline tabs, data tables, card primary action, live avatar, form layout, no-emoji rule, mobile touch sizing.
