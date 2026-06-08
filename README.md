@@ -43,14 +43,17 @@ Governance laws + skills for scaffolding React projects, running UX research, wr
 
 ## Wire a Project
 
-Add two lines to any project's `CLAUDE.md`:
+**You don't wire laws per project — the global install does it once.** `install.sh` injects `@~/.design-forge/CLAUDE.md` into your global `~/.claude/CLAUDE.md`, so every session inherits the laws automatically.
+
+A project only needs its own context, linked from a one-line `CLAUDE.md`:
 
 ```
-@~/.design-forge/CLAUDE.md
 @./PROJECT_KNOWLEDGE.md
 ```
 
-Your project auto-registers with a locked port and inherits all laws.
+You never type this by hand — `new project` writes it at scaffold time, and for an existing project Claude creates it automatically the first time you do code work. The project also auto-registers with a locked port.
+
+> **Don't** add `@~/.design-forge/CLAUDE.md` to a project — it's redundant (laws are already global) and breaks if the repo is opened on a machine without Design Forge.
 
 ---
 
