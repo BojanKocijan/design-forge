@@ -272,6 +272,43 @@ Always confirm destructive actions via a `ResponsiveModal`:
 
 ---
 
+## 12. Create = Edit — one component, always
+
+**Rule:** Every entity (invoice, client, project, etc.) has exactly **one form component** that handles both creating a new record and editing an existing one. There is never a separate "detail view" or "edit modal" — the same component, same layout, same sections.
+
+**Implementation pattern:**
+```tsx
+// The component accepts an optional existing record
+interface InvoiceFormProps {
+  invoice?: Invoice | null        // absent = create mode, present = edit mode
+  onSaveInvoice: (inv: Invoice) => void
+  onUpdateInvoice?: (id: string, data: Partial<Invoice>) => void
+}
+
+// State initialisation branches on the prop
+const [state] = useState(() =>
+  invoice ? buildFromInvoice(invoice, contractor) : buildInitialState(contractor, count)
+)
+
+// Save branches on the prop
+function save() {
+  if (invoice) onUpdateInvoice(invoice.id, data)   // edit
+  else         onSaveInvoice({ id: genId(), ...data }) // create
+}
+```
+
+**Desktop:** same split layout (form left, live preview right) in both modes.
+**Mobile:** same tab switcher (Form / Preview) in both modes.
+**Header:** "Create Invoice" vs "Edit Invoice" — only the title changes.
+**Extra sections in edit mode only:** status badge in header, Mark as Paid (if unpaid).
+
+**Why:** Consistency is trust. Users who learned to create an invoice already know how to edit one. Two UIs for the same concept = twice the cognitive load, twice the maintenance.
+
+**Applies to:** Invoices ✓ (implemented) · Clients · Projects · any future entity.
+
+---
+
 ## Changelog
 
+- **1.1.0 (2026-06-08)** — Added Pattern 12: Create = Edit (one component per entity). Extracted from ReMoDo feat/invoice-edit-mode. Binding rule going forward.
 - **1.0.0 (2026-06-06)** — Initial version. Patterns extracted from ReMoDo project (invoicing SaaS for Dutch contractors). Covers: ResponsiveModal, speed-dial FAB, breakpoint view toggle, underline tabs, data tables, card primary action, live avatar, form layout, no-emoji rule, mobile touch sizing.
