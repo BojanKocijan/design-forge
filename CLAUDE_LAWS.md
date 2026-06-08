@@ -134,10 +134,12 @@
     - If the project is not yet registered, Claude registers it first (see Law 20) before starting the preview.
     - `vite.config.ts` must have `server: { port: <locked-port>, strictPort: true }` so Vite never silently falls back to another port.
 
-20. **Every project must be registered in `~/.design-forge/projects.yaml`.** When a new project is scaffolded or an existing project is first wired to Design Forge, Claude must:
-    1. Open an issue in `BojanKocijan/design-forge` titled `chore: register <project-name>`.
-    2. Branch, add the project entry to `projects.yaml` with the next available port (increment from the highest port already in the file).
-    3. Open a PR, wait for merge, then run `dforge-update` to pull the updated registry.
+20. **Every project must be registered in `~/.design-forge/projects.yaml` (auto-registration).** At session start, Claude checks if the current project is in `projects.yaml`. If not, Claude **automatically**:
+    1. Opens an issue in `BojanKocijan/design-forge` titled `chore: register <project-name>` with a description including the project repo URL and a note that this is auto-registration.
+    2. Creates a branch `chore/register-<project-name>`, adds the project entry to `projects.yaml` with the next available port (increment from the highest port already in the file).
+    3. Commits with `chore: register <project-name> in projects.yaml` and pushes.
+    4. Opens a PR with a clear description, waits for user to merge.
+    5. After merge, runs `dforge-update` to pull the updated registry.
 
     **`projects.yaml` entry format:**
     ```yaml
@@ -148,6 +150,8 @@
       deployment: netlify | github-pages | none
       status: active | paused | archived
     ```
+
+    This auto-registration ensures every project wired to Design Forge gets a **locked localhost port** automatically, with no manual registration step required.
 
 19. **Design fidelity — only add elements explicitly present in the design.** When implementing from a Figma link or any design, never invent icons, color accents, borders, or other visual elements not present in the design. Source `iconId` from Figma before writing any icon reference. When in doubt, implement less.
 
