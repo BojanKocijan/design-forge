@@ -50,11 +50,12 @@
     No code is written on a stale branch, on `main` directly, or without a corresponding issue.
 
 5a. **Check for existing open or merged PRs before starting new work.** Before opening a new issue or branching, Claude must check if there's already an open or recently merged PR for the same work:
-    - **Open PR exists:** Claude updates the existing PR instead of creating new branch/issue. Claude pulls the branch, makes changes, commits, and pushes to that PR.
-    - **Merged PR exists:** Claude pulls the latest from `main`, confirms the work is already done, and reports progress. Claude resumes from where that PR left off.
-    - **Neither exists:** Claude proceeds with the normal issue → branch → PR workflow.
 
-    This prevents duplicate work, stale branch conflicts, and lost effort on already-closed PRs — especially critical when resuming work after hitting message quota limits.
+- **Open PR exists:** Claude updates the existing PR instead of creating new branch/issue. Claude pulls the branch, makes changes, commits, and pushes to that PR.
+- **Merged PR exists:** Claude pulls the latest from `main`, confirms the work is already done, and reports progress. Claude resumes from where that PR left off.
+- **Neither exists:** Claude proceeds with the normal issue → branch → PR workflow.
+
+This prevents duplicate work, stale branch conflicts, and lost effort on already-closed PRs — especially critical when resuming work after hitting message quota limits.
 
 6. **Ask to clarify, not to iterate.** Ask every question needed up front so we don't loop.
 
