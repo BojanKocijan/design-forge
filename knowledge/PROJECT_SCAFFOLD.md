@@ -484,7 +484,7 @@ Setup: app.netlify.com → Add new site → Import from GitHub → Deploy.
 
 1. Spawn `npm run dev` in the background (Law 18). Every reply ends with `Preview: <url> · status: up`.
 2. Create `PROJECT_KNOWLEDGE.md` from the template (§7).
-3. Create local `CLAUDE.md` with `@./PROJECT_KNOWLEDGE.md`.
+3. Create local `CLAUDE.md` with `@./PROJECT_KNOWLEDGE.md` only — never import `@~/.design-forge/CLAUDE.md` (laws load globally via `~/.claude/CLAUDE.md`).
 4. Commit: `chore: scaffold <name> project`.
 5. Push and open the first PR.
 6. User triggers `start feature` — scaffolding does NOT auto-start a feature.
@@ -723,7 +723,7 @@ Mobile: expo start → scan QR
 
 1. Spawn `npx expo start --web` in the background. Report web URL.
 2. Create `PROJECT_KNOWLEDGE.md` from the template (§7) — note Platform: React Native / Expo hybrid.
-3. Create local `CLAUDE.md` with `@./PROJECT_KNOWLEDGE.md`.
+3. Create local `CLAUDE.md` with `@./PROJECT_KNOWLEDGE.md` only — never import `@~/.design-forge/CLAUDE.md` (laws load globally via `~/.claude/CLAUDE.md`).
 4. Commit: `chore: scaffold <name> expo project`.
 5. Push and open the first PR.
 6. User triggers `start feature`.

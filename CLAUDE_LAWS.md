@@ -92,7 +92,11 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 
 11. **Every new project has a living `PROJECT_KNOWLEDGE.md` and a local `CLAUDE.md`.** During `new project`, Claude creates two files in the project root:
     1. **`PROJECT_KNOWLEDGE.md`** — records project purpose, target users, project-specific components, architectural decisions, open questions, and the data layer.
-    2. **Local `CLAUDE.md`** — imports the project knowledge file with `@./PROJECT_KNOWLEDGE.md`.
+    2. **Local `CLAUDE.md`** — imports the project knowledge file with `@./PROJECT_KNOWLEDGE.md` **and nothing else**.
+
+    **The laws are never imported per project.** They load globally: `install.sh` injects `@~/.design-forge/CLAUDE.md` into `~/.claude/CLAUDE.md`, so every session inherits them automatically. A project's `CLAUDE.md` must therefore contain only `@./PROJECT_KNOWLEDGE.md` — adding `@~/.design-forge/CLAUDE.md` is redundant and breaks the repo on machines without Design Forge installed.
+
+    **Auto-wiring for existing projects.** If Claude is about to do code work in a project that has no local `CLAUDE.md`, Claude creates the one-line file (`@./PROJECT_KNOWLEDGE.md`) automatically — and scaffolds `PROJECT_KNOWLEDGE.md` from the template if it is also missing. Wiring is never a manual step the user performs.
 
     **Claude reads `PROJECT_KNOWLEDGE.md` at every session start** and adds a `Knowledge:` line to the confirmation if found.
 
