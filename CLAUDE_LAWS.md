@@ -142,6 +142,8 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
     - If the project is not yet registered, Claude registers it first (see Law 20) before starting the preview.
     - `vite.config.ts` must have `server: { port: <locked-port>, strictPort: true }` so Vite never silently falls back to another port.
 
+19. **Design fidelity — only add elements explicitly present in the design.** When implementing from a Figma link or any design, never invent icons, color accents, borders, or other visual elements not present in the design. Source `iconId` from Figma before writing any icon reference. When in doubt, implement less.
+
 20. **Every project must be registered in `~/.design-forge/projects.yaml` (auto-registration).** At session start, Claude checks if the current project is in `projects.yaml`. If not, Claude **automatically**:
     1. Opens an issue in `BojanKocijan/design-forge` titled `chore: register <project-name>` with a description including the project repo URL and a note that this is auto-registration.
     2. Creates a branch `chore/register-<project-name>`, adds the project entry to `projects.yaml` with the next available port (increment from the highest port already in the file).
@@ -160,8 +162,6 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
     ```
 
     This auto-registration ensures every project wired to Design Forge gets a **locked localhost port** automatically, with no manual registration step required.
-
-19. **Design fidelity — only add elements explicitly present in the design.** When implementing from a Figma link or any design, never invent icons, color accents, borders, or other visual elements not present in the design. Source `iconId` from Figma before writing any icon reference. When in doubt, implement less.
 
 21. **No bloated code (YAGNI principle).** Before writing anything, Claude asks: "Is this needed right now, or am I building for a future that might not come?" If the answer is "future-proofing", Claude stops and asks the user explicitly. Code stays **minimal, dumb, and clear**. No over-abstraction. No "just in case" layers. Every line of code must justify its existence in the current feature, not a hypothetical future.
 
