@@ -393,7 +393,97 @@ The FAB (56px tall, `bottom-[80px]`) overlaps the bottom ~72px of the content ar
 
 ---
 
+## 15. React Router navigation — `useNavigate`, never `onNav`/`onBack` prop drilling
+
+Multi-screen apps use **React Router** (`react-router-dom`). Each page is a real route with its own URL — browser back/forward works, deep links work, and navigation is a one-liner from anywhere in the tree.
+
+**Rule:** Navigation happens via `useNavigate()`, not via `onNav` / `onBack` / `onScreenChange` callbacks threaded down through props. The old screen-state model (`const [screen, setScreen] = useState<Screen>()` + callback props) is banned for anything beyond a single screen.
+
+**Route-wrapper pattern.** Keep page components presentational and route-agnostic; put the routing glue in a thin wrapper defined alongside the route tree:
+
+```tsx
+// App.tsx — thin route wrapper injects data + navigation
+function ClientsRoute() {
+  const { clients, invoices, saveClient } = useAppContext()
+  const navigate = useNavigate()
+  return (
+    <Clients
+      clients={clients}
+      invoices={invoices}
+      onSave={saveClient}
+      onInvoice={cl => navigate('/app/invoices/new', { state: { client: cl, returnTo: '/app/clients' } })}
+    />
+  )
+}
+```
+
+The page (`Clients`) still receives small intent callbacks (`onInvoice`), but it never knows about routes or URLs — the wrapper owns that. This keeps pages testable in isolation and navigation logic in one place.
+
+**Shell layout via `<Outlet />`.** A persistent shell (sidebar + bottom nav) wraps all authenticated routes through a layout route, so it isn't re-mounted on every navigation:
+
+```tsx
+<Routes>
+  <Route path="/" element={<Landing />} />          {/* public */}
+  <Route path="/login" element={<Login />} />        {/* public */}
+  <Route path="/app" element={<AppLayout />}>        {/* Shell + <Outlet/> */}
+    <Route index element={<Navigate to="home" replace />} />
+    <Route path="home" element={<HomeRoute />} />
+    <Route path="clients" element={<ClientsRoute />} />
+    {/* … */}
+  </Route>
+  <Route path="*" element={<Navigate to="/" replace />} />
+</Routes>
+```
+
+---
+
+## 16. Route-level data via root context — not prop chains
+
+App state is provided **once** at the root and consumed directly by route components via a context hook. This avoids prop-drilling data across route boundaries (the router renders route components directly, so there's no natural prop path to them anyway).
+
+```tsx
+// context/AppContext.tsx
+export const AppContext = createContext<AppContextValue | null>(null)
+export function useAppContext() {
+  const ctx = useContext(AppContext)
+  if (!ctx) throw new Error('useAppContext must be used within AppProvider')
+  return ctx
+}
+
+// App.tsx — data sourced once, injected once
+const data = useData()          // localStorage/Supabase adapter
+const { toasts, toast } = useToast()
+<AppContext.Provider value={{ ...data, toast, toasts }}>
+  <Routes>{/* … */}</Routes>
+</AppContext.Provider>
+```
+
+Route wrappers call `useAppContext()` to read state and actions. For larger apps that outgrow context, graduate to Zustand/Jotai (declare it in `PROJECT_KNOWLEDGE.md §5`) — but context is the default and is enough for most mockups and single-user tools.
+
+---
+
+## 17. Transient route-to-route state via `location.state` + `returnTo`
+
+When one route needs to hand a complex object (a selected client, an invoice being edited) to another route, pass it through `location.state` — not URL params. Keeps deep-link URLs clean and avoids serializing objects into the path.
+
+```tsx
+// caller — send the payload + where to come back to
+navigate('/app/invoices/new', { state: { client, returnTo: '/app/clients' } })
+
+// receiver — read it, default sensibly
+const { client, invoice, returnTo = '/app/invoices' } =
+  (useLocation().state as { client?: Client; invoice?: Invoice; returnTo?: string }) ?? {}
+// …on save/cancel:
+navigate(returnTo)
+```
+
+**Always carry `returnTo`** so the destination knows where "back" goes — the same creation route can be reached from Clients, Invoices, or Home, and each should return to its origin. `location.state` is intentionally **not** persisted across a hard reload — correct for a creation flow (a refreshed "new invoice" page should start clean). If the data must survive reload, it belongs in context or storage, not `location.state`.
+
+---
+
 ## Changelog
+
+- **1.3.0 (2026-06-09)** — Added Patterns 15–17: React Router navigation via `useNavigate` (route-wrapper pattern, `<Outlet/>` shell, no `onNav`/`onBack` prop drilling), route-level data via root context, and transient route-to-route state via `location.state` + `returnTo`. Extracted from ReMoDo feat/landing-page (PR #80).
 
 - **1.2.0 (2026-06-08)** — Added Pattern 13 (Desktop Add new popover mirrors mobile FAB) and Pattern 14 (FAB pointer-events-none + pb-28 scroll clearance). Extracted from ReMoDo fix/mobile-layout and feat/sidebar-add-new.
 - **1.1.0 (2026-06-08)** — Added Pattern 12: Create = Edit (one component per entity). Extracted from ReMoDo feat/invoice-edit-mode. Binding rule going forward.
