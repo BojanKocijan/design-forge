@@ -1,7 +1,7 @@
 # Master Claude Laws — Design Forge
 
-**Version:** 1.1.0
-**Last Updated:** 2026-06-07
+**Version:** 1.2.1
+**Last Updated:** 2026-06-09
 **Rules Repo:** https://github.com/bojankocijan/design-forge
 **Inspired by:** Asimov's Three Laws of Robotics
 
@@ -83,7 +83,13 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
     - Reference the issue in the PR body with `Closes #N` so GitHub auto-closes it on merge.
     - Close the issue manually via `gh issue close <N>` with a comment linking to the PR.
     - Never leave an issue open after the corresponding PR has been created.
-    - The merge that triggers branch cleanup is performed by the human. Once merged, GitHub auto-deletes the feature branch (`delete_branch_on_merge: true`). If auto-delete does not trigger, Claude (only on explicit request) may delete it with `git push origin --delete <branch>`.
+    - The merge itself is performed by the human (Law 7). **Once the PR is merged, branch cleanup is Claude's proactive duty — not something the user has to ask for.** As soon as Claude observes a PR is merged, it must:
+        1. Verify the branch is fully merged into `main`: `git fetch --prune origin && git merge-base --is-ancestor origin/<branch> origin/main`. Only proceed if it is an ancestor (or the content was re-landed elsewhere and the PR shows `MERGED`).
+        2. Delete the remote branch if GitHub's `delete_branch_on_merge` did not already remove it: `git push origin --delete <branch>`.
+        3. Delete the local branch: `git branch -D <branch>`.
+        4. Confirm the linked issue is closed; close it if not.
+    - **Never delete an unmerged branch.** If the ancestor check fails and the PR is not `MERGED`, leave the branch and report it.
+    - At session start (Law 25), Claude also sweeps for orphaned merged branches and clears them.
 
 10. **Every new project Claude builds ships with CI and tests.** Before any scaffold step, Claude runs `gh auth status` to verify authentication. Non-negotiable per project:
     - CI on every push + every PR: ESLint, `tsc --noEmit`, Vitest unit + component, `vitest-axe` accessibility, Playwright + `@axe-core/playwright` E2E smoke + full-page axe, and `vite build`.
@@ -198,15 +204,18 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 
 ---
 
-25. **Session start — pull main and check open PRs.** At the start of every session, before any code work:
+25. **Session start — pull main, check open PRs, sweep stale branches.** At the start of every session, before any code work:
     1. `git checkout main && git pull origin main` — never work on stale local state.
     2. `gh pr list --repo <owner/repo>` — surface any open PRs and report them in the confirmation line.
+    3. `git fetch --prune origin` and delete any local/remote branch already merged into `main` (Law 9 cleanup duty).
 
     If a PR exists, flag it before starting new work. Never push to a branch that has already been merged.
 
 ---
 
 ## Changelog
+
+- **1.2.1 (2026-06-09)** — Law 9 + Law 25: post-merge branch cleanup is now a proactive Claude duty. Once a PR is merged, Claude verifies the branch is merged into `main` and deletes it (remote + local) without being asked, and the session-start checklist sweeps any orphaned merged branches. Mirrored in FULLSTACK_WORKFLOW Phase 9.
 
 - **1.2.0 (2026-06-08)** — Added Law 25: session-start checklist — always pull main and check open PRs before any code work.
 
