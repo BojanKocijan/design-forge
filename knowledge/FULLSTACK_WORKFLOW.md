@@ -160,11 +160,16 @@ git checkout main && git pull origin main
 gh issue close <N> --comment "Resolved in #<PR>"
 ```
 
-GitHub auto-deletes the branch (`delete_branch_on_merge: true`). If it doesn't auto-delete, Claude may delete it on explicit request:
+Branch cleanup is **proactive**, not on-request (Law 9). Once the PR is merged, Claude verifies the branch is merged and deletes it — remote and local:
 
 ```bash
-git push origin --delete feat/<description>
+git fetch --prune origin
+git merge-base --is-ancestor origin/feat/<description> origin/main \
+  && git push origin --delete feat/<description> \
+  && git branch -D feat/<description>
 ```
+
+GitHub's `delete_branch_on_merge: true` usually removes the remote branch first; the steps above are idempotent and also clear the local copy. Never delete a branch that isn't merged.
 
 ### Phase 10 — Post-merge update
 
