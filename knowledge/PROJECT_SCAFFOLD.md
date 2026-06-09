@@ -85,6 +85,54 @@ Store the answer as **Platform** in `PROJECT_KNOWLEDGE.md §5`. This choice gate
 | Web app — Angular | §1-Angular onwards |
 | Other | Ask for stack details, then adapt |
 
+**Step 0.6 — Ask the app-architecture questions (drive a correct app).** Before scaffolding, run one `AskUserQuestion` call so the app is built on the right structure from line one — not refactored into it later. Skip only for a deliberately single-screen throwaway.
+
+```ts
+AskUserQuestion({
+  questions: [
+    {
+      header: "Routing",
+      question: "How many screens, and should they have real URLs?",
+      options: [
+        { label: "Multi-route — React Router (Recommended)", description: "More than one screen. Real URLs, browser back/forward, deep links. Navigation via useNavigate, never screen-state callbacks. (Expo Router for RN, Angular Router for Angular.)" },
+        { label: "Single screen — no router", description: "One screen, no navigation. Add a router later if it grows." }
+      ],
+      multiSelect: false
+    },
+    {
+      header: "App shell",
+      question: "Is there a persistent navigation chrome around the pages?",
+      options: [
+        { label: "Persistent shell (sidebar + bottom nav)", description: "A layout route wraps all main pages via <Outlet/> so the shell isn't re-mounted on navigation. Public pages (landing, login) sit outside it." },
+        { label: "No shell — standalone pages", description: "Each page is full-bleed with its own layout. No shared chrome." }
+      ],
+      multiSelect: false
+    },
+    {
+      header: "Data flow",
+      question: "How does app state reach the screens?",
+      options: [
+        { label: "Root context — useAppContext (Recommended)", description: "State sourced once at the root, read via a context hook in route components. No prop-drilling across route boundaries. Default for mockups and single-user tools." },
+        { label: "State library — Zustand / Jotai", description: "For larger apps with complex cross-cutting state. Declare it in PROJECT_KNOWLEDGE §5." },
+        { label: "Local state only", description: "Each screen owns its state. Fine for simple, isolated screens." }
+      ],
+      multiSelect: false
+    },
+    {
+      header: "Auth boundary",
+      question: "Are there public vs. protected areas?",
+      options: [
+        { label: "Public + protected split", description: "Public routes (landing, login) plus a protected namespace (e.g. /app/*) for authenticated pages. Recommended even before auth is wired — leaves the seam in place." },
+        { label: "All public — no auth yet", description: "Every route is open. Add the protected namespace when auth lands." }
+      ],
+      multiSelect: false
+    }
+  ]
+});
+```
+
+Record all four answers in `PROJECT_KNOWLEDGE.md §5` as architectural decisions. They determine the route tree, the shell layout route, the context provider, and the public/protected split that the scaffold lays down. For the routing/navigation/data patterns themselves, follow [`COMPONENT_PATTERNS.md`](./COMPONENT_PATTERNS.md) Patterns 15–17.
+
 **Step 1 — Ask for project name.**
 
 Any kebab-case name (e.g. `my-dashboard`, `cashflow-family`). Not restricted to any prefix.
@@ -242,11 +290,12 @@ Then proceed to **§2-Angular**.
 ### Base stack
 
 1. Vite + TypeScript + React
-2. styled-components (base styling layer; Tailwind if the chosen library requires it)
-3. ESLint + TypeScript ESLint + Prettier
-4. Vitest + React Testing Library + vitest-axe (unit + component + a11y)
-5. Playwright + @axe-core/playwright (E2E + full-page accessibility)
-6. Deployment per user choice
+2. React Router (`npm install react-router-dom`) — if "Multi-route" was chosen in Step 0.6. Lay down the route tree, the `AppLayout` shell route (`<Outlet/>`), and the public/protected split per the Step 0.6 answers.
+3. styled-components (base styling layer; Tailwind if the chosen library requires it)
+4. ESLint + TypeScript ESLint + Prettier
+5. Vitest + React Testing Library + vitest-axe (unit + component + a11y)
+6. Playwright + @axe-core/playwright (E2E + full-page accessibility)
+7. Deployment per user choice
 
 ### Component rules (Law 12 — full enforcement)
 
