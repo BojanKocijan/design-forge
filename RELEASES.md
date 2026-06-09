@@ -2,6 +2,27 @@
 
 ---
 
+## v1.2.1 — June 9, 2026
+
+### Proactive branch cleanup (Laws 9 + 25)
+- Once a PR is merged, Claude deletes the branch (remote + local) without being asked
+- Only deletes branches confirmed merged into `main` (`git merge-base --is-ancestor` check)
+- Session-start checklist now sweeps orphaned merged branches
+- Mirrored in FULLSTACK_WORKFLOW Phase 9
+
+---
+
+## v1.2.0 — June 8, 2026
+
+### Session-start checklist (Law 25)
+- Always pull `main` and check open PRs before any code work
+
+### Automatic project wiring (Law 11)
+- Laws load globally via `install.sh`; projects only link `@./PROJECT_KNOWLEDGE.md`
+- Scaffold writes it for new projects; session-start step 4.6 auto-creates it for existing ones
+
+---
+
 ## v1.1.0 — June 7, 2026
 
 ### New Laws (21–24): Senior-engineer thinking
