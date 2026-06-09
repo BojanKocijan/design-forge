@@ -13,12 +13,16 @@
 |---|---|
 | Framework | React (functional components + hooks only) |
 | UI library | Chosen at scaffold time — shadcn/ui, MUI v6, Ant Design, Chakra UI, or local components |
+| Routing | React Router (`react-router-dom`) for any multi-screen app — navigation via `useNavigate`, never screen-state callbacks. Single-screen apps may skip it. |
 | Base styling | `styled-components` (default) or Tailwind (when the chosen library requires it) |
 | State (local) | React `useState` / `useReducer` |
+| State (shared) | Root context (`useAppContext` pattern) by default; Zustand/Jotai when it outgrows context |
 | Persistence | `localStorage` (no backend DB) |
 | Data | Mocked — no live API calls unless explicitly approved |
 
 **UI library:** chosen at scaffold time (shadcn/ui | MUI | Ant Design | Chakra UI | local). Every project uses whatever was chosen during `new project`. Claude never switches the library mid-project without explicit approval.
+
+**Routing:** any app with more than one screen uses React Router. Navigation is always `useNavigate()` (or `<Link>`), never an `onNav`/`onBack`/`setScreen` callback threaded through props. Pages stay route-agnostic; a thin route-wrapper component injects data and navigation. Shared app state is provided once at the root via context and read with a `useAppContext()` hook — not prop-drilled across route boundaries. Transient route-to-route payloads travel in `location.state` with a `returnTo`. See [`COMPONENT_PATTERNS.md`](./COMPONENT_PATTERNS.md) Patterns 15–17.
 
 ---
 
