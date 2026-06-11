@@ -1,6 +1,6 @@
 ---
 name: ux-research-deck
-description: Generate a UX research presentation deck outline — 6-slide outcome deck (default) or 12–18 slide full research deck. Uses the project's brand colors if specified, otherwise the Design Forge generic palette. Can render a real .pptx via the pptx skill. Invoke after research synthesis is complete and the user wants to create slides or a deck outline.
+description: Generate a UX research presentation deck outline — 6-slide outcome deck (default) or 12–18 slide full research deck. Renders a real .pptx via the pptx skill on top of a PowerPoint template the user provides (Design Forge ships no built-in theme; asks the user for their .pptx/.potx template before generating). Invoke after research synthesis is complete and the user wants to create slides or a deck outline.
 ---
 
 # UX Research Deck
@@ -50,8 +50,12 @@ Evidence appendix (full RICE math, quote ledger, audit log) → separate `<study
 
 ## Rendering a real .pptx
 
-If the user wants an actual file (not just an outline), invoke the `pptx` skill after producing the outline. Pass:
+If the user wants an actual file (not just an outline), **first ask for their PowerPoint template** — Design Forge ships no built-in theme (see `UX_RESEARCH_GUIDE.md §5.3`):
 
+> *"Share the PowerPoint template you'd like me to use — one or more `.pptx`/`.potx` files with your master slides / brand layouts. I'll build the slides on top of it."*
+
+Then invoke the `pptx` skill, passing:
+
+- **The user's template file** as the base — reuse its slide masters, layouts, fonts, and colors; don't invent brand styling
 - The slide outline (layout + content per slide)
-- Brand colors (from the user or the `PPT_TEMPLATE.md` generic palette)
-- Font choice (system default if not specified)
+- If the user has no template: a plain, neutral 16:9 deck (system fonts) — never a third-party/corporate theme; confirm before generating
