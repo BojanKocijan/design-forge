@@ -162,4 +162,4 @@ Before delivering any deck outline:
 
 ## Changelog
 
-- **1.0.0 (2026-06-06)** — Initial Design Forge release. Adapted from Digital.ai UX UX_RESEARCH_GUIDE v1.5.0. Removed: SharePoint as default (made optional), Digital.ai Customer Insights Research Panel reference, Microsoft 365 MCP as required. Changed default input to Upload. Removed: corporate PPT template binding (now generic — user specifies brand). Kept: full methodology (per-call summaries, thematic analysis, RICE, MoSCoW, 6-slide outcome deck, 12–18 slide full deck), PII redaction rules, quality gates, common pitfalls.
+- **1.0.0 (2026-06-06)** — Initial release. Upload-first transcript input (SharePoint optional). Full methodology (per-call summaries, thematic analysis, RICE, MoSCoW, 6-slide outcome deck, 12–18 slide full deck), PII redaction rules, quality gates, and common pitfalls. Generic PPT template — user specifies brand.

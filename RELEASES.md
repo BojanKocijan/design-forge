@@ -2,6 +2,16 @@
 
 ---
 
+## v2.1.0 — June 9, 2026
+
+### Analyst persona (replaces Pendo mode)
+- `pendo mode` → `analyst mode` — a tool-agnostic product-analytics persona
+- Works with whichever analytics MCP is connected: Pendo, Amplitude, Mixpanel, PostHog, FullStory, Contentsquare (Heap/Hotjar), Adobe Analytics, Google Analytics 4, LogRocket, Statsig
+- New `knowledge/ANALYTICS_GUIDE.md` with the supported-platform matrix, privacy rules, and Triangulated Insight Brief template — Pendo retained as the worked example
+- Renamed `agents/pendo.md` → `agents/analyst.md` and `skills/pendo-analyst/` → `skills/analyst/`
+
+---
+
 ## v2.0.0 — June 9, 2026 — Public release
 
 ### Public-ready repository
@@ -72,11 +82,9 @@
 ## v1.0.0 — June 6, 2026
 
 ### Initial Design Forge release
-- Forked from Digital.ai UX Claude Laws v0.56.0
-- Stripped all dot-components specifics (DotThemeProvider, DotIcon, DotIllustration, Code Connect, design tokens, Agility integration)
-- Made UI-library-agnostic: shadcn/ui, MUI, Ant Design, Chakra UI, or local components
-- Renamed: `dforge-update` CLI, `~/.design-forge` clone dir
-- Kept: 20 binding laws, 4-file component pattern, no-inline-styles rule, methodology (research, UX writing, handoff, feature workflow, fullstack workflow)
+- Library-agnostic from the start: shadcn/ui, MUI, Ant Design, Chakra UI, or local components
+- `dforge-update` CLI, `~/.design-forge` clone dir
+- 20 binding laws, 4-file component pattern, no-inline-styles rule, methodology (research, UX writing, handoff, feature workflow, fullstack workflow)
 - Three install paths: plugin, install.sh (global memory), Copilot custom instructions
-- Five personas: Frontend, Fullstack, Design, Research, Pendo Analyst
+- Five personas: Frontend, Fullstack, Design, Research, Analyst
 - Project registry with locked localhost ports per project

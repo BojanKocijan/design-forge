@@ -16,7 +16,7 @@
 | Scaffolding a brand-new repo | Frontend (UX project) or Fullstack | [`PROJECT_SCAFFOLD.md`](./PROJECT_SCAFFOLD.md) |
 | **Production code in an existing repo** — bugs, features, refactors, integrations | **Fullstack** | **This file** |
 | Research, deck production | Research | `UX_RESEARCH_GUIDE.md` |
-| Pendo analytics | Pendo Analyst | `PENDO_GUIDE.md` (if present) |
+| Product analytics | Analyst | `ANALYTICS_GUIDE.md` |
 
 **Default at session start is Frontend.** Switch to Fullstack with the `fullstack mode` trigger only when shipping production code.
 
@@ -239,4 +239,4 @@ Draft PRs follow the same pre-execution announcement and phase discipline.
 
 ## Changelog
 
-- **1.0.0 (2026-06-06)** — Initial Design Forge release. Adapted from Digital.ai UX FULLSTACK_WORKFLOW v1.3.0. Removed: `digital-ai/ux-*` repo references, Copilot instruction surface, Agility integration, cross-project patterns (Law 23 table), CODEOWNERS tier requirements. Kept: full 10-phase PR runbook, pair-programming discipline, refuse list, edge cases (hotfix/stacked/revert/draft), surface support matrix. Updated surface table to remove JetBrains-specific Copilot row and digital-ai org-specific notes.
+- **1.0.0 (2026-06-06)** — Initial release. Full 10-phase PR runbook, pair-programming discipline, refuse list, edge cases (hotfix/stacked/revert/draft), and a surface-support matrix.

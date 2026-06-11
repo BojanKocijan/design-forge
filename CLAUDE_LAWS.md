@@ -1,6 +1,6 @@
 # Master Claude Laws — Design Forge
 
-**Version:** 2.0.0
+**Version:** 2.1.0
 **Last Updated:** 2026-06-09
 **Rules Repo:** https://github.com/bojankocijan/design-forge
 **Inspired by:** Asimov's Three Laws of Robotics
@@ -198,7 +198,7 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 | **Fullstack** | Superset of Frontend. Knows everything Frontend knows, plus backend (APIs, auth, server logic, any DB), CI/CD, deployment. Pair-programming style. **Full PR runbook in [`knowledge/FULLSTACK_WORKFLOW.md`](./knowledge/FULLSTACK_WORKFLOW.md)**. | `fullstack mode` trigger |
 | **Design** | Figma MCP, design critique, UX writing, `/knowledge/*` upkeep | Implied by Figma/design tasks |
 | **Research** | Transcript analysis, JTBD, RICE + MoSCoW, PPT deck outlines (binding: `UX_RESEARCH_GUIDE.md`) | `research mode` trigger |
-| **Pendo Analyst** | Product analytics via Pendo MCP tools (binding: `PENDO_GUIDE.md`) | `pendo mode` trigger |
+| **Analyst** | Product analytics via any connected analytics MCP — Pendo, Amplitude, Mixpanel, PostHog, FullStory, Contentsquare/Heap, Adobe, GA4, LogRocket, Statsig (binding: `ANALYTICS_GUIDE.md`) | `analyst mode` trigger |
 
 **Default at every session start = Frontend.** Switch only with an explicit trigger.
 
@@ -228,6 +228,8 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 
 ## Changelog
 
+- **2.1.0 (2026-06-09)** — Renamed the Pendo persona to a tool-agnostic **Analyst** persona (`analyst mode`; `pendo mode` removed). Works with whichever analytics MCP is connected — Pendo, Amplitude, Mixpanel, PostHog, FullStory, Contentsquare/Heap, Adobe Analytics, GA4, LogRocket, Statsig. New `knowledge/ANALYTICS_GUIDE.md` (Pendo kept as the worked example); `agents/pendo.md` → `agents/analyst.md`, `skills/pendo-analyst/` → `skills/analyst/`.
+
 - **2.0.0 (2026-06-09)** — Public release. Added Law 26 (`dry run` mode — Claude prints git/gh commands for the user to run instead of spending tokens executing them) and Law 27 (plugin-standards compliance — valid manifest + marketplace.json, root component layout, version sync across all four files, quality/security gate for official-directory submission). Repo prepared for public use: `projects.yaml` gitignored with a committed `projects.example.yaml`; no personal project data shipped. New professional README, `.claude-plugin/marketplace.json` so the repo is installable via `/plugin marketplace add`.
 
 - **1.2.1 (2026-06-09)** — Law 9 + Law 25: post-merge branch cleanup is now a proactive Claude duty. Once a PR is merged, Claude verifies the branch is merged into `main` and deletes it (remote + local) without being asked, and the session-start checklist sweeps any orphaned merged branches. Mirrored in FULLSTACK_WORKFLOW Phase 9.
@@ -236,4 +238,4 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 
 - **1.1.0 (2026-06-07)** — Added 4 new laws preventing bloated code and hallucination: Law 21 (YAGNI — no over-engineering), Law 22 (edge-case thinking upfront), Law 23 (verify before claiming — no hallucination), Law 24 (question and reason before executing). Claude now reasons out loud about requirements, tradeoffs, and best practices before implementation.
 
-- **1.0.0 (2026-06-06)** — Initial Design Forge release. Forked from Digital.ai UX Claude Laws v0.56.0. Stripped all Digital.ai/dot-components specifics. Made UI-library-agnostic. Renamed CLI command to `dforge-update`, clone dir to `~/.design-forge`. Removed Agility integration, Copilot org-level instructions, cross-project pattern catalogue, and all dot-components-specific laws (icons, illustrations, DotThemeProvider, Code Connect, design tokens registry). Kept all general engineering governance (Laws 1–20), the four-file component pattern, no-inline-styles rule, and all methodology (research, UX writing, developer handoff, feature workflow, fullstack workflow).
+- **1.0.0 (2026-06-06)** — Initial Design Forge release. Library-agnostic governance: general engineering laws (Laws 1–20), the four-file component pattern, the no-inline-styles rule, and the full methodology (research, UX writing, developer handoff, feature workflow, fullstack workflow).

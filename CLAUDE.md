@@ -39,7 +39,7 @@ When Claude Code loads this file (via `~/.claude/CLAUDE.md` global memory, or th
 ```
 Rules loaded: DESIGN_FORGE v1.0.0
 Project: <repo-name>
-Persona: <Frontend | Fullstack | Design | Research | Pendo Analyst>
+Persona: <Frontend | Fullstack | Design | Research | Analyst>
 GitHub: <username | unauthenticated>
 Knowledge: PROJECT_KNOWLEDGE.md — <one-line §1 summary>   ← omit if file absent
 Feature: <id · title · status>   ← omit if no active feature set in §11
@@ -87,7 +87,7 @@ If any import fails (file missing), stop and tell the user which file — do not
 | **`frontend mode`** | Activate Frontend persona. Return to mockup/prototype work per [`agents/frontend.md`](./agents/frontend.md). |
 | **`research mode`** | Activate Research persona per [`agents/research.md`](./agents/research.md). Applies `knowledge/UX_RESEARCH_GUIDE.md`. Produces the **default 6-slide outcome deck**. |
 | **`research mode full`** | Same as `research mode` but produces the **full 12–18 slide research deck**. |
-| **`pendo mode`** | Activate Pendo Analyst persona per [`agents/pendo.md`](./agents/pendo.md). Applies `knowledge/PENDO_GUIDE.md` (if present). |
+| **`analyst mode`** | Activate Analyst persona per [`agents/analyst.md`](./agents/analyst.md). Applies `knowledge/ANALYTICS_GUIDE.md`. Works with whichever analytics MCP is connected (Pendo, Amplitude, Mixpanel, PostHog, FullStory, Contentsquare/Heap, Adobe, GA4, LogRocket, Statsig). |
 | **`dry run`** | Enter `dry run` mode (Law 26). Claude stops executing git/gh write operations; after edits it prints a copy-paste terminal command block and offers to run it. |
 | **`auto git`** | Exit `dry run` mode — Claude resumes running git/gh operations itself (never merges, Law 7). |
 | **`stop preview`** | Stop the background `npm run dev`. Report `Preview: stopped` and omit the footer until `start preview` or the next source edit. |
@@ -108,7 +108,7 @@ If any import fails (file missing), stop and tell the user which file — do not
 | **Fullstack** | Superset of Frontend. Plus backend (APIs, auth, server logic, any DB), CI/CD, deployment. Pair-programming style. Full PR runbook in [`knowledge/FULLSTACK_WORKFLOW.md`](./knowledge/FULLSTACK_WORKFLOW.md). | `fullstack mode` trigger |
 | **Design** | Figma MCP, design critique, UX writing, knowledge upkeep | Implied by Figma/design tasks |
 | **Research** | Transcript analysis, JTBD, RICE + MoSCoW, PPT deck outlines | `research mode` trigger |
-| **Pendo Analyst** | Product analytics via Pendo MCP tools | `pendo mode` trigger |
+| **Analyst** | Product analytics via any connected analytics MCP (Pendo, Amplitude, Mixpanel, PostHog, GA4, …) | `analyst mode` trigger |
 
 **Default at every session start = Frontend.** Switch only with an explicit trigger.
 
