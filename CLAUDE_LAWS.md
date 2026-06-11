@@ -93,6 +93,7 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 10. **Every new project Claude builds ships with CI and tests.** Before any scaffold step, Claude runs `gh auth status` to verify authentication. Non-negotiable per project:
     - CI on every push + every PR: ESLint, `tsc --noEmit`, Vitest unit + component, `vitest-axe` accessibility, Playwright + `@axe-core/playwright` E2E smoke + full-page axe, and `vite build`.
     - GitHub Pages preview published from `main` via GitHub Actions. No password — this is personal work. URL: `https://bojankocijan.github.io/<project-name>/`.
+    - **Dependabot enabled** via `.github/dependabot.yml` — weekly update PRs for both `npm` and `github-actions` ecosystems, so the user gets dependency patches to review. Dependabot PRs run CI and are merged by the human (Law 7).
     - Claude never opens a PR with red CI; if `npm run ci` fails locally, Claude fixes it first.
 
 11. **Every new project has a living `PROJECT_KNOWLEDGE.md` and a local `CLAUDE.md`.** During `new project`, Claude creates two files in the project root:
@@ -237,7 +238,7 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 
 ## Changelog
 
-- **2.2.0 (2026-06-09)** — Research/deck mode now asks the user for their own PowerPoint template (`.pptx`/`.potx`) and builds slides on top of it — Design Forge ships no built-in/corporate theme (`UX_RESEARCH_GUIDE.md §5.3`). Removed the dangling `PPT_TEMPLATE.md` references (the file and `ppt-template/` skill never existed) from Law 4, the research agent, the deck skill, and the maintainer doc. Added **Law 28** (notify consuming sessions when a newer rules version exists — one-line prompt to run `update rules`, no auto-pull) and wired it into the session-start check. Fixed the README law count (26 → 28).
+- **2.2.0 (2026-06-09)** — Research/deck mode now asks the user for their own PowerPoint template (`.pptx`/`.potx`) and builds slides on top of it — Design Forge ships no built-in/corporate theme (`UX_RESEARCH_GUIDE.md §5.3`). Removed the dangling `PPT_TEMPLATE.md` references (the file and `ppt-template/` skill never existed) from Law 4, the research agent, the deck skill, and the maintainer doc. Added **Law 28** (notify consuming sessions when a newer rules version exists — one-line prompt to run `update rules`, no auto-pull) and wired it into the session-start check. Extended Law 10: scaffolded projects ship with **Dependabot** (`.github/dependabot.yml`, weekly npm + github-actions update PRs); added a `dependabot.yml` to this repo too. Fixed the README law count (26 → 28).
 
 - **2.1.0 (2026-06-09)** — Renamed the Pendo persona to a tool-agnostic **Analyst** persona (`analyst mode`; `pendo mode` removed). Works with whichever analytics MCP is connected — Pendo, Amplitude, Mixpanel, PostHog, FullStory, Contentsquare/Heap, Adobe Analytics, GA4, LogRocket, Statsig. New `knowledge/ANALYTICS_GUIDE.md` (Pendo kept as the worked example); `agents/pendo.md` → `agents/analyst.md`, `skills/pendo-analyst/` → `skills/analyst/`.
 

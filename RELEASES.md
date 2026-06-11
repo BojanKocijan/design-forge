@@ -9,6 +9,11 @@
 - No built-in or third-party theme is ever used; if you have no template, you get a plain neutral 16:9 deck
 - Removed the dangling `PPT_TEMPLATE.md` references (the file and `ppt-template/` skill never existed)
 
+### Dependabot for scaffolded projects (Law 10)
+- Every new project ships with `.github/dependabot.yml` — weekly update PRs for npm + GitHub Actions
+- Applies to all platform tracks (React/Vite, React Native/Expo, Angular)
+- This repo also gets a `dependabot.yml` (github-actions ecosystem)
+
 ### Update notifications (Law 28)
 - At session start, Claude compares your loaded version against the remote and, if a newer one exists, shows: `Design Forge update available: v<x> → v<y>. Run \`update rules\` to pull and reload.`
 - One global update reaches every consuming project (they share one `~/.design-forge`). Claude never auto-pulls — it notifies and waits for your go-ahead.
