@@ -23,7 +23,8 @@ design-forge/
 │   ├── FEATURE_WORKFLOW.md
 │   ├── FULLSTACK_WORKFLOW.md
 │   ├── UX_RESEARCH_GUIDE.md
-│   └── PPT_TEMPLATE.md
+│   ├── ANALYTICS_GUIDE.md
+│   └── COMPONENT_PATTERNS.md
 ├── skills/                      ← skill definitions (plugin entry points)
 │   ├── claude-laws/
 │   ├── design-critique/
@@ -34,7 +35,6 @@ design-forge/
 │   ├── frontend-guide/
 │   ├── fullstack-workflow/
 │   ├── analyst/
-│   ├── ppt-template/
 │   ├── project-scaffold/
 │   ├── scaffold-react-project/
 │   ├── skills-matrix/

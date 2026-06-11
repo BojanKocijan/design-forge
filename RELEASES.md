@@ -2,6 +2,15 @@
 
 ---
 
+## v2.2.0 — June 9, 2026
+
+### Decks use your own PowerPoint template
+- In research/deck mode, Claude asks you to share your `.pptx`/`.potx` template and builds the slides on top of it
+- No built-in or third-party theme is ever used; if you have no template, you get a plain neutral 16:9 deck
+- Removed the dangling `PPT_TEMPLATE.md` references (the file and `ppt-template/` skill never existed)
+
+---
+
 ## v2.1.0 — June 9, 2026
 
 ### Analyst persona (replaces Pendo mode)

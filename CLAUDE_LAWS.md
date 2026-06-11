@@ -1,6 +1,6 @@
 # Master Claude Laws — Design Forge
 
-**Version:** 2.1.0
+**Version:** 2.2.0
 **Last Updated:** 2026-06-09
 **Rules Repo:** https://github.com/bojankocijan/design-forge
 **Inspired by:** Asimov's Three Laws of Robotics
@@ -38,7 +38,6 @@
    | [`PROJECT_SCAFFOLD.md`](./knowledge/PROJECT_SCAFFOLD.md) | New project scaffolding — Vite + React + TS + UI-library choice (shadcn/ui, MUI, Ant Design, Chakra UI, or local); full folder skeleton; CI; GitHub Pages preview | **`new project`** trigger |
    | [`SKILLS.md`](./knowledge/SKILLS.md) | Engineering competencies — layout, design critique, UX writing, React, TypeScript, **WCAG 2.2 AA**, forms, state, testing, motion, performance, error handling, developer handoff, git hygiene | Any task touching those domains |
    | [`UX_RESEARCH_GUIDE.md`](./knowledge/UX_RESEARCH_GUIDE.md) | Research — transcript ingestion, thematic analysis, PII redaction, RICE + MoSCoW, JTBD, deck-outline output | **`research mode`** trigger or clear research task |
-   | [`PPT_TEMPLATE.md`](./knowledge/PPT_TEMPLATE.md) | Presentation template — 16:9 canvas, configurable brand palette, layout spec | Any `.pptx` generation |
    | [`FULLSTACK_WORKFLOW.md`](./knowledge/FULLSTACK_WORKFLOW.md) | Fullstack developer PR flow — 10 phases (verify env → describe → pre-execution announcement → branch+issue → pair-programming loop → pre-PR checks → PR → review → merge → post-merge) | **`fullstack mode`** trigger |
    | [`FEATURE_WORKFLOW.md`](./knowledge/FEATURE_WORKFLOW.md) | Designer-facing feature lifecycle — 3-question triage at `start feature`, bootstrap vs steady-state modes, 5 states with transitions, one-active-at-a-time rule + explicit `pause` / `resume` exception path. Drives `PROJECT_KNOWLEDGE.md §11 Active feature`. | `start feature` / `pause feature` / `resume feature` / `finish feature` triggers |
 
@@ -227,6 +226,8 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 ---
 
 ## Changelog
+
+- **2.2.0 (2026-06-09)** — Research/deck mode now asks the user for their own PowerPoint template (`.pptx`/`.potx`) and builds slides on top of it — Design Forge ships no built-in/corporate theme (`UX_RESEARCH_GUIDE.md §5.3`). Removed the dangling `PPT_TEMPLATE.md` references (the file and `ppt-template/` skill never existed) from Law 4, the research agent, the deck skill, and the maintainer doc.
 
 - **2.1.0 (2026-06-09)** — Renamed the Pendo persona to a tool-agnostic **Analyst** persona (`analyst mode`; `pendo mode` removed). Works with whichever analytics MCP is connected — Pendo, Amplitude, Mixpanel, PostHog, FullStory, Contentsquare/Heap, Adobe Analytics, GA4, LogRocket, Statsig. New `knowledge/ANALYTICS_GUIDE.md` (Pendo kept as the worked example); `agents/pendo.md` → `agents/analyst.md`, `skills/pendo-analyst/` → `skills/analyst/`.
 
