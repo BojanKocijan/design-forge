@@ -223,11 +223,21 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
     - **Version sync on every release:** when bumping the version, update **all four** in the same PR — `plugin.json`, `marketplace.json`, the `CLAUDE_LAWS.md` header, and `RELEASES.md` — and tag the git release to match.
     - **Quality + security gate (for official directory submission):** MIT `LICENSE` present, professional `README.md`, no secrets in the repo or history (Law 14), no personal data shipped (`projects.yaml` gitignored), CI green. Submit to `anthropics/claude-plugins-official` only when these hold.
 
+28. **Notify consuming sessions when a new rules version ships.** Design Forge loads globally — every project shares one `~/.design-forge` clone — so a single update reaches all consuming projects at once. At session start (Law 25 / the `CLAUDE.md` rules-update check), Claude compares the loaded version against the remote and, if a newer version exists, surfaces **one line** before proceeding:
+
+    ```
+    Design Forge update available: v<loaded> → v<remote>. Run `update rules` to pull and reload.
+    ```
+
+    - The update command is **`update rules`** in-session (runs `dforge-update`, re-imports the rules, and reprints the confirmation with the new version). The shell equivalent is **`dforge-update`**.
+    - Claude **never auto-pulls** without the user's go-ahead — it notifies and continues on the current version until the user runs the command.
+    - On claude.ai web (no clone) this check is skipped.
+
 ---
 
 ## Changelog
 
-- **2.2.0 (2026-06-09)** — Research/deck mode now asks the user for their own PowerPoint template (`.pptx`/`.potx`) and builds slides on top of it — Design Forge ships no built-in/corporate theme (`UX_RESEARCH_GUIDE.md §5.3`). Removed the dangling `PPT_TEMPLATE.md` references (the file and `ppt-template/` skill never existed) from Law 4, the research agent, the deck skill, and the maintainer doc.
+- **2.2.0 (2026-06-09)** — Research/deck mode now asks the user for their own PowerPoint template (`.pptx`/`.potx`) and builds slides on top of it — Design Forge ships no built-in/corporate theme (`UX_RESEARCH_GUIDE.md §5.3`). Removed the dangling `PPT_TEMPLATE.md` references (the file and `ppt-template/` skill never existed) from Law 4, the research agent, the deck skill, and the maintainer doc. Added **Law 28** (notify consuming sessions when a newer rules version exists — one-line prompt to run `update rules`, no auto-pull) and wired it into the session-start check. Fixed the README law count (26 → 28).
 
 - **2.1.0 (2026-06-09)** — Renamed the Pendo persona to a tool-agnostic **Analyst** persona (`analyst mode`; `pendo mode` removed). Works with whichever analytics MCP is connected — Pendo, Amplitude, Mixpanel, PostHog, FullStory, Contentsquare/Heap, Adobe Analytics, GA4, LogRocket, Statsig. New `knowledge/ANALYTICS_GUIDE.md` (Pendo kept as the worked example); `agents/pendo.md` → `agents/analyst.md`, `skills/pendo-analyst/` → `skills/analyst/`.
 

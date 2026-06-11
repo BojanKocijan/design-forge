@@ -24,7 +24,7 @@ Design Forge is a set of binding *laws*, reusable *skills*, and shared *knowledg
 
 ## Why
 
-Out of the box, an AI assistant will happily push to `main`, invent APIs, over-engineer, and forget your conventions between sessions. Design Forge fixes that with **26 binding laws** Claude must follow, plus knowledge files that travel with you to every project:
+Out of the box, an AI assistant will happily push to `main`, invent APIs, over-engineer, and forget your conventions between sessions. Design Forge fixes that with **28 binding laws** Claude must follow, plus knowledge files that travel with you to every project:
 
 - **Disciplined git** — pull `main`, branch + issue before code, PRs only, Claude never merges, proactive branch cleanup.
 - **Pre-execution announcements** — Claude tells you what it's about to change (and its severity) before touching anything.
@@ -104,7 +104,7 @@ Design Forge has three layers:
 
 ### 1. Laws — [`CLAUDE_LAWS.md`](./CLAUDE_LAWS.md)
 
-26 binding rules Claude must follow. Highlights:
+28 binding rules Claude must follow. Highlights:
 
 - English-only · pre-execution announcement before any change
 - Pull `main` → branch + issue → code → PR · **never push to `main`, never merge for you**

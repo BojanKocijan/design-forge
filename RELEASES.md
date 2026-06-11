@@ -9,6 +9,11 @@
 - No built-in or third-party theme is ever used; if you have no template, you get a plain neutral 16:9 deck
 - Removed the dangling `PPT_TEMPLATE.md` references (the file and `ppt-template/` skill never existed)
 
+### Update notifications (Law 28)
+- At session start, Claude compares your loaded version against the remote and, if a newer one exists, shows: `Design Forge update available: v<x> → v<y>. Run \`update rules\` to pull and reload.`
+- One global update reaches every consuming project (they share one `~/.design-forge`). Claude never auto-pulls — it notifies and waits for your go-ahead.
+- Fixed the README law count (26 → 28)
+
 ---
 
 ## v2.1.0 — June 9, 2026

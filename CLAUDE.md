@@ -23,7 +23,7 @@ This file is the entry point for every Claude Code session under Design Forge go
 
 When Claude Code loads this file (via `~/.claude/CLAUDE.md` global memory, or the local project `CLAUDE.md`, or claude.ai Custom Instructions), do the following **before** responding to the user's first request:
 
-1. **Check for rule updates.** Look at `git -C ~/.design-forge log -1 --format=%ct` to find when the rules clone was last pulled. If >24 h have passed, ask the user one line: *"Rules last pulled <N>h ago. Run `dforge-update`? (y/N)"*. If `y`, run it via the Bash tool and re-import the files. If `N` or silent, proceed with current.
+1. **Check for rule updates (Law 28).** Quietly fetch and compare the loaded version against the remote: `git -C ~/.design-forge fetch -q origin main`, then compare the local `CLAUDE_LAWS.md` version header with `git -C ~/.design-forge show origin/main:CLAUDE_LAWS.md` (or `HEAD` vs `origin/main`). If a **newer version exists on the remote**, surface one line — *"Design Forge update available: v<loaded> → v<remote>. Run `update rules` to pull and reload."* — and proceed on the current version. Fallback if fetch isn't possible: use `git -C ~/.design-forge log -1 --format=%ct`; if >24 h since the last pull, suggest `update rules`. Never auto-pull without the user's go-ahead.
    - Skip step 1 entirely on claude.ai web (no shell, no clone).
 2. Read every file imported above.
 3. Extract the version number from `CLAUDE_LAWS.md`'s header.
