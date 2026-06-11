@@ -95,7 +95,7 @@ Type these in any Claude Code session:
 | `fullstack mode` | Activate the Fullstack persona (backend, APIs, auth, CI/CD) |
 | `frontend mode` | Return to the default Frontend persona |
 | `research mode` / `research mode full` | UX research → 6-slide outcome deck (or 12–18 slide full deck) |
-| `pendo mode` | Pendo product-analytics persona |
+| `analyst mode` | Product-analytics persona — Pendo, Amplitude, Mixpanel, PostHog, GA4, … via their MCP |
 | `dry run` / `auto git` | Toggle "print the git/gh commands for me to run" vs "Claude runs them" |
 | `stop preview` / `start preview` | Control the background `npm run dev` |
 
@@ -125,7 +125,7 @@ Design Forge has three layers:
 | **Fullstack** | + backend, APIs, auth, any DB, CI/CD, deployment | `fullstack mode` |
 | **Design** | Figma, critique, UX writing | Figma/design tasks |
 | **Research** | Transcripts, JTBD, RICE + MoSCoW, decks | `research mode` |
-| **Pendo Analyst** | Product analytics via Pendo MCP | `pendo mode` |
+| **Analyst** | Product analytics via any connected MCP (Pendo, Amplitude, Mixpanel, PostHog, …) | `analyst mode` |
 
 ### 3. Knowledge — [`knowledge/`](./knowledge/)
 
