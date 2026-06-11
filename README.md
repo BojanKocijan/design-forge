@@ -36,22 +36,11 @@ Out of the box, an AI assistant will happily push to `main`, invent APIs, over-e
 
 ## Install
 
-Three ways to use Design Forge — pick the one that fits your setup.
+Design Forge works **today** with Claude Code and the Claude CLI. A one-click install from the Claude/Cowork marketplace is **coming soon** (see [below](#coming-soon-marketplace)).
 
-### Path A — Claude Code plugin (recommended)
+### Path A — Claude Code / Claude CLI (recommended, works today)
 
-The repo is its own plugin marketplace. In Claude Code:
-
-```
-/plugin marketplace add BojanKocijan/design-forge
-/plugin install design-forge@design-forge
-```
-
-Rules and skills load automatically in every session. Update later with `/plugin marketplace update design-forge`.
-
-### Path B — Global install (CLI / VS Code / JetBrains)
-
-Installs the rules into Claude's **global memory** so every session on your machine inherits them.
+Installs the rules into Claude's **global memory** so every session on your machine inherits them automatically.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/BojanKocijan/design-forge/main/install.sh | bash
@@ -63,9 +52,11 @@ What it does:
 2. Injects `@~/.design-forge/CLAUDE.md` into `~/.claude/CLAUDE.md` (Claude's global memory)
 3. Installs the `dforge-update` shell function for pulling the latest rules
 
-Verify by opening any session — you should see a `Rules loaded: DESIGN_FORGE v2.0.0` confirmation line.
+Verify by opening any session — you should see a `Rules loaded: DESIGN_FORGE v2.0.0` confirmation line. Keep rules fresh anytime with `dforge-update`.
 
-**Manual alternative:**
+### Path B — Clone and use it yourself
+
+Prefer to read, fork, or adapt the rules? Just clone the repo and point Claude's global memory at it:
 
 ```bash
 git clone https://github.com/BojanKocijan/design-forge.git ~/.design-forge
@@ -73,9 +64,15 @@ git clone https://github.com/BojanKocijan/design-forge.git ~/.design-forge
 #   @~/.design-forge/CLAUDE.md
 ```
 
+From here you own it — edit the laws, knowledge, and skills to fit your workflow.
+
 ### Path C — GitHub Copilot
 
 Paste the contents of [`CLAUDE_LAWS.md`](./CLAUDE_LAWS.md) into your Copilot custom instructions (VS Code settings, JetBrains, or github.com → Copilot → custom instructions).
+
+### Coming soon: marketplace
+
+The repo already ships a valid plugin manifest (`.claude-plugin/plugin.json`) and marketplace descriptor (`.claude-plugin/marketplace.json`), so a one-click install from the **Claude / Cowork marketplace** will be available once Design Forge is submitted to and listed by Anthropic. Until then, use Path A or B above.
 
 ---
 
@@ -163,8 +160,8 @@ Claude auto-registers new projects (issue → branch → PR) and locks the port 
 
 ## Updating
 
-- **Plugin (Path A):** `/plugin marketplace update design-forge`
-- **Global (Path B):** run `dforge-update`, or `git -C ~/.design-forge pull`
+- **Installed (Path A):** run `dforge-update`, or `git -C ~/.design-forge pull`
+- **Cloned (Path B):** `git -C ~/.design-forge pull`
 - In any session: type `update rules`
 
 ---
