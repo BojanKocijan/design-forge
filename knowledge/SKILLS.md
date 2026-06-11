@@ -265,4 +265,4 @@ Any architectural notes, edge cases, or gotchas the dev should know.
 
 ## Changelog
 
-- **1.0.0 (2026-06-06)** — Initial Design Forge release. Adapted from Digital.ai UX SKILLS v1.4.0. Removed: dot-* component checks, DotThemeProvider requirement, Agility integration, cross-project patterns (Law 23), Figma drift check (Law 13 in original), Code Connect requirement. Updated developer handoff template: replaced "Dot* components with Code Connect status" with "UI components used", made Pendo telemetry section optional. Kept: all layout/design/React/a11y/form/git/motion/error/performance skills, UX writing 10 rules, design critique 8-step checklist, 13-section handoff template.
+- **1.0.0 (2026-06-06)** — Initial release. All layout/design/React/a11y/form/git/motion/error/performance skills, UX writing 10 rules, design critique 8-step checklist, and the 13-section developer-handoff template (analytics telemetry section optional).

@@ -2,7 +2,11 @@
 
 ## What this repo is
 
-A personal Claude Code plugin for UX and frontend work. It is a library-agnostic fork of Digital.ai's internal `ux-claude-laws` plugin, stripped of all corporate-specific toolchain requirements.
+A Claude Code plugin for UX and frontend work — library-agnostic governance, scaffolding, and skills, with no corporate toolchain requirements.
+
+## Maintainers & review
+
+Maintainers and required reviewers are configured in **GitHub repository settings** (branch protection rules, required reviewers, optionally `CODEOWNERS`) — not hardcoded in these files. There is intentionally no law for this: GitHub settings are the source of truth, so anyone forking the repo configures their own review policy without editing the rules.
 
 ## Repository structure
 
