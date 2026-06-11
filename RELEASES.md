@@ -2,6 +2,29 @@
 
 ---
 
+## v2.0.0 — June 9, 2026 — Public release
+
+### Public-ready repository
+- New professional README explaining what Design Forge is and how anyone can use it
+- `projects.yaml` is now gitignored — ships `projects.example.yaml` instead, so no personal project data is published
+- `.claude-plugin/marketplace.json` added — the repo is installable via `/plugin marketplace add BojanKocijan/design-forge`
+
+### New: `dry run` mode (Law 26)
+- Toggle with `dry run` / `auto git`
+- Claude prepares all edits, then prints a copy-paste terminal command block (commit/push/PR/issue) and offers to run it — instead of spending tokens executing git/gh itself
+- Never overrides Law 7 (Claude never merges)
+
+### New: plugin-standards compliance (Law 27)
+- Codifies that the repo stays a valid, submittable Claude Code plugin
+- Manifest + marketplace.json kept valid; skills as `skills/<name>/SKILL.md` with name+description; components at plugin root
+- Version must stay in sync across plugin.json, marketplace.json, CLAUDE_LAWS header, and RELEASES on every release
+- Quality/security gate (MIT license, README, no secrets, no personal data, CI green) before official-directory submission
+
+### Plugin directory
+- Tracking the submission of Design Forge to the official Claude Code plugin directory (`anthropics/claude-plugins-official`)
+
+---
+
 ## v1.2.1 — June 9, 2026
 
 ### Proactive branch cleanup (Laws 9 + 25)
