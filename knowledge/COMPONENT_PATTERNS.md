@@ -1,6 +1,6 @@
 # Component Patterns — Design Forge
 
-**Version:** 1.3.0
+**Version:** 1.4.0
 **Last Updated:** 2026-06-11
 **Binding:** Yes — these patterns represent validated, reusable solutions established across projects. Apply them before building from scratch.
 
@@ -537,7 +537,135 @@ New promotions always start as a **folder** — simpler components can be flatte
 
 ---
 
+## 19. State-first component design
+
+**The rule:** before writing a single line of JSX for a shared component, enumerate every state it can be in. States discovered after the fact get bolted on inconsistently. States planned upfront become the component's API.
+
+---
+
+### The four state categories
+
+Every data-aware component has states in four categories. Work through all four before opening a file.
+
+| Category | Examples |
+|---|---|
+| **Data states** | `empty` · `loading` · `error` · `populated` |
+| **Interaction states** | `default` · `hover` · `focus` · `active` / `pressed` · `disabled` |
+| **Content / business states** | Entity-specific: invoice → `outstanding` / `sent` / `viewed` / `paid` / `overdue`; input → `default` / `validating` / `verified` / `invalid` |
+| **Edge case states** | Long text truncation · zero or negative values · missing optional fields · empty avatar (no name) |
+
+Not every component needs all four. A static `Avatar` only needs edge cases. A form field needs interaction + validation. An entity card needs all four.
+
+---
+
+### TypeScript union types — never boolean flags
+
+Boolean flags multiply into impossible combinations. Union types make all valid states explicit and all invalid states unrepresentable.
+
+```ts
+// ❌ boolean flags — 2⁵ = 32 combinations, most impossible
+interface InvoiceCardProps {
+  isPaid?: boolean
+  isOverdue?: boolean
+  isSent?: boolean
+  isViewed?: boolean
+  emailFailed?: boolean
+}
+
+// ✅ union type — exactly 5 content states, email status separate
+type InvoiceStatus = 'outstanding' | 'overdue' | 'sent' | 'viewed' | 'paid'
+type EmailStatus = 'sent' | 'failed' | null
+
+interface InvoiceCardProps {
+  status: InvoiceStatus
+  emailStatus?: EmailStatus
+}
+```
+
+**Rule:** if you catch yourself writing `isX?: boolean` on a shared component, stop. Add the state to the union type instead.
+
+---
+
+### The state matrix — document it in the component file
+
+Every shared component's `.types.ts` file must include a comment block listing all states before the interface:
+
+```ts
+/**
+ * InvoiceCard — state matrix
+ *
+ * Content states (driven by InvoiceStatus):
+ *   outstanding  — grey left border, amber due-date label
+ *   overdue      — red left border, red amount, "X days late" label
+ *   sent         — blue left border, "Awaiting payment" label
+ *   viewed       — amber left border, "Seen" label (email tracking)
+ *   paid         — green left border, "Paid {date}" label
+ *
+ * Overlay states:
+ *   email-failed — red banner below card body with Retry button
+ *
+ * Interaction states:
+ *   hover        — shadow-md + -translate-y-0.5
+ *   focus-within — ring-2 ring-primary/30 (keyboard nav)
+ *
+ * Edge cases:
+ *   no invoice number     — number field omitted silently
+ *   client name > 30 chars — truncate with ellipsis, full name on hover tooltip
+ *   amount = 0            — show €0 (valid for credit/void invoices)
+ *   no due date           — omit due-date label entirely
+ */
+```
+
+This comment is the contract. If a new state is added, the comment is updated first — that forces the decision to be intentional.
+
+---
+
+### State transitions — make them explicit
+
+For components that move through states over time, document the valid transitions:
+
+```
+InvoiceCard state machine:
+  outstanding ──[email sent]──► sent
+  sent        ──[pixel fired]──► viewed
+  viewed      ──[marked paid]──► paid
+  outstanding ──[past due date]──► overdue  (computed, not stored)
+  overdue     ──[marked paid]──► paid
+  any         ──[email bounce]──► + email-failed overlay (additive, not a status)
+  any         ──[archived]──► removed from list (not a visual state — filter)
+```
+
+Transitions that are computed (like `overdue`) must never be stored — derive them at render time from the data.
+
+---
+
+### Applied to Frank Beam — components to design with state-first
+
+| Component | Content states | Key edge cases | Interaction states |
+|---|---|---|---|
+| `InvoiceCard` | outstanding · overdue · sent · viewed · paid | No number · no due date · very long client name · email-failed overlay | hover (lift) · focus-within (ring) |
+| `ClientCard` | active (has open invoices) · owing (has overdue) · settled (all paid) · new (no invoices) | No email · no phone · very long business name · 0 invoices | hover (lift) · 3-dot menu reveal |
+| `KvKInput` | default · validating (future API check) · verified (checkmark) · invalid (error) · disabled | Paste with spaces/dashes stripped · partial entry (< 8 digits) | focus (ring) · error border |
+| `StatusBadge` | paid · outstanding · overdue · sent · viewed | Long custom status string (truncate) | none (display only) |
+| `Avatar` | with name (initials) · no name (? placeholder) · future: with photo | Single-word name (one initial) · emoji in name · very short names | none |
+| `EmptyState` | no data · loading · error (with retry CTA) | Illustration missing (fallback to icon) | CTA button hover/focus |
+
+---
+
+### Checklist before writing a shared component
+
+- [ ] State matrix written in `.types.ts` as a comment
+- [ ] All content states expressed as a TypeScript union — no boolean flags
+- [ ] State transitions documented (if the component moves through states over time)
+- [ ] All four categories checked: data / interaction / content / edge cases
+- [ ] Each state has a visual spec (border colour, label text, icon, opacity)
+- [ ] Empty and error states are designed — not left as "TODO"
+
+---
+
 ## Changelog
+
+- **1.4.0 (2026-06-11)** — Added Pattern 19: State-first component design — the four state categories (data/interaction/content/edge), TypeScript union over boolean flags, the state matrix comment contract, state transition documentation, applied state inventory for Frank Beam (InvoiceCard, ClientCard, KvKInput, StatusBadge, Avatar, EmptyState), and the pre-build checklist.
 
 - **1.3.0 (2026-06-11)** — Added Pattern 18: Shared component promotion — the rule (2+ surfaces / domain logic / visual identity), the session protocol (list §3b + §3c before starting component work), the 4-file promotion checklist, flat-vs-folder guidance, and the Frank Beam candidate inventory (ClientCard, InvoiceCard).
 
