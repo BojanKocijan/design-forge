@@ -147,4 +147,4 @@ At `finish feature` and `handoff <id>`, Claude checks if the loaded rules versio
 
 ## Changelog
 
-- **1.0.0 (2026-06-06)** — Initial Design Forge release. Adapted from Digital.ai UX FEATURE_WORKFLOW v1.2.0. Removed: Agility story ID validation (regex `^S-\d{4,7}$`), Agility-specific bootstrap naming, and references to `digital-ai` org. Replaced with generic issue ID support (any tracker: GitHub, Linear, Jira, etc.) or bootstrap mode. Removed `§8 Rules-staleness check` cross-reference to `digital-ai` propagation mechanics. Kept: full lifecycle, 3-question triage, pause/resume/finish flow, §11 active feature row format, feature audit log.
+- **1.0.0 (2026-06-06)** — Initial release. Generic issue-ID support (any tracker: GitHub, Linear, Jira, etc.) or bootstrap mode. Full lifecycle, 3-question triage, pause/resume/finish flow, §11 active-feature row format, and feature audit log.

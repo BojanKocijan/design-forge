@@ -285,4 +285,4 @@ Any database is allowed. To graduate, Claude must pre-execution announce with th
 
 ## Changelog
 
-- **1.0.0 (2026-06-06)** — Initial Design Forge release. Adapted from Digital.ai UX FRONTEND_GUIDE v1.7.0. Replaced dot-components stack with library-agnostic approach (shadcn/ui, MUI, Ant Design, Chakra UI, or local). Removed DotThemeProvider, DotIcon, DotIllustration, Code Connect, design-tokens.json, and dot-* class-targeting rules. Kept: 4-file folder pattern (Law 12), no-inline-styles rule, TypeScript, WCAG 2.2 AA, mock data PII rules, triage-first discipline, design-fidelity rule.
+- **1.0.0 (2026-06-06)** — Initial release. Library-agnostic stack (shadcn/ui, MUI, Ant Design, Chakra UI, or local). 4-file folder pattern (Law 12), no-inline-styles rule, TypeScript, WCAG 2.2 AA, mock-data PII rules, triage-first discipline, design-fidelity rule.
