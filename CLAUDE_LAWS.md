@@ -1,6 +1,6 @@
 # Master Claude Laws — Design Forge
 
-**Version:** 1.2.1
+**Version:** 2.0.0
 **Last Updated:** 2026-06-09
 **Rules Repo:** https://github.com/bojankocijan/design-forge
 **Inspired by:** Asimov's Three Laws of Robotics
@@ -211,9 +211,24 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 
     If a PR exists, flag it before starting new work. Never push to a branch that has already been merged.
 
+26. **`dry run` mode — save the user's tokens on git/gh operations.** The user may activate `dry run` (toggle off with `auto git`). While active, Claude does the thinking and file edits as normal, but **does not execute git/gh write operations itself** (`git commit`, `git push`, `git branch`, `git rm`, `gh issue create`, `gh pr create`, `gh issue close`, etc.). Instead, after the edits are done, Claude:
+    1. Prints a single copy-pasteable terminal block with the exact commands, in order, fully filled in (real branch names, issue numbers, commit messages, PR title + body via `gh pr create -t … -b …`).
+    2. Then asks once: *"Want me to run these instead?"* — and only runs them if the user says yes.
+
+    Read-only git (`git status`, `git diff`, `git log`) is still allowed when genuinely needed to build the command block, but Claude keeps it minimal. `dry run` never overrides Law 7 — even when running the printed commands, Claude never merges. This mode exists so the user can run fast local operations themselves rather than spending model tokens on them.
+
+27. **Design Forge stays a valid, submittable Claude Code plugin.** The repository must remain installable both as a global memory import (`install.sh`) and as a Claude Code plugin. Claude must preserve plugin compliance at all times, per the [official plugin reference](https://code.claude.com/docs/en/plugins-reference):
+    - **Manifest:** `.claude-plugin/plugin.json` is the only manifest. `name` is required; `version` is a semantic version (`MAJOR.MINOR.PATCH`). Keep `author`, `license`, `homepage`, `repository`, and `keywords` populated.
+    - **Marketplace:** `.claude-plugin/marketplace.json` lists this plugin with `source: "./"` so the repo is installable via `/plugin marketplace add <owner>/<repo>`.
+    - **Component layout:** skills live in `skills/<name>/SKILL.md`; agents in `agents/`; (commands/, hooks/ if added) — all at the **plugin root**, never inside `.claude-plugin/`. Every `SKILL.md` has `name` + `description` frontmatter.
+    - **Version sync on every release:** when bumping the version, update **all four** in the same PR — `plugin.json`, `marketplace.json`, the `CLAUDE_LAWS.md` header, and `RELEASES.md` — and tag the git release to match.
+    - **Quality + security gate (for official directory submission):** MIT `LICENSE` present, professional `README.md`, no secrets in the repo or history (Law 14), no personal data shipped (`projects.yaml` gitignored), CI green. Submit to `anthropics/claude-plugins-official` only when these hold.
+
 ---
 
 ## Changelog
+
+- **2.0.0 (2026-06-09)** — Public release. Added Law 26 (`dry run` mode — Claude prints git/gh commands for the user to run instead of spending tokens executing them) and Law 27 (plugin-standards compliance — valid manifest + marketplace.json, root component layout, version sync across all four files, quality/security gate for official-directory submission). Repo prepared for public use: `projects.yaml` gitignored with a committed `projects.example.yaml`; no personal project data shipped. New professional README, `.claude-plugin/marketplace.json` so the repo is installable via `/plugin marketplace add`.
 
 - **1.2.1 (2026-06-09)** — Law 9 + Law 25: post-merge branch cleanup is now a proactive Claude duty. Once a PR is merged, Claude verifies the branch is merged into `main` and deletes it (remote + local) without being asked, and the session-start checklist sweeps any orphaned merged branches. Mirrored in FULLSTACK_WORKFLOW Phase 9.
 

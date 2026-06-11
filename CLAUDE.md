@@ -88,6 +88,8 @@ If any import fails (file missing), stop and tell the user which file — do not
 | **`research mode`** | Activate Research persona per [`agents/research.md`](./agents/research.md). Applies `knowledge/UX_RESEARCH_GUIDE.md`. Produces the **default 6-slide outcome deck**. |
 | **`research mode full`** | Same as `research mode` but produces the **full 12–18 slide research deck**. |
 | **`pendo mode`** | Activate Pendo Analyst persona per [`agents/pendo.md`](./agents/pendo.md). Applies `knowledge/PENDO_GUIDE.md` (if present). |
+| **`dry run`** | Enter `dry run` mode (Law 26). Claude stops executing git/gh write operations; after edits it prints a copy-paste terminal command block and offers to run it. |
+| **`auto git`** | Exit `dry run` mode — Claude resumes running git/gh operations itself (never merges, Law 7). |
 | **`stop preview`** | Stop the background `npm run dev`. Report `Preview: stopped` and omit the footer until `start preview` or the next source edit. |
 | **`start preview`** | (Re)spawn `npm run dev` and resume surfacing the URL on every response. |
 | **`handoff <id>`** | Generate the two-surface developer handoff: (1) create `docs/handoffs/<id>.md` from session context using the 13-section template. (2) Open the tracking issue in the downstream dev repo from `PROJECT_KNOWLEDGE.md §9`. (3) Cross-link the two. (4) Append a row to `PROJECT_KNOWLEDGE.md §10` (Handoffs shipped). (5) Report both URLs. |
