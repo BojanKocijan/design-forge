@@ -1,7 +1,7 @@
 # Component Patterns — Design Forge
 
-**Version:** 1.2.0
-**Last Updated:** 2026-06-08
+**Version:** 1.3.0
+**Last Updated:** 2026-06-11
 **Binding:** Yes — these patterns represent validated, reusable solutions established across projects. Apply them before building from scratch.
 
 ---
@@ -481,9 +481,67 @@ navigate(returnTo)
 
 ---
 
+## 18. Shared component promotion — when to extract, how to track
+
+### The rule
+
+A component living inside a page file should be promoted to `src/components/shared/` when **any** of these is true:
+
+- It appears (or will appear) on **2 or more surfaces** — pages, admin panel, sheets, future mobile views
+- It encapsulates **domain logic** worth centralising (validation, formatting, business rules)
+- It has a **visual identity** that must stay pixel-identical across contexts (status badges, avatars, card layouts)
+
+A component that is purely local to one screen and has no foreseeable reuse stays in its page file.
+
+### Session protocol
+
+At the start of any session that touches component work, Claude must:
+
+1. Read `PROJECT_KNOWLEDGE.md §3b` (current shared library) and `§3c` (promotion candidates).
+2. List them concisely and ask: *"Any new candidates to promote before we start?"*
+3. Wait for the user's answer before writing any new component code.
+
+This keeps the shared library intentional — not grown through drift.
+
+### Promotion checklist (per component)
+
+When promoting a page-level component to shared:
+
+1. **Create the 4-file folder** in `src/components/shared/<Name>/`:
+   - `<Name>.tsx` — JSX only, no inline styles
+   - `<Name>.styles.ts` — all `cn()` variants / styled-components
+   - `<Name>.types.ts` — prop interface
+   - `index.ts` — barrel re-export
+2. **Move** the component function, update all import paths.
+3. **Export** from `src/components/shared/index.ts`.
+4. **Update** `PROJECT_KNOWLEDGE.md §3b` (add row) and `§3c` (remove candidate row).
+5. **Open a PR** — even a pure extraction gets its own commit.
+
+### Flat vs folder
+
+`src/components/shared/` contains two shapes:
+
+| Shape | When | Example |
+|---|---|---|
+| **Flat file** (`.tsx` only) | Simple, stateless, no complex styling | `Avatar.tsx`, `StatusBadge.tsx` |
+| **Folder** (4 files) | Has styles, types, or will grow | `KvKInput/`, `FilterBar/`, `InvoiceTimeline/` |
+
+New promotions always start as a **folder** — simpler components can be flattened later but folders never need to be restructured as the component grows.
+
+### Known Frank Beam promotion candidates (as of 2026-06-11)
+
+| Component | Currently in | Promote when |
+|---|---|---|
+| `ClientCard` | `src/pages/Clients/Clients.tsx` | Home dashboard adds client cards, or admin panel needs a client preview |
+| `InvoiceCard` | `src/pages/Invoices/Invoices.tsx` | Home dashboard adds recent invoices, or client detail shows invoice cards |
+
+---
+
 ## Changelog
 
-- **1.3.0 (2026-06-09)** — Added Patterns 15–17: React Router navigation via `useNavigate` (route-wrapper pattern, `<Outlet/>` shell, no `onNav`/`onBack` prop drilling), route-level data via root context, and transient route-to-route state via `location.state` + `returnTo`. Extracted from ReMoDo feat/landing-page (PR #80).
+- **1.3.0 (2026-06-11)** — Added Pattern 18: Shared component promotion — the rule (2+ surfaces / domain logic / visual identity), the session protocol (list §3b + §3c before starting component work), the 4-file promotion checklist, flat-vs-folder guidance, and the Frank Beam candidate inventory (ClientCard, InvoiceCard).
+
+- **1.2.1 (2026-06-09)** — Added Patterns 15–17: React Router navigation via `useNavigate` (route-wrapper pattern, `<Outlet/>` shell, no `onNav`/`onBack` prop drilling), route-level data via root context, and transient route-to-route state via `location.state` + `returnTo`. Extracted from ReMoDo feat/landing-page (PR #80).
 
 - **1.2.0 (2026-06-08)** — Added Pattern 13 (Desktop Add new popover mirrors mobile FAB) and Pattern 14 (FAB pointer-events-none + pb-28 scroll clearance). Extracted from ReMoDo fix/mobile-layout and feat/sidebar-add-new.
 - **1.1.0 (2026-06-08)** — Added Pattern 12: Create = Edit (one component per entity). Extracted from ReMoDo feat/invoice-edit-mode. Binding rule going forward.
