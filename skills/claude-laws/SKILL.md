@@ -1,6 +1,6 @@
 ---
 name: claude-laws
-description: Master binding laws for ANY Design Forge work — pre-execution announcement, branch+issue first, English-only, no direct push to main, no file deletion, Conventional Commits, secret scanning, mock data PII rules, write-access discipline, and the knowledge-file hierarchy that determines which other skill to invoke. AUTO-LOAD on every Design Forge session — these laws override everything else and apply universally to frontend, fullstack, design, research, and Pendo personas. Whenever the user is working in any repository governed by design-forge, this skill must be in context.
+description: Master binding laws for ANY Design Forge work — pre-execution announcement, branch+issue first, English-only, no direct push to main, no file deletion, Conventional Commits, secret scanning, mock data PII rules, write-access discipline, and the knowledge-file hierarchy that determines which other skill to invoke. AUTO-LOAD on every Design Forge session — these laws override everything else and apply universally to frontend, fullstack, design, research, and analyst personas. Whenever the user is working in any repository governed by design-forge, this skill must be in context.
 ---
 
 <!-- markdownlint-disable-file MD025 MD041 -->
@@ -44,7 +44,7 @@ This skill is the plugin-path mirror of `CLAUDE_LAWS.md` so plugin-mode Claude h
 ```
 Rules loaded: DESIGN_FORGE v1.0.0
 Project: <repo-name>
-Persona: <Frontend | Fullstack | Design | Research | Pendo Analyst>
+Persona: <Frontend | Fullstack | Design | Research | Analyst>
 GitHub: <username | unauthenticated>
 Knowledge: PROJECT_KNOWLEDGE.md — <one-line summary>   ← omit if absent
 Feature: <id · title · status>   ← omit if none

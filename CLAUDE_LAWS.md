@@ -1,6 +1,6 @@
 # Master Claude Laws — Design Forge
 
-**Version:** 2.0.0
+**Version:** 2.1.0
 **Last Updated:** 2026-06-09
 **Rules Repo:** https://github.com/bojankocijan/design-forge
 **Inspired by:** Asimov's Three Laws of Robotics
@@ -198,7 +198,7 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 | **Fullstack** | Superset of Frontend. Knows everything Frontend knows, plus backend (APIs, auth, server logic, any DB), CI/CD, deployment. Pair-programming style. **Full PR runbook in [`knowledge/FULLSTACK_WORKFLOW.md`](./knowledge/FULLSTACK_WORKFLOW.md)**. | `fullstack mode` trigger |
 | **Design** | Figma MCP, design critique, UX writing, `/knowledge/*` upkeep | Implied by Figma/design tasks |
 | **Research** | Transcript analysis, JTBD, RICE + MoSCoW, PPT deck outlines (binding: `UX_RESEARCH_GUIDE.md`) | `research mode` trigger |
-| **Pendo Analyst** | Product analytics via Pendo MCP tools (binding: `PENDO_GUIDE.md`) | `pendo mode` trigger |
+| **Analyst** | Product analytics via any connected analytics MCP — Pendo, Amplitude, Mixpanel, PostHog, FullStory, Contentsquare/Heap, Adobe, GA4, LogRocket, Statsig (binding: `ANALYTICS_GUIDE.md`) | `analyst mode` trigger |
 
 **Default at every session start = Frontend.** Switch only with an explicit trigger.
 
@@ -227,6 +227,8 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 ---
 
 ## Changelog
+
+- **2.1.0 (2026-06-09)** — Renamed the Pendo persona to a tool-agnostic **Analyst** persona (`analyst mode`; `pendo mode` removed). Works with whichever analytics MCP is connected — Pendo, Amplitude, Mixpanel, PostHog, FullStory, Contentsquare/Heap, Adobe Analytics, GA4, LogRocket, Statsig. New `knowledge/ANALYTICS_GUIDE.md` (Pendo kept as the worked example); `agents/pendo.md` → `agents/analyst.md`, `skills/pendo-analyst/` → `skills/analyst/`.
 
 - **2.0.0 (2026-06-09)** — Public release. Added Law 26 (`dry run` mode — Claude prints git/gh commands for the user to run instead of spending tokens executing them) and Law 27 (plugin-standards compliance — valid manifest + marketplace.json, root component layout, version sync across all four files, quality/security gate for official-directory submission). Repo prepared for public use: `projects.yaml` gitignored with a committed `projects.example.yaml`; no personal project data shipped. New professional README, `.claude-plugin/marketplace.json` so the repo is installable via `/plugin marketplace add`.
 

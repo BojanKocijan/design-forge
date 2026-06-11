@@ -10,7 +10,7 @@ A personal Claude Code plugin for UX and frontend work. It is a library-agnostic
 design-forge/
 ├── .claude-plugin/plugin.json   ← plugin manifest
 ├── .github/                     ← workflows + PR/issue templates
-├── agents/                      ← subagent definitions (Frontend, Fullstack, Design, Research, Pendo)
+├── agents/                      ← subagent definitions (Frontend, Fullstack, Design, Research, Analyst)
 ├── docs/                        ← maintainer and contributor guides
 ├── knowledge/                   ← binding knowledge files (loaded into Claude context)
 │   ├── FRONTEND_GUIDE.md
@@ -29,7 +29,7 @@ design-forge/
 │   ├── figma-craft/
 │   ├── frontend-guide/
 │   ├── fullstack-workflow/
-│   ├── pendo-analyst/
+│   ├── analyst/
 │   ├── ppt-template/
 │   ├── project-scaffold/
 │   ├── scaffold-react-project/

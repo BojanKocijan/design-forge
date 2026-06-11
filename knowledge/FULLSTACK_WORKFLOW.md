@@ -16,7 +16,7 @@
 | Scaffolding a brand-new repo | Frontend (UX project) or Fullstack | [`PROJECT_SCAFFOLD.md`](./PROJECT_SCAFFOLD.md) |
 | **Production code in an existing repo** — bugs, features, refactors, integrations | **Fullstack** | **This file** |
 | Research, deck production | Research | `UX_RESEARCH_GUIDE.md` |
-| Pendo analytics | Pendo Analyst | `PENDO_GUIDE.md` (if present) |
+| Product analytics | Analyst | `ANALYTICS_GUIDE.md` |
 
 **Default at session start is Frontend.** Switch to Fullstack with the `fullstack mode` trigger only when shipping production code.
 
