@@ -36,3 +36,7 @@ test-results/
 # Temp
 tmp/
 temp/
+
+# Personal project registry — keep your own projects/ports private.
+# Ship projects.example.yaml instead; copy it to projects.yaml locally.
+projects.yaml

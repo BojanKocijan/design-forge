@@ -1,62 +1,180 @@
 # Design Forge
 
-Personal Claude Code plugin for UX and frontend work — library-agnostic, no corporate toolchain.
+**A Claude Code plugin that makes Claude work like a disciplined senior product engineer — for UX and frontend work.**
 
-Governance laws + skills for scaffolding React projects, running UX research, writing design critiques, and shipping production code with discipline.
+Design Forge is a set of binding *laws*, reusable *skills*, and shared *knowledge files* that govern every Claude Code session: how it scaffolds a React app, how it names branches and opens PRs, how it writes components, how it runs UX research, and how it hands work off to developers. Library-agnostic. No corporate toolchain required.
+
+> Think of it as a constitution for your AI pair-programmer: announce before acting, branch + issue before code, never push to `main`, never merge for you, no inline styles, WCAG 2.2 AA, no bloated code, no hallucination.
+
+---
+
+## Table of contents
+
+- [Why](#why)
+- [Install](#install)
+- [Commands](#commands)
+- [How it works](#how-it-works)
+- [Wiring a project](#wiring-a-project)
+- [Project registry](#project-registry)
+- [Updating](#updating)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Why
+
+Out of the box, an AI assistant will happily push to `main`, invent APIs, over-engineer, and forget your conventions between sessions. Design Forge fixes that with **26 binding laws** Claude must follow, plus knowledge files that travel with you to every project:
+
+- **Disciplined git** — pull `main`, branch + issue before code, PRs only, Claude never merges, proactive branch cleanup.
+- **Pre-execution announcements** — Claude tells you what it's about to change (and its severity) before touching anything.
+- **Senior-engineer thinking** — YAGNI, edge-case analysis upfront, "verify before claiming" (no hallucination), reason out loud before executing.
+- **Consistent frontend** — 4-file component folders, no inline styles, TypeScript, React Router architecture, accessibility baked in.
+- **Whole workflows** — new-project scaffolding, UX research → deck, feature lifecycle, and a two-surface developer handoff.
 
 ---
 
 ## Install
 
-**Three ways to use:**
+Three ways to use Design Forge — pick the one that fits your setup.
 
-| Path | For | Command |
-|---|---|---|
-| **Plugin** | Cowork | `/cowork install design-forge` |
-| **Global** | Claude Code CLI / VS Code / JetBrains | `curl -fsSL https://raw.githubusercontent.com/bojankocijan/design-forge/main/install.sh \| bash` |
-| **Copilot** | GitHub Copilot in any IDE | Paste [`CLAUDE_LAWS.md`](./CLAUDE_LAWS.md) into Copilot custom instructions |
+### Path A — Claude Code plugin (recommended)
+
+The repo is its own plugin marketplace. In Claude Code:
+
+```
+/plugin marketplace add BojanKocijan/design-forge
+/plugin install design-forge@design-forge
+```
+
+Rules and skills load automatically in every session. Update later with `/plugin marketplace update design-forge`.
+
+### Path B — Global install (CLI / VS Code / JetBrains)
+
+Installs the rules into Claude's **global memory** so every session on your machine inherits them.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/BojanKocijan/design-forge/main/install.sh | bash
+```
+
+What it does:
+
+1. Clones the repo to `~/.design-forge`
+2. Injects `@~/.design-forge/CLAUDE.md` into `~/.claude/CLAUDE.md` (Claude's global memory)
+3. Installs the `dforge-update` shell function for pulling the latest rules
+
+Verify by opening any session — you should see a `Rules loaded: DESIGN_FORGE v2.0.0` confirmation line.
+
+**Manual alternative:**
+
+```bash
+git clone https://github.com/BojanKocijan/design-forge.git ~/.design-forge
+# then add this line to ~/.claude/CLAUDE.md:
+#   @~/.design-forge/CLAUDE.md
+```
+
+### Path C — GitHub Copilot
+
+Paste the contents of [`CLAUDE_LAWS.md`](./CLAUDE_LAWS.md) into your Copilot custom instructions (VS Code settings, JetBrains, or github.com → Copilot → custom instructions).
 
 ---
 
-## Quick Reference
+## Commands
+
+Type these in any Claude Code session:
 
 | Command | What it does |
 |---|---|
-| `update rules` | Pull latest from GitHub, reload in this session |
-| `dforge-update` | Shell function: refresh rules + Copilot config |
-| `new project` | Scaffold Vite + React + TypeScript + chosen library |
-| `fullstack mode` | Activate Fullstack persona (backend + Supabase + CI) |
-| `research mode` | Activate Research persona (RICE + MoSCoW + PPT) |
-| `start feature` | Begin feature triage + tracking |
-| `handoff <id>` | Generate developer handoff doc + tracking issue |
+| `new project` | Scaffold Vite + React + TypeScript. Asks platform, UI library, **app architecture** (routing / shell / data flow / auth), deployment, then builds it with CI + tests. |
+| `update rules` | Pull the latest rules and reload them in this session |
+| `check rules` | Print the loaded version + git status of the rules clone |
+| `load rules` | Re-import the rules without pulling |
+| `start feature` | 3-question triage → tracks an active feature in `PROJECT_KNOWLEDGE.md` |
+| `pause feature` / `resume feature` / `finish feature` | Feature lifecycle management |
+| `handoff <id>` | Generate a 13-section developer handoff doc + a tracking issue |
+| `fullstack mode` | Activate the Fullstack persona (backend, APIs, auth, CI/CD) |
+| `frontend mode` | Return to the default Frontend persona |
+| `research mode` / `research mode full` | UX research → 6-slide outcome deck (or 12–18 slide full deck) |
+| `pendo mode` | Pendo product-analytics persona |
+| `dry run` / `auto git` | Toggle "print the git/gh commands for me to run" vs "Claude runs them" |
+| `stop preview` / `start preview` | Control the background `npm run dev` |
 
 ---
 
-## What's Governed
+## How it works
 
-- **24 laws** covering: branch + issue before code, pre-execution announcements, no merging without human approval, WCAG 2.2 AA, no bloated code, edge-case thinking, hallucination prevention
-- **5 personas:** Frontend (default), Fullstack, Design, Research, Pendo Analyst
-- **Project registry:** locked localhost ports, auto-registration, knowledge base links
-- **Full details:** [`CLAUDE_LAWS.md`](./CLAUDE_LAWS.md), [`knowledge/`](./knowledge/), [`README_FULL.md`](./README_FULL.md)
+Design Forge has three layers:
+
+### 1. Laws — [`CLAUDE_LAWS.md`](./CLAUDE_LAWS.md)
+
+26 binding rules Claude must follow. Highlights:
+
+- English-only · pre-execution announcement before any change
+- Pull `main` → branch + issue → code → PR · **never push to `main`, never merge for you**
+- Check for existing PRs before starting (no duplicate work)
+- Proactive branch cleanup after merge
+- No inline styles (4-file component folders) · Conventional Commits · secret scanning · PII-free mock data · WCAG 2.2 AA
+- YAGNI · edge-case thinking · verify-before-claiming · reason-before-executing
+- `dry run` mode — print git/gh commands for you to run instead of spending tokens
+
+### 2. Personas
+
+| Persona | Scope | Activated by |
+|---|---|---|
+| **Frontend** *(default)* | Mockups, prototypes, React, a11y, localStorage, mocked data | default |
+| **Fullstack** | + backend, APIs, auth, any DB, CI/CD, deployment | `fullstack mode` |
+| **Design** | Figma, critique, UX writing | Figma/design tasks |
+| **Research** | Transcripts, JTBD, RICE + MoSCoW, decks | `research mode` |
+| **Pendo Analyst** | Product analytics via Pendo MCP | `pendo mode` |
+
+### 3. Knowledge — [`knowledge/`](./knowledge/)
+
+Binding guides Claude reads before acting: `FRONTEND_GUIDE`, `PROJECT_SCAFFOLD`, `COMPONENT_PATTERNS`, `SKILLS`, `UX_RESEARCH_GUIDE`, `FULLSTACK_WORKFLOW`, `FEATURE_WORKFLOW`.
+
+Full version history: [`RELEASES.md`](./RELEASES.md).
 
 ---
 
-## Wire a Project
+## Wiring a project
 
-**You don't wire laws per project — the global install does it once.** `install.sh` injects `@~/.design-forge/CLAUDE.md` into your global `~/.claude/CLAUDE.md`, so every session inherits the laws automatically.
-
-A project only needs its own context, linked from a one-line `CLAUDE.md`:
+**You never wire the laws per project** — Path A and Path B load them globally for every session. A project only needs its own context in a one-line `CLAUDE.md`:
 
 ```
 @./PROJECT_KNOWLEDGE.md
 ```
 
-You never type this by hand — `new project` writes it at scaffold time, and for an existing project Claude creates it automatically the first time you do code work. The project also auto-registers with a locked port.
+You don't type this by hand: `new project` writes it for you, and for an existing project Claude creates it automatically the first time you do code work.
 
-> **Don't** add `@~/.design-forge/CLAUDE.md` to a project — it's redundant (laws are already global) and breaks if the repo is opened on a machine without Design Forge.
+> Don't add `@~/.design-forge/CLAUDE.md` to a project — it's redundant (laws are global) and breaks the repo on machines without Design Forge.
 
 ---
 
-## Releases
+## Project registry
 
-See [`RELEASES.md`](./RELEASES.md) for version history and what changed.
+Design Forge can assign each of your projects a **locked localhost port** so running several `npm run dev` servers in parallel never clashes. Your personal registry lives in `projects.yaml`, which is **gitignored** — copy the template to start:
+
+```bash
+cp projects.example.yaml projects.yaml
+```
+
+Claude auto-registers new projects (issue → branch → PR) and locks the port in `vite.config.ts` with `strictPort: true`. Your project list stays private to your machine.
+
+---
+
+## Updating
+
+- **Plugin (Path A):** `/plugin marketplace update design-forge`
+- **Global (Path B):** run `dforge-update`, or `git -C ~/.design-forge pull`
+- In any session: type `update rules`
+
+---
+
+## Contributing
+
+Issues and PRs welcome. Every change follows the project's own laws: branch + issue first, Conventional Commits, PRs only, CI (markdownlint) must be green. See [`CLAUDE_LAWS.md`](./CLAUDE_LAWS.md) for the full workflow.
+
+---
+
+## License
+
+[MIT](./LICENSE) © Bojan Kocijan

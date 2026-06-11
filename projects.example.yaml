@@ -1,0 +1,27 @@
+# Design Forge — Project Registry (EXAMPLE)
+#
+# Copy this file to `projects.yaml` (gitignored) and let Claude register your
+# projects here. Each project gets a locked localhost port so multiple projects
+# never clash when you run `npm run dev` in parallel.
+#
+# Claude auto-registers a new project on first session detection (Law 20):
+#   issue → branch → add entry with the next free port → PR.
+#
+# Format:
+#   - name: project-name
+#     repo: owner/repo
+#     port: 5173
+#     description: one-line description
+#     deployment: netlify | github-pages | none
+#     status: active | paused | archived
+
+# Next available port: 5173
+
+projects: []
+  # Example entry (delete this comment block and add your own):
+  # - name: my-dashboard
+  #   repo: yourname/my-dashboard
+  #   port: 5173
+  #   description: Internal analytics dashboard
+  #   deployment: netlify
+  #   status: active
