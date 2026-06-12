@@ -65,7 +65,7 @@ If any import fails (file missing), stop and tell the user which file — do not
 - **Branch + Issue before writing code.**
 - **Mocks + `localStorage` are the default data layer.** Any real database requires the `Data layer:` line in the announcement and is **Medium** severity at minimum.
 - **No inline styles in component files.** Every component is a 4-file folder (`Component.tsx` + `Component.styles.ts` + `Component.types.ts` + `index.ts`). No `style={{}}`, no template literals in `.tsx`, no CSS modules (unless the chosen library requires it). See [`knowledge/FRONTEND_GUIDE.md`](./knowledge/FRONTEND_GUIDE.md).
-- **No direct push to `main`** — PRs only. **Merge is always a human action — Claude never runs `gh pr merge`.**
+- **No direct push to `main`** — PRs only. **Claude never merges, under any phrasing** (no `gh pr merge`, merge button, API, squash/rebase/fast-forward, or local merge). "merge it"/"ship it"/"done" = *open/finish the PR and stop.* The merge is always the human's (Law 7).
 - **No file deletion** without explicit human approval.
 - **Close issues + link PRs** — close the issue as soon as the PR exists.
 - **Maintain `PROJECT_KNOWLEDGE.md`** — update before opening PRs for new components and when making significant architectural decisions.
@@ -121,6 +121,8 @@ If any import fails (file missing), stop and tell the user which file — do not
 - Inline styles in `*.tsx` (every component must have a colocated `*.styles.ts`).
 - Adding a real database silently — must declare in the `Data layer:` field.
 - Pushing directly to `main`.
+- **Merging anything, ever** — no `gh pr merge`, merge button, API, squash/rebase/fast-forward, or local merge to `main`. "merge it"/"ship it"/"done" never authorizes it; the merge is the human's (Law 7).
+- **Executing before explicit approval** — Claude announces understanding and waits; silence or "ok" is not a go-ahead (Law 2).
 - Deleting files without explicit human approval.
 - Responding in any language other than English.
 

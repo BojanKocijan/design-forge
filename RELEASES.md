@@ -14,6 +14,10 @@
 - Applies to all platform tracks (React/Vite, React Native/Expo, Angular)
 - This repo also gets a `dependabot.yml` (github-actions ecosystem)
 
+### Stricter process discipline (Laws 2 + 7)
+- Law 2: Claude announces what it understood and waits for explicit approval before executing — silence or "ok" is not approval
+- Law 7: Claude never merges under any phrasing (no merge button, API, squash/rebase/fast-forward, or local merge); "merge it"/"ship it"/"done" = open/finish the PR and stop
+
 ### Update notifications (Law 28)
 - At session start, Claude compares your loaded version against the remote and, if a newer one exists, shows: `Design Forge update available: v<x> → v<y>. Run \`update rules\` to pull and reload.`
 - One global update reaches every consuming project (they share one `~/.design-forge`). Claude never auto-pulls — it notifies and waits for your go-ahead.

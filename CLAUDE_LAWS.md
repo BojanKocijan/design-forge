@@ -28,6 +28,8 @@
 
    Claude waits for user confirmation before executing, unless the task is a one-liner fix explicitly marked as trivial by the user.
 
+   **Announce understanding, then wait for explicit approval.** Claude states what it understood and the plan, then **waits for an explicit go-ahead** before executing — especially any git/gh write operation (branch, commit, push, PR/issue create). Silence, "ok", an emoji, or a change of topic is **not** approval. If the approval is ambiguous, Claude asks once and waits rather than guessing.
+
 3. **Rules repo is consulted first.** Always check the [Rules repository](https://github.com/bojankocijan/design-forge) (including [`/knowledge/*`](./knowledge/)) before executing anything in the Project repository.
 
 4. **All knowledge files are binding.** Every file below governs Claude's behavior in its scope. Claude must read the relevant file before acting in that scope; deviation requires explicit user override.
@@ -75,6 +77,8 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
     ```
 
     A `merge it` / `merge the PR` / `ship it` instruction from the user does **not** authorize Claude to merge. Claude never runs `gh pr merge` or any merge automation.
+
+    **Claude never merges — under any circumstance or phrasing.** Not `gh pr merge`, not the GitHub merge button, not the REST/GraphQL API, not squash/rebase/fast-forward, not a local `git merge` or `git push` that advances `main`. No instruction — "merge it", "merge the PR", "ship it", "done", "go", "approved" — authorizes a merge; every such phrase means *"open or finish the PR, then stop."* Merging `main` (or any base branch) is **exclusively the human's action**, performed in the GitHub UI. Claude's job ends at "PR open, CI green."
 
 8. **No file deletion.** Claude must never delete files from any repository. If a file is no longer needed, Claude flags it for review and waits for explicit human approval before any removal.
 
@@ -238,7 +242,7 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 
 ## Changelog
 
-- **2.2.0 (2026-06-09)** — Research/deck mode now asks the user for their own PowerPoint template (`.pptx`/`.potx`) and builds slides on top of it — Design Forge ships no built-in/corporate theme (`UX_RESEARCH_GUIDE.md §5.3`). Removed the dangling `PPT_TEMPLATE.md` references (the file and `ppt-template/` skill never existed) from Law 4, the research agent, the deck skill, and the maintainer doc. Added **Law 28** (notify consuming sessions when a newer rules version exists — one-line prompt to run `update rules`, no auto-pull) and wired it into the session-start check. Extended Law 10: scaffolded projects ship with **Dependabot** (`.github/dependabot.yml`, weekly npm + github-actions update PRs); added a `dependabot.yml` to this repo too. Fixed the README law count (26 → 28).
+- **2.2.0 (2026-06-09)** — Research/deck mode now asks the user for their own PowerPoint template (`.pptx`/`.potx`) and builds slides on top of it — Design Forge ships no built-in/corporate theme (`UX_RESEARCH_GUIDE.md §5.3`). Removed the dangling `PPT_TEMPLATE.md` references (the file and `ppt-template/` skill never existed) from Law 4, the research agent, the deck skill, and the maintainer doc. Added **Law 28** (notify consuming sessions when a newer rules version exists — one-line prompt to run `update rules`, no auto-pull) and wired it into the session-start check. Extended Law 10: scaffolded projects ship with **Dependabot** (`.github/dependabot.yml`, weekly npm + github-actions update PRs); added a `dependabot.yml` to this repo too. Fixed the README law count (26 → 28). Hardened Law 2 (announce understanding + wait for explicit approval; silence ≠ approval) and Law 7 (Claude never merges under any phrasing — no merge button/API/squash/rebase/fast-forward/local merge) after repeated merge-process issues.
 
 - **2.1.0 (2026-06-09)** — Renamed the Pendo persona to a tool-agnostic **Analyst** persona (`analyst mode`; `pendo mode` removed). Works with whichever analytics MCP is connected — Pendo, Amplitude, Mixpanel, PostHog, FullStory, Contentsquare/Heap, Adobe Analytics, GA4, LogRocket, Statsig. New `knowledge/ANALYTICS_GUIDE.md` (Pendo kept as the worked example); `agents/pendo.md` → `agents/analyst.md`, `skills/pendo-analyst/` → `skills/analyst/`.
 
