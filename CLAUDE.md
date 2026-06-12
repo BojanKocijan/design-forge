@@ -23,7 +23,7 @@ This file is the entry point for every Claude Code session under Design Forge go
 
 When Claude Code loads this file (via `~/.claude/CLAUDE.md` global memory, or the local project `CLAUDE.md`, or claude.ai Custom Instructions), do the following **before** responding to the user's first request:
 
-1. **Check for rule updates.** Look at `git -C ~/.design-forge log -1 --format=%ct` to find when the rules clone was last pulled. If >24 h have passed, ask the user one line: *"Rules last pulled <N>h ago. Run `dforge-update`? (y/N)"*. If `y`, run it via the Bash tool and re-import the files. If `N` or silent, proceed with current.
+1. **Check for rule updates (Law 28).** Quietly fetch and compare the loaded version against the remote: `git -C ~/.design-forge fetch -q origin main`, then compare the local `CLAUDE_LAWS.md` version header with `git -C ~/.design-forge show origin/main:CLAUDE_LAWS.md` (or `HEAD` vs `origin/main`). If a **newer version exists on the remote**, surface one line — *"Design Forge update available: v<loaded> → v<remote>. Run `update rules` to pull and reload."* — and proceed on the current version. Fallback if fetch isn't possible: use `git -C ~/.design-forge log -1 --format=%ct`; if >24 h since the last pull, suggest `update rules`. Never auto-pull without the user's go-ahead.
    - Skip step 1 entirely on claude.ai web (no shell, no clone).
 2. Read every file imported above.
 3. Extract the version number from `CLAUDE_LAWS.md`'s header.
@@ -65,7 +65,7 @@ If any import fails (file missing), stop and tell the user which file — do not
 - **Branch + Issue before writing code.**
 - **Mocks + `localStorage` are the default data layer.** Any real database requires the `Data layer:` line in the announcement and is **Medium** severity at minimum.
 - **No inline styles in component files.** Every component is a 4-file folder (`Component.tsx` + `Component.styles.ts` + `Component.types.ts` + `index.ts`). No `style={{}}`, no template literals in `.tsx`, no CSS modules (unless the chosen library requires it). See [`knowledge/FRONTEND_GUIDE.md`](./knowledge/FRONTEND_GUIDE.md).
-- **No direct push to `main`** — PRs only. **Merge is always a human action — Claude never runs `gh pr merge`.**
+- **No direct push to `main`** — PRs only. **Claude never merges, under any phrasing** (no `gh pr merge`, merge button, API, squash/rebase/fast-forward, or local merge). "merge it"/"ship it"/"done" = *open/finish the PR and stop.* The merge is always the human's (Law 7).
 - **No file deletion** without explicit human approval.
 - **Close issues + link PRs** — close the issue as soon as the PR exists.
 - **Maintain `PROJECT_KNOWLEDGE.md`** — update before opening PRs for new components and when making significant architectural decisions.
@@ -121,6 +121,8 @@ If any import fails (file missing), stop and tell the user which file — do not
 - Inline styles in `*.tsx` (every component must have a colocated `*.styles.ts`).
 - Adding a real database silently — must declare in the `Data layer:` field.
 - Pushing directly to `main`.
+- **Merging anything, ever** — no `gh pr merge`, merge button, API, squash/rebase/fast-forward, or local merge to `main`. "merge it"/"ship it"/"done" never authorizes it; the merge is the human's (Law 7).
+- **Executing before explicit approval** — Claude announces understanding and waits; silence or "ok" is not a go-ahead (Law 2).
 - Deleting files without explicit human approval.
 - Responding in any language other than English.
 

@@ -28,6 +28,8 @@
 
    Claude waits for user confirmation before executing, unless the task is a one-liner fix explicitly marked as trivial by the user.
 
+   **Announce understanding, then wait for explicit approval.** Claude states what it understood and the plan, then **waits for an explicit go-ahead** before executing — especially any git/gh write operation (branch, commit, push, PR/issue create). Silence, "ok", an emoji, or a change of topic is **not** approval. If the approval is ambiguous, Claude asks once and waits rather than guessing.
+
 3. **Rules repo is consulted first.** Always check the [Rules repository](https://github.com/bojankocijan/design-forge) (including [`/knowledge/*`](./knowledge/)) before executing anything in the Project repository.
 
 4. **All knowledge files are binding.** Every file below governs Claude's behavior in its scope. Claude must read the relevant file before acting in that scope; deviation requires explicit user override.
@@ -76,6 +78,8 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 
     A `merge it` / `merge the PR` / `ship it` instruction from the user does **not** authorize Claude to merge. Claude never runs `gh pr merge` or any merge automation.
 
+    **Claude never merges — under any circumstance or phrasing.** Not `gh pr merge`, not the GitHub merge button, not the REST/GraphQL API, not squash/rebase/fast-forward, not a local `git merge` or `git push` that advances `main`. No instruction — "merge it", "merge the PR", "ship it", "done", "go", "approved" — authorizes a merge; every such phrase means *"open or finish the PR, then stop."* Merging `main` (or any base branch) is **exclusively the human's action**, performed in the GitHub UI. Claude's job ends at "PR open, CI green."
+
 8. **No file deletion.** Claude must never delete files from any repository. If a file is no longer needed, Claude flags it for review and waits for explicit human approval before any removal.
 
 9. **Close issues, link to PRs, delete branch after merge.** When work on a branch is complete, Claude must:
@@ -93,6 +97,7 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 10. **Every new project Claude builds ships with CI and tests.** Before any scaffold step, Claude runs `gh auth status` to verify authentication. Non-negotiable per project:
     - CI on every push + every PR: ESLint, `tsc --noEmit`, Vitest unit + component, `vitest-axe` accessibility, Playwright + `@axe-core/playwright` E2E smoke + full-page axe, and `vite build`.
     - GitHub Pages preview published from `main` via GitHub Actions. No password — this is personal work. URL: `https://bojankocijan.github.io/<project-name>/`.
+    - **Dependabot enabled** via `.github/dependabot.yml` — weekly update PRs for both `npm` and `github-actions` ecosystems, so the user gets dependency patches to review. Dependabot PRs run CI and are merged by the human (Law 7).
     - Claude never opens a PR with red CI; if `npm run ci` fails locally, Claude fixes it first.
 
 11. **Every new project has a living `PROJECT_KNOWLEDGE.md` and a local `CLAUDE.md`.** During `new project`, Claude creates two files in the project root:
@@ -223,11 +228,21 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
     - **Version sync on every release:** when bumping the version, update **all four** in the same PR — `plugin.json`, `marketplace.json`, the `CLAUDE_LAWS.md` header, and `RELEASES.md` — and tag the git release to match.
     - **Quality + security gate (for official directory submission):** MIT `LICENSE` present, professional `README.md`, no secrets in the repo or history (Law 14), no personal data shipped (`projects.yaml` gitignored), CI green. Submit to `anthropics/claude-plugins-official` only when these hold.
 
+28. **Notify consuming sessions when a new rules version ships.** Design Forge loads globally — every project shares one `~/.design-forge` clone — so a single update reaches all consuming projects at once. At session start (Law 25 / the `CLAUDE.md` rules-update check), Claude compares the loaded version against the remote and, if a newer version exists, surfaces **one line** before proceeding:
+
+    ```
+    Design Forge update available: v<loaded> → v<remote>. Run `update rules` to pull and reload.
+    ```
+
+    - The update command is **`update rules`** in-session (runs `dforge-update`, re-imports the rules, and reprints the confirmation with the new version). The shell equivalent is **`dforge-update`**.
+    - Claude **never auto-pulls** without the user's go-ahead — it notifies and continues on the current version until the user runs the command.
+    - On claude.ai web (no clone) this check is skipped.
+
 ---
 
 ## Changelog
 
-- **2.2.0 (2026-06-09)** — Research/deck mode now asks the user for their own PowerPoint template (`.pptx`/`.potx`) and builds slides on top of it — Design Forge ships no built-in/corporate theme (`UX_RESEARCH_GUIDE.md §5.3`). Removed the dangling `PPT_TEMPLATE.md` references (the file and `ppt-template/` skill never existed) from Law 4, the research agent, the deck skill, and the maintainer doc.
+- **2.2.0 (2026-06-09)** — Research/deck mode now asks the user for their own PowerPoint template (`.pptx`/`.potx`) and builds slides on top of it — Design Forge ships no built-in/corporate theme (`UX_RESEARCH_GUIDE.md §5.3`). Removed the dangling `PPT_TEMPLATE.md` references (the file and `ppt-template/` skill never existed) from Law 4, the research agent, the deck skill, and the maintainer doc. Added **Law 28** (notify consuming sessions when a newer rules version exists — one-line prompt to run `update rules`, no auto-pull) and wired it into the session-start check. Extended Law 10: scaffolded projects ship with **Dependabot** (`.github/dependabot.yml`, weekly npm + github-actions update PRs); added a `dependabot.yml` to this repo too. Fixed the README law count (26 → 28). Hardened Law 2 (announce understanding + wait for explicit approval; silence ≠ approval) and Law 7 (Claude never merges under any phrasing — no merge button/API/squash/rebase/fast-forward/local merge) after repeated merge-process issues.
 
 - **2.1.0 (2026-06-09)** — Renamed the Pendo persona to a tool-agnostic **Analyst** persona (`analyst mode`; `pendo mode` removed). Works with whichever analytics MCP is connected — Pendo, Amplitude, Mixpanel, PostHog, FullStory, Contentsquare/Heap, Adobe Analytics, GA4, LogRocket, Statsig. New `knowledge/ANALYTICS_GUIDE.md` (Pendo kept as the worked example); `agents/pendo.md` → `agents/analyst.md`, `skills/pendo-analyst/` → `skills/analyst/`.
 

@@ -341,6 +341,7 @@ Banned in `.tsx`: `style={{}}`, CSS template literals, `styled.*` declarations, 
 │   └── e2e/
 │       └── smoke.spec.ts
 ├── .github/
+│   ├── dependabot.yml         ← weekly npm + github-actions updates
 │   └── workflows/
 │       ├── ci.yml
 │       └── pages.yml          ← GitHub Pages only
@@ -457,6 +458,34 @@ jobs:
         run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
 ```
+
+#### `.github/dependabot.yml`
+
+Every scaffolded project ships with Dependabot enabled so the user gets weekly dependency-update PRs to review (Law 10). Tracks both the npm packages and the GitHub Actions used by CI:
+
+```yaml
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+    labels:
+      - "dependencies"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore(ci)"
+    labels:
+      - "dependencies"
+```
+
+Dependabot PRs follow the normal review flow — CI runs on each, and the user merges them (Claude never auto-merges, Law 7). The same `dependabot.yml` applies to all platform tracks (React/Vite, React Native/Expo, Angular), since all use npm + GitHub Actions.
 
 #### §4a — GitHub Pages
 
