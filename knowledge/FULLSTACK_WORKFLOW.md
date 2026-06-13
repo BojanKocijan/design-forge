@@ -1,6 +1,6 @@
 # Fullstack Developer Workflow — Design Forge
 
-**Version:** 1.1.0
+**Version:** 1.2.0
 **Last Updated:** 2026-06-12
 **Binding:** Yes — this file is law. Claude must follow this runbook whenever the Fullstack persona is active (trigger: `fullstack mode`).
 
@@ -280,7 +280,56 @@ Contract updated + tested · migration reversible + tested · the path has unit 
 
 ---
 
+## 7. Frontend engineering checklist
+
+Run this whenever a change touches the UI. It complements `FRONTEND_GUIDE.md` (component rules) and `COMPONENT_PATTERNS.md` (reusable patterns).
+
+### 7.1 Performance — Core Web Vitals
+
+- **Budgets:** LCP < 2.5s, INP < 200ms, CLS < 0.1. If a change risks these, measure before shipping.
+- **Code-split** by route (`React.lazy` + `Suspense`); don't ship one giant bundle. Check bundle size before the PR (e.g. `vite-bundle-visualizer`).
+- **Images** have explicit `width`/`height` (no layout shift), correct format/size; defer offscreen work.
+
+### 7.2 Data fetching + state — server vs client split
+
+- **Server state → TanStack Query** (caching, background refetch, invalidation, optimistic updates). Don't hand-roll fetch-in-`useEffect` for shared server data.
+- **Client state → context / Zustand** (UI state, selections, toggles). Keep the two separate — conflating them causes stale-data bugs.
+- **Mutations** invalidate or update the relevant query cache; show optimistic UI where it improves perceived speed, with rollback on error.
+
+### 7.3 UI states discipline
+
+Every data-driven view designs **all four**: **loading** (skeleton, not blank) · **empty** (tell the user the next action) · **error** (message + retry) · **success**. Wrap major route sections in an **error boundary** with a "Try again" fallback. No blank screens, no silent failures.
+
+### 7.4 Forms + accessibility
+
+- Labelled inputs (not placeholder-only), `aria-invalid` + inline error text via `aria-describedby`, grouped fields in `<fieldset>`/`<legend>`.
+- Validate on submit and show errors; never disable submit to "prevent errors."
+- Keyboard flow works end-to-end; focus is managed on modal open/close and route change. **WCAG 2.2 AA** holds (Law 4 / SKILLS).
+
+### 7.5 Frontend definition of done
+
+CWV budgets respected · server vs client state split correctly · loading/empty/error/success all designed · error boundary in place · forms accessible + keyboard-navigable · axe-clean.
+
+---
+
+## 8. Testing the frontend — tools + practice
+
+The Phase 5 pyramid (unit / integration / contract / E2E) applies to the UI with these tools:
+
+| Layer | Tool | Practice |
+|---|---|---|
+| **Component** | React Testing Library + `user-event` | Test behavior via roles/labels, not implementation details. No snapshot-only tests for logic. |
+| **Accessibility** | `vitest-axe` (component) + `@axe-core/playwright` (E2E) | **Zero violations** is a gate, not a nice-to-have. |
+| **API mocking** | MSW (Mock Service Worker) | Mock at the network boundary — no real calls, no brittle `fetch` stubs. Same handlers reused across component + integration tests. |
+| **E2E** | Playwright | One pass through each critical user path; runs in CI. |
+
+**Coverage:** aim for meaningful coverage of business logic and interactions — not 100% theater. A well-tested reducer/hook + one E2E of the happy path beats blanket snapshots. Every shared component ships a colocated `*.test.tsx` with at least a render + axe assertion (`FRONTEND_GUIDE` §5).
+
+---
+
 ## Changelog
+
+- **1.2.0 (2026-06-12)** — Added §7 Frontend engineering checklist (Core Web Vitals budgets, server-vs-client state with TanStack Query, loading/empty/error/success UI states + error boundaries, accessible forms) and §8 Testing the frontend (RTL component tests, vitest-axe + axe-core/playwright a11y gate, MSW API mocking, Playwright E2E, meaningful coverage).
 
 - **1.1.0 (2026-06-12)** — Added §6 Backend engineering checklist (API contracts, DB migrations with expand→migrate→contract, observability via OpenTelemetry, backend definition-of-done) and a testing-pyramid table in Phase 5 (unit / integration / contract / E2E).
 

@@ -4,12 +4,11 @@
 
 ## v2.3.0 — June 12, 2026
 
-### Deeper Fullstack engineering (FULLSTACK_WORKFLOW §6)
-- **API contracts** — contract-first, additive-safe, version breaking changes, contract test per endpoint
-- **DB migrations** — forward-only + reversible, expand → migrate → contract for breaking schema changes
-- **Observability** — OpenTelemetry tracing, structured logs with request IDs, error tracking
-- **Testing pyramid** — unit / integration / contract / E2E categories in Phase 5
-- `agents/fullstack.md` references the new checklist
+### Deeper Fullstack engineering (FULLSTACK_WORKFLOW §6–§8)
+- **Backend §6** — API contracts (contract-first, version breaking changes, contract tests); DB migrations (forward-only + reversible, expand → migrate → contract); observability (OpenTelemetry tracing, structured logs with request IDs, error tracking)
+- **Frontend §7** — Core Web Vitals budgets, server-vs-client state (TanStack Query), loading/empty/error/success UI states + error boundaries, accessible forms
+- **Testing §8 + Phase 5** — unit / integration / contract / E2E pyramid; RTL component tests, vitest-axe + axe-core/playwright zero-violation gate, MSW API mocking, Playwright E2E, meaningful coverage
+- `agents/fullstack.md` references the full checklist
 
 ### AGENTS.md
 - Added a root `AGENTS.md` shim pointing at the laws, so non-Claude agents (Cursor, Codex, Copilot, Aider, …) inherit Design Forge governance

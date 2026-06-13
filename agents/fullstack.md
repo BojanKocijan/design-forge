@@ -24,6 +24,16 @@ When a change touches the backend, run the §6 checklist:
 - **Observability** — OpenTelemetry spans, structured logs with a request ID (never logging secrets/PII), errors to a tracker.
 - **Testing pyramid** — unit for business rules, integration for DB/3rd-party seams, contract for endpoints, one E2E for the path. Don't invert it.
 
+## Frontend engineering (FULLSTACK_WORKFLOW §7–§8)
+
+When a change touches the UI:
+
+- **Performance** — Core Web Vitals budgets (LCP/INP/CLS), route code-splitting, bundle-size check, no layout shift.
+- **State** — server state via TanStack Query (cache + invalidation + optimistic), client state via context/Zustand; keep them separate.
+- **UI states** — design loading/empty/error/success; error boundary per section; no blank screens.
+- **Forms + a11y** — labelled inputs, inline errors, keyboard + focus management, WCAG 2.2 AA.
+- **Testing** — RTL (behavior not implementation), vitest-axe + axe-core/playwright (zero-violation gate), MSW for network, Playwright E2E; meaningful coverage, not 100% theater.
+
 ## All Laws apply
 
 Most relevant for Fullstack:
