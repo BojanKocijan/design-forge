@@ -1,7 +1,7 @@
 # Fullstack Developer Workflow — Design Forge
 
-**Version:** 1.0.0
-**Last Updated:** 2026-06-06
+**Version:** 1.1.0
+**Last Updated:** 2026-06-12
 **Binding:** Yes — this file is law. Claude must follow this runbook whenever the Fullstack persona is active (trigger: `fullstack mode`).
 
 > This is the canonical runbook for developers working on **existing** projects with the Fullstack persona. It is **not** about scaffolding new projects (see [`PROJECT_SCAFFOLD.md`](./PROJECT_SCAFFOLD.md) for that) — it's about how Claude pair-programs with the human dev to ship a PR in a repo that already exists.
@@ -126,11 +126,23 @@ npm run test:e2e
 
 If any check is red, Claude fixes it before opening the PR. Claude **never opens a PR with red CI**.
 
+**Testing pyramid — new backend code needs the right test category, not just "a test":**
+
+| Layer | What it covers | When required |
+|---|---|---|
+| **Unit** | One business rule / pure function in isolation | Every new business rule or branch of logic |
+| **Integration** | Real DB queries, third-party calls (mocked at the boundary) | Any new DB access or external API call |
+| **Contract** | Request/response shape against the published API contract | Any new or changed endpoint (catches breaking changes) |
+| **E2E** | One critical user path through the running app | Per feature, smoke-level |
+
+Most tests are unit; integration covers the seams; contract guards consumers; one E2E proves the path. Don't invert the pyramid (mostly E2E = slow + flaky).
+
 Also:
 
 - Scan staged diff for secrets (Law 14).
 - Confirm no real PII in any mock/fixture files (Law 15).
 - Update `PROJECT_KNOWLEDGE.md` if a new component, architectural decision, or open question arose.
+- For backend changes, run the **§6 backend-engineering checklist** (contracts, migrations, observability).
 
 ### Phase 6 — Open PR
 
@@ -237,6 +249,39 @@ Draft PRs follow the same pre-execution announcement and phase discipline.
 
 ---
 
+## 6. Backend engineering checklist
+
+Run this whenever a change touches the backend (API, DB, server logic). It complements — never replaces — the 10 phases.
+
+### 6.1 API contracts
+
+- **Contract-first.** Define or update the contract (OpenAPI / typed schema / shared types) before the implementation, so the consumer shape is intentional.
+- **Version, don't break.** Additive changes are safe; removing or renaming a field, changing a type, or tightening validation is breaking — version the endpoint (`/v2/…`) or stage the change behind a flag.
+- **Contract test guards consumers.** Every changed endpoint gets a contract test (see Phase 5) so a breaking change fails CI, not production.
+
+### 6.2 Database migrations
+
+- **Forward-only + reversible.** Each migration has an `up`; provide a `down` (or a documented rollback) and test both locally before the PR.
+- **Migration ≠ data backfill.** Keep schema change and data backfill in separate, idempotent steps — a backfill that can be re-run safely.
+- **Expand → migrate → contract.** For breaking schema changes, ship in stages: add the new column (expand), backfill + dual-write, then remove the old (contract) in a later PR — never in one shot on a live table.
+- **Severity:** any migration is **Medium minimum** in the Law 2 announcement, with the `Data layer:` line set.
+
+### 6.3 Observability
+
+When shipping backend code, instrument it — an endpoint with no signals is a blind spot:
+
+- **Tracing:** OpenTelemetry spans around request handlers and outbound calls (vendor-neutral; don't hardcode a vendor SDK).
+- **Structured logs:** JSON logs with a correlation/request ID — never `console.log` of raw objects (and never log secrets or PII, Laws 14–15).
+- **Errors:** unexpected errors surface to an error tracker with context; expected errors are typed and handled.
+
+### 6.4 What "done" means for backend work
+
+Contract updated + tested · migration reversible + tested · the path has unit + integration coverage · traces/logs/errors are wired · no secrets or PII in code, logs, or fixtures.
+
+---
+
 ## Changelog
+
+- **1.1.0 (2026-06-12)** — Added §6 Backend engineering checklist (API contracts, DB migrations with expand→migrate→contract, observability via OpenTelemetry, backend definition-of-done) and a testing-pyramid table in Phase 5 (unit / integration / contract / E2E).
 
 - **1.0.0 (2026-06-06)** — Initial release. Full 10-phase PR runbook, pair-programming discipline, refuse list, edge cases (hotfix/stacked/revert/draft), and a surface-support matrix.

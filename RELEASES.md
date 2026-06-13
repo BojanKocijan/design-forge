@@ -2,6 +2,20 @@
 
 ---
 
+## v2.3.0 — June 12, 2026
+
+### Deeper Fullstack engineering (FULLSTACK_WORKFLOW §6)
+- **API contracts** — contract-first, additive-safe, version breaking changes, contract test per endpoint
+- **DB migrations** — forward-only + reversible, expand → migrate → contract for breaking schema changes
+- **Observability** — OpenTelemetry tracing, structured logs with request IDs, error tracking
+- **Testing pyramid** — unit / integration / contract / E2E categories in Phase 5
+- `agents/fullstack.md` references the new checklist
+
+### AGENTS.md
+- Added a root `AGENTS.md` shim pointing at the laws, so non-Claude agents (Cursor, Codex, Copilot, Aider, …) inherit Design Forge governance
+
+---
+
 ## v2.2.0 — June 9, 2026
 
 ### Decks use your own PowerPoint template

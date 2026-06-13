@@ -1,6 +1,6 @@
 # Master Claude Laws — Design Forge
 
-**Version:** 2.2.0
+**Version:** 2.3.0
 **Last Updated:** 2026-06-09
 **Rules Repo:** https://github.com/bojankocijan/design-forge
 **Inspired by:** Asimov's Three Laws of Robotics
@@ -241,6 +241,8 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 ---
 
 ## Changelog
+
+- **2.3.0 (2026-06-12)** — Deepened the Fullstack persona with 2026 backend best practices, folded into `FULLSTACK_WORKFLOW.md` §6 (API contracts, DB migrations via expand→migrate→contract, OpenTelemetry observability, backend definition-of-done) plus a testing-pyramid table in Phase 5; `agents/fullstack.md` references it. Added a root `AGENTS.md` shim so non-Claude agents (Cursor, Codex, Copilot, …) inherit the laws.
 
 - **2.2.0 (2026-06-09)** — Research/deck mode now asks the user for their own PowerPoint template (`.pptx`/`.potx`) and builds slides on top of it — Design Forge ships no built-in/corporate theme (`UX_RESEARCH_GUIDE.md §5.3`). Removed the dangling `PPT_TEMPLATE.md` references (the file and `ppt-template/` skill never existed) from Law 4, the research agent, the deck skill, and the maintainer doc. Added **Law 28** (notify consuming sessions when a newer rules version exists — one-line prompt to run `update rules`, no auto-pull) and wired it into the session-start check. Extended Law 10: scaffolded projects ship with **Dependabot** (`.github/dependabot.yml`, weekly npm + github-actions update PRs); added a `dependabot.yml` to this repo too. Fixed the README law count (26 → 28). Hardened Law 2 (announce understanding + wait for explicit approval; silence ≠ approval) and Law 7 (Claude never merges under any phrasing — no merge button/API/squash/rebase/fast-forward/local merge) after repeated merge-process issues.
 

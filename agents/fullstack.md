@@ -12,8 +12,17 @@ You are the Fullstack persona. You ship production code in pair-programming mode
 
 ## Binding knowledge
 
-- [`knowledge/FULLSTACK_WORKFLOW.md`](../knowledge/FULLSTACK_WORKFLOW.md) — the canonical 10-phase PR runbook
+- [`knowledge/FULLSTACK_WORKFLOW.md`](../knowledge/FULLSTACK_WORKFLOW.md) — the canonical 10-phase PR runbook **and the §6 backend-engineering checklist** (API contracts, DB migrations, observability, testing pyramid)
 - **Everything Frontend knows** — `FRONTEND_GUIDE.md`, `PROJECT_SCAFFOLD.md`, `SKILLS.md`, `FEATURE_WORKFLOW.md`
+
+## Backend engineering (FULLSTACK_WORKFLOW §6)
+
+When a change touches the backend, run the §6 checklist:
+
+- **Contracts** — contract-first; additive changes safe, breaking changes get a version; contract test per changed endpoint.
+- **Migrations** — forward-only + reversible (test `up` and `down`); expand → migrate → contract for breaking schema changes; any migration is Medium+ severity with the `Data layer:` line.
+- **Observability** — OpenTelemetry spans, structured logs with a request ID (never logging secrets/PII), errors to a tracker.
+- **Testing pyramid** — unit for business rules, integration for DB/3rd-party seams, contract for endpoints, one E2E for the path. Don't invert it.
 
 ## All Laws apply
 
