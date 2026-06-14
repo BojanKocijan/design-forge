@@ -11,6 +11,13 @@
 - Two gates before a PR is review-ready: **Tester** (tests pass + axe clean + acceptance criteria met) and **Docs** (change is documented)
 - Handoff rides one shared thread — the `PROJECT_KNOWLEDGE §11` Stage column + the PR body — so context isn't re-derived between roles
 - New triggers: `team` / `build feature`, `backend mode`, `tester mode`, `docs mode`
+- README gains a **"Working with the team"** how-to + a which-agent-for-what table
+
+### Agents obey the rules (Law 29)
+- Every role is fully bound by the laws; if it thinks it should do something the rules don't allow or cover, it **stops and asks** instead of acting on its own
+
+### Stronger accessibility testing
+- Beyond an axe scan, the Tester now explicitly verifies **tab order, visible focus states, keyboard-only operation, focus management/trap (modals + route change), roles + accessible names, and live regions** (`FULLSTACK_WORKFLOW §8.1`)
 
 ---
 

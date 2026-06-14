@@ -24,7 +24,7 @@ Design Forge is a set of binding *laws*, reusable *skills*, and shared *knowledg
 
 ## Why
 
-Out of the box, an AI assistant will happily push to `main`, invent APIs, over-engineer, and forget your conventions between sessions. Design Forge fixes that with **28 binding laws** Claude must follow, plus knowledge files that travel with you to every project:
+Out of the box, an AI assistant will happily push to `main`, invent APIs, over-engineer, and forget your conventions between sessions. Design Forge fixes that with **29 binding laws** Claude must follow, plus knowledge files that travel with you to every project:
 
 - **Disciplined git** — pull `main`, branch + issue before code, PRs only, Claude never merges, proactive branch cleanup.
 - **Pre-execution announcements** — Claude tells you what it's about to change (and its severity) before touching anything.
@@ -89,8 +89,12 @@ Type these in any Claude Code session:
 | `start feature` | 3-question triage → tracks an active feature in `PROJECT_KNOWLEDGE.md` |
 | `pause feature` / `resume feature` / `finish feature` | Feature lifecycle management |
 | `handoff <id>` | Generate a 13-section developer handoff doc + a tracking issue |
-| `fullstack mode` | Activate the Fullstack persona (backend, APIs, auth, CI/CD) |
-| `frontend mode` | Return to the default Frontend persona |
+| `team` / `build feature` | Start the Lead-orchestrated team pipeline (plan → build → test → document → review) |
+| `fullstack mode` | Activate the **Lead** (team orchestrator) |
+| `frontend mode` | Frontend persona — UI (default) |
+| `backend mode` | Backend persona — APIs, auth, DB, migrations, observability |
+| `tester mode` | Tester persona — tests + a11y/coverage gate |
+| `docs mode` | Docs persona — README/API docs, RELEASES, handoff |
 | `research mode` / `research mode full` | UX research → 6-slide outcome deck (or 12–18 slide full deck) |
 | `analyst mode` | Product-analytics persona — Pendo, Amplitude, Mixpanel, PostHog, GA4, … via their MCP |
 | `dry run` / `auto git` | Toggle "print the git/gh commands for me to run" vs "Claude runs them" |
@@ -104,7 +108,7 @@ Design Forge has three layers:
 
 ### 1. Laws — [`CLAUDE_LAWS.md`](./CLAUDE_LAWS.md)
 
-28 binding rules Claude must follow. Highlights:
+29 binding rules Claude must follow. Highlights:
 
 - English-only · pre-execution announcement before any change
 - Pull `main` → branch + issue → code → PR · **never push to `main`, never merge for you**
@@ -132,6 +136,35 @@ Team roles compose into a single pipeline (**plan → build → test → documen
 Binding guides Claude reads before acting: `FRONTEND_GUIDE`, `PROJECT_SCAFFOLD`, `COMPONENT_PATTERNS`, `SKILLS`, `UX_RESEARCH_GUIDE`, `FULLSTACK_WORKFLOW`, `FEATURE_WORKFLOW`.
 
 Full version history: [`RELEASES.md`](./RELEASES.md).
+
+---
+
+## Working with the team
+
+**Default:** every session starts as **Frontend** — nothing auto-triggers the team. You opt in.
+
+**Start the whole pipeline** for a real feature:
+
+```
+team            # or:  build feature: add CSV export to the invoices page
+```
+
+The **Lead** then runs it end-to-end — scope → build → test → document → review → PR — pausing for your go-ahead on multi-file edits and architectural calls (Law 2), and stopping at "PR open, CI green" for you to merge (Law 7). You don't hand-trigger each stage; the Lead drives the handoffs.
+
+**Or call one role directly** — which agent for what:
+
+| You want to… | Trigger | Role |
+|---|---|---|
+| Build / change UI | `frontend mode` *(default)* | Frontend |
+| Build an API, DB, auth, migration | `backend mode` | Backend |
+| Run a feature end-to-end with the team | `team` / `build feature` | Lead |
+| Write/run tests, check a11y + acceptance | `tester mode` | Tester |
+| Update README/API docs/RELEASES/handoff | `docs mode` | Docs |
+| Critique a design, Figma work | (design task) | Design |
+| Analyse transcripts → deck | `research mode` | Research |
+| Query product analytics | `analyst mode` | Analyst |
+
+**The rules win.** Every agent obeys [`CLAUDE_LAWS.md`](./CLAUDE_LAWS.md) completely. If an agent thinks it should do something outside the rules — skip a gate, merge, delete a file, take a shortcut — it **stops and asks** rather than acting on its own (Law 29). The laws are not suggestions.
 
 ---
 

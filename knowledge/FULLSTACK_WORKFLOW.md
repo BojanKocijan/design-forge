@@ -1,6 +1,6 @@
 # Fullstack Developer Workflow — Design Forge
 
-**Version:** 1.2.0
+**Version:** 1.3.0
 **Last Updated:** 2026-06-12
 **Binding:** Yes — this file is law. Claude must follow this runbook whenever the Fullstack persona is active (trigger: `fullstack mode`).
 
@@ -325,9 +325,26 @@ The Phase 5 pyramid (unit / integration / contract / E2E) applies to the UI with
 
 **Coverage:** aim for meaningful coverage of business logic and interactions — not 100% theater. A well-tested reducer/hook + one E2E of the happy path beats blanket snapshots. Every shared component ships a colocated `*.test.tsx` with at least a render + axe assertion (`FRONTEND_GUIDE` §5).
 
+### 8.1 Accessibility testing — beyond an axe scan
+
+`axe` catches static violations (contrast, missing names, bad ARIA) but **not** keyboard and focus behavior. Those must be tested explicitly per interactive component and per critical flow:
+
+| What | How to test | Pass bar |
+|---|---|---|
+| **Tab order** | `user-event.tab()` through the component/page; assert focus lands on each interactive element in DOM/reading order | Logical order, nothing skipped, no positive `tabindex` |
+| **Visible focus** | Assert a focus indicator is present on `:focus-visible` (not `outline: none` with no replacement) | Every interactive element has a visible focus ring |
+| **Keyboard operation** | Drive controls with Enter/Space/Arrows/Esc via `user-event` — no mouse | All functionality works keyboard-only (WCAG 2.1.1) |
+| **Focus management** | On modal/sheet open → focus moves in and is **trapped**; on close → returns to the trigger. On route change → focus resets sensibly | Focus never lost to `<body>`; Esc closes overlays |
+| **Roles & names** | Query by role + accessible name (`getByRole('button', { name })`); icon-only buttons have an `aria-label` | Every control reachable by role + name |
+| **Live regions** | Async status/errors announced via `aria-live` / `role="alert"` | Screen-reader users hear state changes |
+
+These go in the component's `*.test.tsx` (RTL + `user-event`) and in the Playwright E2E for the critical path. **The Tester owns this** — a green axe scan alone does not pass the accessibility gate.
+
 ---
 
 ## Changelog
+
+- **1.3.0 (2026-06-12)** — Added §8.1 Accessibility testing — explicit keyboard/focus tests beyond an axe scan: tab order, visible focus, keyboard-only operation, focus management/trap on modals + route change, roles & accessible names, live regions. The Tester owns it; a green axe scan alone doesn't pass the a11y gate.
 
 - **1.2.0 (2026-06-12)** — Added §7 Frontend engineering checklist (Core Web Vitals budgets, server-vs-client state with TanStack Query, loading/empty/error/success UI states + error boundaries, accessible forms) and §8 Testing the frontend (RTL component tests, vitest-axe + axe-core/playwright a11y gate, MSW API mocking, Playwright E2E, meaningful coverage).
 

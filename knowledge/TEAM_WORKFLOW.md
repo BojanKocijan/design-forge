@@ -21,6 +21,8 @@
 
 **Knowledge is shared, not split.** No per-role knowledge files — each agent reads the same binding knowledge through its lens (the column above). This avoids drift between roles.
 
+**Every role obeys the laws (Law 29).** The laws override any role-specific instinct. If a role thinks the right move is something the rules don't allow or don't cover — skip a gate, merge, delete a file, deviate from the announced plan — it **stops and asks the human**, with its reasoning, instead of acting on its own. A better idea is a question, not a unilateral action.
+
 ---
 
 ## 2. The single pipeline
@@ -68,7 +70,7 @@ A role picking up the work reads the feature row + the PR body, not the whole ch
 
 The pipeline has two gates the Lead must honor before marking a PR review-ready:
 
-- **Tester gate** — all required tests pass, axe is clean, and every acceptance criterion is verified. A failing gate sends work back to the Builder, not forward.
+- **Tester gate** — all required tests pass, accessibility holds (axe clean **and** keyboard/focus behavior verified per `FULLSTACK_WORKFLOW §8.1`), and every acceptance criterion is verified. A failing gate sends work back to the Builder, not forward.
 - **Docs gate** — the change is documented to the standard in §6. Undocumented change = not done.
 
 Neither gate is a merge (Law 7 still holds — the human merges).
