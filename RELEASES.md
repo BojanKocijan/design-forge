@@ -2,6 +2,18 @@
 
 ---
 
+## v2.4.0 — June 12, 2026
+
+### An agent team that works one pipeline
+- Personas now compose into a team that runs a single flow: **plan → build → test → document → review → human-merge** ([`TEAM_WORKFLOW.md`](./knowledge/TEAM_WORKFLOW.md))
+- **New roles:** Lead (orchestrator), Backend (API/DB/server), **Tester** (writes + runs tests, axe/coverage gate, can block the PR), **Docs** (README/API docs, RELEASES, PROJECT_KNOWLEDGE, handoff)
+- Frontend stays the UI builder; Design/Research/Analyst are supporting; `fullstack mode` now activates the Lead
+- Two gates before a PR is review-ready: **Tester** (tests pass + axe clean + acceptance criteria met) and **Docs** (change is documented)
+- Handoff rides one shared thread — the `PROJECT_KNOWLEDGE §11` Stage column + the PR body — so context isn't re-derived between roles
+- New triggers: `team` / `build feature`, `backend mode`, `tester mode`, `docs mode`
+
+---
+
 ## v2.3.0 — June 12, 2026
 
 ### Deeper Fullstack engineering (FULLSTACK_WORKFLOW §6–§8)

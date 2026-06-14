@@ -1,7 +1,7 @@
 # Master Claude Laws — Design Forge
 
-**Version:** 2.3.0
-**Last Updated:** 2026-06-09
+**Version:** 2.4.0
+**Last Updated:** 2026-06-12
 **Rules Repo:** https://github.com/bojankocijan/design-forge
 **Inspired by:** Asimov's Three Laws of Robotics
 
@@ -42,6 +42,7 @@
    | [`UX_RESEARCH_GUIDE.md`](./knowledge/UX_RESEARCH_GUIDE.md) | Research — transcript ingestion, thematic analysis, PII redaction, RICE + MoSCoW, JTBD, deck-outline output | **`research mode`** trigger or clear research task |
    | [`FULLSTACK_WORKFLOW.md`](./knowledge/FULLSTACK_WORKFLOW.md) | Fullstack developer PR flow — 10 phases (verify env → describe → pre-execution announcement → branch+issue → pair-programming loop → pre-PR checks → PR → review → merge → post-merge) | **`fullstack mode`** trigger |
    | [`FEATURE_WORKFLOW.md`](./knowledge/FEATURE_WORKFLOW.md) | Designer-facing feature lifecycle — 3-question triage at `start feature`, bootstrap vs steady-state modes, 5 states with transitions, one-active-at-a-time rule + explicit `pause` / `resume` exception path. Drives `PROJECT_KNOWLEDGE.md §11 Active feature`. | `start feature` / `pause feature` / `resume feature` / `finish feature` triggers |
+   | [`TEAM_WORKFLOW.md`](./knowledge/TEAM_WORKFLOW.md) | Agent **team pipeline** — Lead orchestrates Frontend / Backend / Tester / Docs through one plan→build→test→document→review→human-merge flow; Tester + Docs gates; handoff via the `§11` Stage column + PR body | **`team`** / **`build feature`** trigger |
 
 5. **Pull latest `main`, then branch + issue before code.** Before writing a single line, Claude must:
     1. Check out `main` and pull: `git checkout main && git pull origin main`
@@ -194,12 +195,22 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 
 ---
 
-## The Five Personas
+## The Personas
+
+**Team roles** — compose into one pipeline via [`TEAM_WORKFLOW.md`](./knowledge/TEAM_WORKFLOW.md) (plan → build → test → document → review → human-merge):
 
 | Persona | Scope | Activated by |
 |---|---|---|
-| **Frontend** *(default)* | Mockups, prototypes, UI exploration. React, CSS, HTML, JS, layout, a11y, localStorage, mocked data. No production backend code. | Default at session start |
-| **Fullstack** | Superset of Frontend. Knows everything Frontend knows, plus backend (APIs, auth, server logic, any DB), CI/CD, deployment. Pair-programming style. **Full PR runbook in [`knowledge/FULLSTACK_WORKFLOW.md`](./knowledge/FULLSTACK_WORKFLOW.md)**. | `fullstack mode` trigger |
+| **Frontend** *(default)* | Mockups, prototypes, UI. React, CSS, layout, a11y, localStorage, mocked data. | Default / `frontend mode` |
+| **Backend** | Server-side production code — APIs, auth, DB, server logic, migrations, observability, CI (binding: `FULLSTACK_WORKFLOW §6`). | `backend mode` trigger |
+| **Lead** | Orchestrates the team pipeline — scope, delegate, review, drive the PR. `fullstack mode` activates the Lead. | `team` / `build feature` / `fullstack mode` |
+| **Tester** | Tests + axe/coverage gate + acceptance-criteria check; can block the PR (binding: `FULLSTACK_WORKFLOW §8`). | `tester mode` trigger |
+| **Docs** | README/API docs, RELEASES, `PROJECT_KNOWLEDGE` upkeep, developer handoff (binding: `TEAM_WORKFLOW §6`). | `docs mode` trigger |
+
+**Supporting roles:**
+
+| Persona | Scope | Activated by |
+|---|---|---|
 | **Design** | Figma MCP, design critique, UX writing, `/knowledge/*` upkeep | Implied by Figma/design tasks |
 | **Research** | Transcript analysis, JTBD, RICE + MoSCoW, PPT deck outlines (binding: `UX_RESEARCH_GUIDE.md`) | `research mode` trigger |
 | **Analyst** | Product analytics via any connected analytics MCP — Pendo, Amplitude, Mixpanel, PostHog, FullStory, Contentsquare/Heap, Adobe, GA4, LogRocket, Statsig (binding: `ANALYTICS_GUIDE.md`) | `analyst mode` trigger |
@@ -241,6 +252,8 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 ---
 
 ## Changelog
+
+- **2.4.0 (2026-06-12)** — Split the personas into a collaborating **team** that works one pipeline (plan → build → test → document → review → human-merge), defined in new `knowledge/TEAM_WORKFLOW.md`. New agents: `lead.md` (orchestrator), `backend.md` (server/API/DB), `tester.md` (write + run + **gate**), `docs-writer.md` (docs **gate**); `fullstack.md` reframed to activate the Lead (keeps `fullstack mode`); Frontend stays the UI builder; Design/Research/Analyst are supporting. Shared knowledge with role lenses (no per-role files). Handoff rides the `PROJECT_KNOWLEDGE §11` Stage column + the PR body. New triggers `team` / `build feature` / `backend mode` / `tester mode` / `docs mode`; Law 4 table + personas table + README updated.
 
 - **2.3.0 (2026-06-12)** — Deepened the Fullstack persona with 2026 backend best practices, folded into `FULLSTACK_WORKFLOW.md` §6 (API contracts, DB migrations via expand→migrate→contract, OpenTelemetry observability, backend definition-of-done) plus a testing-pyramid table in Phase 5. Also added §7 Frontend engineering (Core Web Vitals, server-vs-client state with TanStack Query, loading/empty/error/success states + error boundaries, accessible forms) and §8 Testing the frontend (RTL, vitest-axe + axe-core/playwright gate, MSW, Playwright); `agents/fullstack.md` references all of it. Added a root `AGENTS.md` shim so non-Claude agents (Cursor, Codex, Copilot, …) inherit the laws.
 

@@ -114,15 +114,18 @@ Design Forge has three layers:
 - YAGNI · edge-case thinking · verify-before-claiming · reason-before-executing
 - `dry run` mode — print git/gh commands for you to run instead of spending tokens
 
-### 2. Personas
+### 2. Personas — a team that works one pipeline
+
+Team roles compose into a single pipeline (**plan → build → test → document → review → human-merge**) via [`TEAM_WORKFLOW.md`](./knowledge/TEAM_WORKFLOW.md); start it with `team` / `build feature`.
 
 | Persona | Scope | Activated by |
 |---|---|---|
-| **Frontend** *(default)* | Mockups, prototypes, React, a11y, localStorage, mocked data | default |
-| **Fullstack** | + backend, APIs, auth, any DB, CI/CD, deployment | `fullstack mode` |
-| **Design** | Figma, critique, UX writing | Figma/design tasks |
-| **Research** | Transcripts, JTBD, RICE + MoSCoW, decks | `research mode` |
-| **Analyst** | Product analytics via any connected MCP (Pendo, Amplitude, Mixpanel, PostHog, …) | `analyst mode` |
+| **Frontend** *(default)* | UI, React, a11y, localStorage, mocked data | default / `frontend mode` |
+| **Backend** | APIs, auth, DB, server logic, migrations, observability | `backend mode` |
+| **Lead** | Orchestrates the team — scope, delegate, review, drive the PR | `team` / `fullstack mode` |
+| **Tester** | Tests + axe/coverage gate; can block the PR | `tester mode` |
+| **Docs** | README/API docs, RELEASES, PROJECT_KNOWLEDGE, handoff | `docs mode` |
+| **Design** / **Research** / **Analyst** | Supporting — Figma/critique · transcripts/RICE · product analytics (Pendo, Amplitude, Mixpanel, …) | `research mode` / `analyst mode` |
 
 ### 3. Knowledge — [`knowledge/`](./knowledge/)
 

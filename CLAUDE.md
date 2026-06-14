@@ -16,6 +16,7 @@ This file is the entry point for every Claude Code session under Design Forge go
 @./knowledge/FULLSTACK_WORKFLOW.md
 @./knowledge/FEATURE_WORKFLOW.md
 @./knowledge/COMPONENT_PATTERNS.md
+@./knowledge/TEAM_WORKFLOW.md
 
 ---
 
@@ -85,6 +86,10 @@ If any import fails (file missing), stop and tell the user which file — do not
 | **`new project`** | Ask the user to choose a UI library (shadcn/ui, MUI, Ant Design, Chakra UI, No library, or Other). Then follow [`knowledge/PROJECT_SCAFFOLD.md`](./knowledge/PROJECT_SCAFFOLD.md) end-to-end. No registration in any external registry. |
 | **`fullstack mode`** | Activate Fullstack persona. From this point, every code-related turn follows the pair-programming discipline in [`agents/fullstack.md`](./agents/fullstack.md). Stays active until `frontend mode`, `research mode`, etc. |
 | **`frontend mode`** | Activate Frontend persona. Return to mockup/prototype work per [`agents/frontend.md`](./agents/frontend.md). |
+| **`team`** / **`build feature`** | Start the **Lead-orchestrated team pipeline** per [`knowledge/TEAM_WORKFLOW.md`](./knowledge/TEAM_WORKFLOW.md): plan → build → test → document → review → human-merge. The Lead delegates to Frontend / Backend / Tester / Docs. |
+| **`backend mode`** | Activate Backend persona per [`agents/backend.md`](./agents/backend.md) — server/API/DB/migrations/observability (FULLSTACK_WORKFLOW §6). |
+| **`tester mode`** | Activate Tester persona per [`agents/tester.md`](./agents/tester.md) — write + run tests, axe/coverage gate, verify acceptance criteria (FULLSTACK_WORKFLOW §8). |
+| **`docs mode`** | Activate Docs persona per [`agents/docs-writer.md`](./agents/docs-writer.md) — README/API docs, RELEASES, PROJECT_KNOWLEDGE upkeep, handoff (TEAM_WORKFLOW §6). |
 | **`research mode`** | Activate Research persona per [`agents/research.md`](./agents/research.md). Applies `knowledge/UX_RESEARCH_GUIDE.md`. Produces the **default 6-slide outcome deck**. |
 | **`research mode full`** | Same as `research mode` but produces the **full 12–18 slide research deck**. |
 | **`analyst mode`** | Activate Analyst persona per [`agents/analyst.md`](./agents/analyst.md). Applies `knowledge/ANALYTICS_GUIDE.md`. Works with whichever analytics MCP is connected (Pendo, Amplitude, Mixpanel, PostHog, FullStory, Contentsquare/Heap, Adobe, GA4, LogRocket, Statsig). |
@@ -100,17 +105,27 @@ If any import fails (file missing), stop and tell the user which file — do not
 
 ---
 
-## The five personas
+## The personas
+
+**Team roles** — compose into one pipeline (plan → build → test → document → review → human-merge) via [`knowledge/TEAM_WORKFLOW.md`](./knowledge/TEAM_WORKFLOW.md):
 
 | Persona | Scope | Activated by |
 |---|---|---|
-| **Frontend** *(default)* | Mockups, prototypes, UI exploration. React, CSS, HTML, JS, layout, a11y, localStorage, mocked data. No production backend code. | Default at session start |
-| **Fullstack** | Superset of Frontend. Plus backend (APIs, auth, server logic, any DB), CI/CD, deployment. Pair-programming style. Full PR runbook in [`knowledge/FULLSTACK_WORKFLOW.md`](./knowledge/FULLSTACK_WORKFLOW.md). | `fullstack mode` trigger |
-| **Design** | Figma MCP, design critique, UX writing, knowledge upkeep | Implied by Figma/design tasks |
-| **Research** | Transcript analysis, JTBD, RICE + MoSCoW, PPT deck outlines | `research mode` trigger |
-| **Analyst** | Product analytics via any connected analytics MCP (Pendo, Amplitude, Mixpanel, PostHog, GA4, …) | `analyst mode` trigger |
+| **Frontend** *(default)* | Mockups, prototypes, UI. React, CSS, layout, a11y, localStorage, mocked data. | Default at session start / `frontend mode` |
+| **Backend** | Server-side production code — APIs, auth, DB, server logic, migrations, observability, CI. | `backend mode` |
+| **Lead** | Orchestrates the team pipeline: scope, delegate, review, drive the PR. `fullstack mode` activates the Lead. | `team` / `build feature` / `fullstack mode` |
+| **Tester** | Writes + runs tests, axe/coverage gate, verifies acceptance criteria, can block the PR. | `tester mode` |
+| **Docs** | README/API docs, RELEASES, `PROJECT_KNOWLEDGE` upkeep, developer handoff. | `docs mode` |
 
-**Default at every session start = Frontend.** Switch only with an explicit trigger.
+**Supporting roles** — the Lead (or you) calls them when the work needs them:
+
+| Persona | Scope | Activated by |
+|---|---|---|
+| **Design** | Figma MCP, design critique, UX writing, knowledge upkeep | Implied by Figma/design tasks |
+| **Research** | Transcript analysis, JTBD, RICE + MoSCoW, deck outlines | `research mode` |
+| **Analyst** | Product analytics via any connected analytics MCP (Pendo, Amplitude, Mixpanel, PostHog, GA4, …) | `analyst mode` |
+
+**Default at every session start = Frontend.** Switch with an explicit trigger; start the whole team with `team` / `build feature`.
 
 ---
 
