@@ -94,7 +94,6 @@ Type these in any Claude Code session:
 | `frontend mode` | Frontend persona — UI (default) |
 | `backend mode` | Backend persona — APIs, auth, DB, migrations, observability |
 | `tester mode` | Tester persona — tests + a11y/coverage gate |
-| `docs mode` | Docs persona — README/API docs, RELEASES, handoff |
 | `research mode` / `research mode full` | UX research → 6-slide outcome deck (or 12–18 slide full deck) |
 | `analyst mode` | Product-analytics persona — Pendo, Amplitude, Mixpanel, PostHog, GA4, … via their MCP |
 | `dry run` / `auto git` | Toggle "print the git/gh commands for me to run" vs "Claude runs them" |
@@ -128,7 +127,6 @@ Team roles compose into a single pipeline (**plan → build → test → documen
 | **Backend** | APIs, auth, DB, server logic, migrations, observability | `backend mode` |
 | **Lead** | Orchestrates the team — scope, delegate, review, drive the PR | `team` / `fullstack mode` |
 | **Tester** | Tests + axe/coverage gate; can block the PR | `tester mode` |
-| **Docs** | README/API docs, RELEASES, PROJECT_KNOWLEDGE, handoff | `docs mode` |
 | **Design** / **Research** / **Analyst** | Supporting — Figma/critique · transcripts/RICE · product analytics (Pendo, Amplitude, Mixpanel, …) | `research mode` / `analyst mode` |
 
 ### 3. Knowledge — [`knowledge/`](./knowledge/)
@@ -159,7 +157,7 @@ The **Lead** then runs it end-to-end — scope → build → test → document �
 | Build an API, DB, auth, migration | `backend mode` | Backend |
 | Run a feature end-to-end with the team | `team` / `build feature` | Lead |
 | Write/run tests, check a11y + acceptance | `tester mode` | Tester |
-| Update README/API docs/RELEASES/handoff | `docs mode` | Docs |
+| Document a change (README/API/RELEASES) | part of building it | the role that built it (Lead-enforced) |
 | Critique a design, Figma work | (design task) | Design |
 | Analyse transcripts → deck | `research mode` | Research |
 | Query product analytics | `analyst mode` | Analyst |

@@ -2,6 +2,15 @@
 
 ---
 
+## v2.5.0 — June 15, 2026
+
+### Documentation is the team's shared duty (no Docs agent)
+- Removed the dedicated **Docs** role (`docs-writer.md`) and the `docs mode` trigger
+- Each role now documents its own change as it builds; the **Lead enforces** the doc standards as a gate before review
+- Pipeline stages: `planned → building → testing → in-review`; the documentation gate stays (undocumented change = not done), just owned by the team
+
+---
+
 ## v2.4.0 — June 12, 2026
 
 ### An agent team that works one pipeline

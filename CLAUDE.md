@@ -89,7 +89,6 @@ If any import fails (file missing), stop and tell the user which file — do not
 | **`team`** / **`build feature`** | Start the **Lead-orchestrated team pipeline** per [`knowledge/TEAM_WORKFLOW.md`](./knowledge/TEAM_WORKFLOW.md): plan → build → test → document → review → human-merge. The Lead delegates to Frontend / Backend / Tester / Docs. |
 | **`backend mode`** | Activate Backend persona per [`agents/backend.md`](./agents/backend.md) — server/API/DB/migrations/observability (FULLSTACK_WORKFLOW §6). |
 | **`tester mode`** | Activate Tester persona per [`agents/tester.md`](./agents/tester.md) — write + run tests, axe/coverage gate, verify acceptance criteria (FULLSTACK_WORKFLOW §8). |
-| **`docs mode`** | Activate Docs persona per [`agents/docs-writer.md`](./agents/docs-writer.md) — README/API docs, RELEASES, PROJECT_KNOWLEDGE upkeep, handoff (TEAM_WORKFLOW §6). |
 | **`research mode`** | Activate Research persona per [`agents/research.md`](./agents/research.md). Applies `knowledge/UX_RESEARCH_GUIDE.md`. Produces the **default 6-slide outcome deck**. |
 | **`research mode full`** | Same as `research mode` but produces the **full 12–18 slide research deck**. |
 | **`analyst mode`** | Activate Analyst persona per [`agents/analyst.md`](./agents/analyst.md). Applies `knowledge/ANALYTICS_GUIDE.md`. Works with whichever analytics MCP is connected (Pendo, Amplitude, Mixpanel, PostHog, FullStory, Contentsquare/Heap, Adobe, GA4, LogRocket, Statsig). |
@@ -115,7 +114,6 @@ If any import fails (file missing), stop and tell the user which file — do not
 | **Backend** | Server-side production code — APIs, auth, DB, server logic, migrations, observability, CI. | `backend mode` |
 | **Lead** | Orchestrates the team pipeline: scope, delegate, review, drive the PR. `fullstack mode` activates the Lead. | `team` / `build feature` / `fullstack mode` |
 | **Tester** | Writes + runs tests, axe/coverage gate, verifies acceptance criteria, can block the PR. | `tester mode` |
-| **Docs** | README/API docs, RELEASES, `PROJECT_KNOWLEDGE` upkeep, developer handoff. | `docs mode` |
 
 **Supporting roles** — the Lead (or you) calls them when the work needs them:
 
