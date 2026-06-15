@@ -2,6 +2,16 @@
 
 ---
 
+## v2.6.0 — June 15, 2026
+
+### Lazy-loaded knowledge — ~73% smaller session start
+- Only the binding laws (`CLAUDE_LAWS.md`) load at session start now
+- The 8 knowledge files load **on demand** — Claude reads each one only when its trigger/scope fires (e.g. `PROJECT_SCAFFOLD` on `new project`, `UX_RESEARCH_GUIDE` on `research mode`)
+- Session-start context drops from ~40.4K to ~10.7K tokens; each session pulls in only the 1–2 files it actually uses
+- No rules changed — only *when* they load
+
+---
+
 ## v2.5.0 — June 15, 2026
 
 ### Documentation is the team's shared duty (no Docs agent)

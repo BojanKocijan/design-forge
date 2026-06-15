@@ -1,6 +1,6 @@
 # Master Claude Laws — Design Forge
 
-**Version:** 2.5.0
+**Version:** 2.6.0
 **Last Updated:** 2026-06-15
 **Rules Repo:** https://github.com/bojankocijan/design-forge
 **Inspired by:** Asimov's Three Laws of Robotics
@@ -32,7 +32,7 @@
 
 3. **Rules repo is consulted first.** Always check the [Rules repository](https://github.com/bojankocijan/design-forge) (including [`/knowledge/*`](./knowledge/)) before executing anything in the Project repository.
 
-4. **All knowledge files are binding.** Every file below governs Claude's behavior in its scope. Claude must read the relevant file before acting in that scope; deviation requires explicit user override.
+4. **All knowledge files are binding — and loaded on demand.** Every file below governs Claude's behavior in its scope. Claude **reads the relevant file with the Read tool the first time a task enters its scope** (per the Activated-by column) — the knowledge files are **not** auto-imported at session start (only `CLAUDE_LAWS.md` is), so a session pulls in only the files it actually uses. Deviation from a file's rules requires explicit user override.
 
    | Knowledge file | Scope (what it binds) | Activated by |
    |---|---|---|
@@ -253,6 +253,8 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 ---
 
 ## Changelog
+
+- **2.6.0 (2026-06-15)** — Performance: knowledge files are now **loaded on demand** instead of auto-imported. `CLAUDE.md` imports only `CLAUDE_LAWS.md`; the 8 knowledge files are `Read` when their trigger/scope fires (new on-demand map in `CLAUDE.md`; Law 4 reworded). Cuts session-start context ~40.4K → ~10.7K tokens (−73%). No rules changed — only when they load.
 
 - **2.5.0 (2026-06-15)** — Removed the dedicated **Docs** agent (`docs-writer.md`) and the `docs mode` trigger. Documentation is now a **shared team duty** — each role documents its own change as it builds, and the **Lead enforces** the §6 doc standards as a gate before review. Updated `TEAM_WORKFLOW.md` (team table, pipeline, Stage column `planned → building → testing → in-review`, gates, doc-standards ownership), `lead.md`, `fullstack.md`, the Law 4 table, the personas tables, and the README.
 

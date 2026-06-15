@@ -8,15 +8,27 @@ This file is the entry point for every Claude Code session under Design Forge go
 
 ## Loaded rules (auto-imported)
 
+Only the binding **laws** load at every session start — they govern everything and are always needed. The knowledge files are **loaded on demand** (see below) to keep session-start context small.
+
 @./CLAUDE_LAWS.md
-@./knowledge/FRONTEND_GUIDE.md
-@./knowledge/PROJECT_SCAFFOLD.md
-@./knowledge/SKILLS.md
-@./knowledge/UX_RESEARCH_GUIDE.md
-@./knowledge/FULLSTACK_WORKFLOW.md
-@./knowledge/FEATURE_WORKFLOW.md
-@./knowledge/COMPONENT_PATTERNS.md
-@./knowledge/TEAM_WORKFLOW.md
+
+## Knowledge — loaded on demand (not preloaded)
+
+Per Law 4, Claude **reads** the relevant knowledge file with the Read tool the first time a task enters its scope — it is *not* auto-imported. This keeps every session lean; a session pulls in only the 1–2 files it actually uses. (Skills in `skills/*/SKILL.md` are already on-demand by nature.)
+
+| Read this file… | …when |
+|---|---|
+| [`knowledge/FRONTEND_GUIDE.md`](./knowledge/FRONTEND_GUIDE.md) | any React/UI work begins |
+| [`knowledge/COMPONENT_PATTERNS.md`](./knowledge/COMPONENT_PATTERNS.md) | building/refactoring a component or shared pattern |
+| [`knowledge/PROJECT_SCAFFOLD.md`](./knowledge/PROJECT_SCAFFOLD.md) | `new project` |
+| [`knowledge/FULLSTACK_WORKFLOW.md`](./knowledge/FULLSTACK_WORKFLOW.md) | `fullstack mode` / `backend mode` / `tester mode`, or any production PR |
+| [`knowledge/TEAM_WORKFLOW.md`](./knowledge/TEAM_WORKFLOW.md) | `team` / `build feature` |
+| [`knowledge/FEATURE_WORKFLOW.md`](./knowledge/FEATURE_WORKFLOW.md) | `start/pause/resume/finish feature` |
+| [`knowledge/UX_RESEARCH_GUIDE.md`](./knowledge/UX_RESEARCH_GUIDE.md) | `research mode` |
+| [`knowledge/ANALYTICS_GUIDE.md`](./knowledge/ANALYTICS_GUIDE.md) | `analyst mode` |
+| [`knowledge/SKILLS.md`](./knowledge/SKILLS.md) | layout / a11y / testing / handoff / git-craft questions |
+
+If a task spans several scopes, read each file as you reach it — never preload the whole library.
 
 ---
 
@@ -26,7 +38,7 @@ When Claude Code loads this file (via `~/.claude/CLAUDE.md` global memory, or th
 
 1. **Check for rule updates (Law 28).** Quietly fetch and compare the loaded version against the remote: `git -C ~/.design-forge fetch -q origin main`, then compare the local `CLAUDE_LAWS.md` version header with `git -C ~/.design-forge show origin/main:CLAUDE_LAWS.md` (or `HEAD` vs `origin/main`). If a **newer version exists on the remote**, surface one line — *"Design Forge update available: v<loaded> → v<remote>. Run `update rules` to pull and reload."* — and proceed on the current version. Fallback if fetch isn't possible: use `git -C ~/.design-forge log -1 --format=%ct`; if >24 h since the last pull, suggest `update rules`. Never auto-pull without the user's go-ahead.
    - Skip step 1 entirely on claude.ai web (no shell, no clone).
-2. Read every file imported above.
+2. Load `CLAUDE_LAWS.md` (the only auto-imported file). **Do not** read the knowledge files yet — load each on demand when its scope/trigger fires (see "Knowledge — loaded on demand").
 3. Extract the version number from `CLAUDE_LAWS.md`'s header.
 4. Detect the current project — the `basename` of `git rev-parse --show-toplevel`, or "not a git repo" if there is no repo.
 4.5. **Check for project knowledge (Law 11).** Look for `PROJECT_KNOWLEDGE.md` in the project root. If found, read it and note the one-line project description from §1. Skip on claude.ai web if there is no project root.
