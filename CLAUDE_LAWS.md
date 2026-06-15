@@ -1,7 +1,7 @@
 # Master Claude Laws — Design Forge
 
-**Version:** 2.4.0
-**Last Updated:** 2026-06-12
+**Version:** 2.5.0
+**Last Updated:** 2026-06-15
 **Rules Repo:** https://github.com/bojankocijan/design-forge
 **Inspired by:** Asimov's Three Laws of Robotics
 
@@ -42,7 +42,7 @@
    | [`UX_RESEARCH_GUIDE.md`](./knowledge/UX_RESEARCH_GUIDE.md) | Research — transcript ingestion, thematic analysis, PII redaction, RICE + MoSCoW, JTBD, deck-outline output | **`research mode`** trigger or clear research task |
    | [`FULLSTACK_WORKFLOW.md`](./knowledge/FULLSTACK_WORKFLOW.md) | Fullstack developer PR flow — 10 phases (verify env → describe → pre-execution announcement → branch+issue → pair-programming loop → pre-PR checks → PR → review → merge → post-merge) | **`fullstack mode`** trigger |
    | [`FEATURE_WORKFLOW.md`](./knowledge/FEATURE_WORKFLOW.md) | Designer-facing feature lifecycle — 3-question triage at `start feature`, bootstrap vs steady-state modes, 5 states with transitions, one-active-at-a-time rule + explicit `pause` / `resume` exception path. Drives `PROJECT_KNOWLEDGE.md §11 Active feature`. | `start feature` / `pause feature` / `resume feature` / `finish feature` triggers |
-   | [`TEAM_WORKFLOW.md`](./knowledge/TEAM_WORKFLOW.md) | Agent **team pipeline** — Lead orchestrates Frontend / Backend / Tester / Docs through one plan→build→test→document→review→human-merge flow; Tester + Docs gates; handoff via the `§11` Stage column + PR body | **`team`** / **`build feature`** trigger |
+   | [`TEAM_WORKFLOW.md`](./knowledge/TEAM_WORKFLOW.md) | Agent **team pipeline** — Lead orchestrates Frontend / Backend / Tester through one plan→build→test→review→human-merge flow; Tester gate + Lead-enforced documentation gate (docs are the team's shared duty, no separate Docs role); handoff via the `§11` Stage column + PR body | **`team`** / **`build feature`** trigger |
 
 5. **Pull latest `main`, then branch + issue before code.** Before writing a single line, Claude must:
     1. Check out `main` and pull: `git checkout main && git pull origin main`
@@ -205,7 +205,6 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 | **Backend** | Server-side production code — APIs, auth, DB, server logic, migrations, observability, CI (binding: `FULLSTACK_WORKFLOW §6`). | `backend mode` trigger |
 | **Lead** | Orchestrates the team pipeline — scope, delegate, review, drive the PR. `fullstack mode` activates the Lead. | `team` / `build feature` / `fullstack mode` |
 | **Tester** | Tests + axe/coverage gate + acceptance-criteria check; can block the PR (binding: `FULLSTACK_WORKFLOW §8`). | `tester mode` trigger |
-| **Docs** | README/API docs, RELEASES, `PROJECT_KNOWLEDGE` upkeep, developer handoff (binding: `TEAM_WORKFLOW §6`). | `docs mode` trigger |
 
 **Supporting roles:**
 
@@ -254,6 +253,8 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 ---
 
 ## Changelog
+
+- **2.5.0 (2026-06-15)** — Removed the dedicated **Docs** agent (`docs-writer.md`) and the `docs mode` trigger. Documentation is now a **shared team duty** — each role documents its own change as it builds, and the **Lead enforces** the §6 doc standards as a gate before review. Updated `TEAM_WORKFLOW.md` (team table, pipeline, Stage column `planned → building → testing → in-review`, gates, doc-standards ownership), `lead.md`, `fullstack.md`, the Law 4 table, the personas tables, and the README.
 
 - **2.4.0 (2026-06-12)** — Split the personas into a collaborating **team** that works one pipeline (plan → build → test → document → review → human-merge), defined in new `knowledge/TEAM_WORKFLOW.md`. New agents: `lead.md` (orchestrator), `backend.md` (server/API/DB), `tester.md` (write + run + **gate**), `docs-writer.md` (docs **gate**); `fullstack.md` reframed to activate the Lead (keeps `fullstack mode`); Frontend stays the UI builder; Design/Research/Analyst are supporting. Shared knowledge with role lenses (no per-role files). Handoff rides the `PROJECT_KNOWLEDGE §11` Stage column + the PR body. New triggers `team` / `build feature` / `backend mode` / `tester mode` / `docs mode`; Law 4 table + personas table + README updated (with a "Working with the team" how-to + which-agent-for-what). Added **Law 29** — every role obeys the laws and, when tempted to act outside them, asks the human first instead of acting unilaterally. Strengthened accessibility testing (`FULLSTACK_WORKFLOW §8.1` + the Tester): explicit keyboard/focus tests — tab order, visible focus, keyboard-only operation, focus management/trap, roles + names, live regions — not just an axe scan.
 
