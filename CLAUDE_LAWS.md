@@ -1,6 +1,6 @@
 # Master Claude Laws — Design Forge
 
-**Version:** 2.6.0
+**Version:** 2.7.0
 **Last Updated:** 2026-06-15
 **Rules Repo:** https://github.com/bojankocijan/design-forge
 **Inspired by:** Asimov's Three Laws of Robotics
@@ -32,17 +32,7 @@
 
 3. **Rules repo is consulted first.** Always check the [Rules repository](https://github.com/bojankocijan/design-forge) (including [`/knowledge/*`](./knowledge/)) before executing anything in the Project repository.
 
-4. **All knowledge files are binding — and loaded on demand.** Every file below governs Claude's behavior in its scope. Claude **reads the relevant file with the Read tool the first time a task enters its scope** (per the Activated-by column) — the knowledge files are **not** auto-imported at session start (only `CLAUDE_LAWS.md` is), so a session pulls in only the files it actually uses. Deviation from a file's rules requires explicit user override.
-
-   | Knowledge file | Scope (what it binds) | Activated by |
-   |---|---|---|
-   | [`FRONTEND_GUIDE.md`](./knowledge/FRONTEND_GUIDE.md) | React/frontend — component rules, 4-file folder pattern, styling, file structure, naming, TypeScript, a11y, mock data | Any React or frontend code |
-   | [`PROJECT_SCAFFOLD.md`](./knowledge/PROJECT_SCAFFOLD.md) | New project scaffolding — Vite + React + TS + UI-library choice (shadcn/ui, MUI, Ant Design, Chakra UI, or local); full folder skeleton; CI; GitHub Pages preview | **`new project`** trigger |
-   | [`SKILLS.md`](./knowledge/SKILLS.md) | Engineering competencies — layout, design critique, UX writing, React, TypeScript, **WCAG 2.2 AA**, forms, state, testing, motion, performance, error handling, developer handoff, git hygiene | Any task touching those domains |
-   | [`UX_RESEARCH_GUIDE.md`](./knowledge/UX_RESEARCH_GUIDE.md) | Research — transcript ingestion, thematic analysis, PII redaction, RICE + MoSCoW, JTBD, deck-outline output | **`research mode`** trigger or clear research task |
-   | [`FULLSTACK_WORKFLOW.md`](./knowledge/FULLSTACK_WORKFLOW.md) | Fullstack developer PR flow — 10 phases (verify env → describe → pre-execution announcement → branch+issue → pair-programming loop → pre-PR checks → PR → review → merge → post-merge) | **`fullstack mode`** trigger |
-   | [`FEATURE_WORKFLOW.md`](./knowledge/FEATURE_WORKFLOW.md) | Designer-facing feature lifecycle — 3-question triage at `start feature`, bootstrap vs steady-state modes, 5 states with transitions, one-active-at-a-time rule + explicit `pause` / `resume` exception path. Drives `PROJECT_KNOWLEDGE.md §11 Active feature`. | `start feature` / `pause feature` / `resume feature` / `finish feature` triggers |
-   | [`TEAM_WORKFLOW.md`](./knowledge/TEAM_WORKFLOW.md) | Agent **team pipeline** — Lead orchestrates Frontend / Backend / Tester through one plan→build→test→review→human-merge flow; Tester gate + Lead-enforced documentation gate (docs are the team's shared duty, no separate Docs role); handoff via the `§11` Stage column + PR body | **`team`** / **`build feature`** trigger |
+4. **All knowledge files are binding — and loaded on demand.** The files in `knowledge/` (FRONTEND_GUIDE, PROJECT_SCAFFOLD, SKILLS, UX_RESEARCH_GUIDE, FULLSTACK_WORKFLOW, FEATURE_WORKFLOW, TEAM_WORKFLOW, ANALYTICS_GUIDE, COMPONENT_PATTERNS) govern Claude's behavior in their scope. Claude **reads the relevant file with the Read tool the first time a task enters its scope** — they are **not** auto-imported at session start (only `CLAUDE_LAWS.md` is), so a session pulls in only the files it uses. The file → trigger/scope mapping is the "Knowledge — loaded on demand" table in [`CLAUDE.md`](./CLAUDE.md). Deviation from a file's rules requires explicit user override.
 
 5. **Pull latest `main`, then branch + issue before code.** Before writing a single line, Claude must:
     1. Check out `main` and pull: `git checkout main && git pull origin main`
@@ -197,24 +187,7 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 
 ## The Personas
 
-**Team roles** — compose into one pipeline via [`TEAM_WORKFLOW.md`](./knowledge/TEAM_WORKFLOW.md) (plan → build → test → document → review → human-merge):
-
-| Persona | Scope | Activated by |
-|---|---|---|
-| **Frontend** *(default)* | Mockups, prototypes, UI. React, CSS, layout, a11y, localStorage, mocked data. | Default / `frontend mode` |
-| **Backend** | Server-side production code — APIs, auth, DB, server logic, migrations, observability, CI (binding: `FULLSTACK_WORKFLOW §6`). | `backend mode` trigger |
-| **Lead** | Orchestrates the team pipeline — scope, delegate, review, drive the PR. `fullstack mode` activates the Lead. | `team` / `build feature` / `fullstack mode` |
-| **Tester** | Tests + axe/coverage gate + acceptance-criteria check; can block the PR (binding: `FULLSTACK_WORKFLOW §8`). | `tester mode` trigger |
-
-**Supporting roles:**
-
-| Persona | Scope | Activated by |
-|---|---|---|
-| **Design** | Figma MCP, design critique, UX writing, `/knowledge/*` upkeep | Implied by Figma/design tasks |
-| **Research** | Transcript analysis, JTBD, RICE + MoSCoW, PPT deck outlines (binding: `UX_RESEARCH_GUIDE.md`) | `research mode` trigger |
-| **Analyst** | Product analytics via any connected analytics MCP — Pendo, Amplitude, Mixpanel, PostHog, FullStory, Contentsquare/Heap, Adobe, GA4, LogRocket, Statsig (binding: `ANALYTICS_GUIDE.md`) | `analyst mode` trigger |
-
-**Default at every session start = Frontend.** Switch only with an explicit trigger.
+Team roles (Lead · Frontend · Backend · Tester) compose into one pipeline; Design · Research · Analyst are supporting. **Default at session start = Frontend.** Full table + triggers in [`CLAUDE.md`](./CLAUDE.md); pipeline in [`TEAM_WORKFLOW.md`](./knowledge/TEAM_WORKFLOW.md).
 
 ---
 
@@ -254,24 +227,4 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 
 ## Changelog
 
-- **2.6.0 (2026-06-15)** — Performance: knowledge files are now **loaded on demand** instead of auto-imported. `CLAUDE.md` imports only `CLAUDE_LAWS.md`; the 8 knowledge files are `Read` when their trigger/scope fires (new on-demand map in `CLAUDE.md`; Law 4 reworded). Cuts session-start context ~40.4K → ~10.7K tokens (−73%). No rules changed — only when they load.
-
-- **2.5.0 (2026-06-15)** — Removed the dedicated **Docs** agent (`docs-writer.md`) and the `docs mode` trigger. Documentation is now a **shared team duty** — each role documents its own change as it builds, and the **Lead enforces** the §6 doc standards as a gate before review. Updated `TEAM_WORKFLOW.md` (team table, pipeline, Stage column `planned → building → testing → in-review`, gates, doc-standards ownership), `lead.md`, `fullstack.md`, the Law 4 table, the personas tables, and the README.
-
-- **2.4.0 (2026-06-12)** — Split the personas into a collaborating **team** that works one pipeline (plan → build → test → document → review → human-merge), defined in new `knowledge/TEAM_WORKFLOW.md`. New agents: `lead.md` (orchestrator), `backend.md` (server/API/DB), `tester.md` (write + run + **gate**), `docs-writer.md` (docs **gate**); `fullstack.md` reframed to activate the Lead (keeps `fullstack mode`); Frontend stays the UI builder; Design/Research/Analyst are supporting. Shared knowledge with role lenses (no per-role files). Handoff rides the `PROJECT_KNOWLEDGE §11` Stage column + the PR body. New triggers `team` / `build feature` / `backend mode` / `tester mode` / `docs mode`; Law 4 table + personas table + README updated (with a "Working with the team" how-to + which-agent-for-what). Added **Law 29** — every role obeys the laws and, when tempted to act outside them, asks the human first instead of acting unilaterally. Strengthened accessibility testing (`FULLSTACK_WORKFLOW §8.1` + the Tester): explicit keyboard/focus tests — tab order, visible focus, keyboard-only operation, focus management/trap, roles + names, live regions — not just an axe scan.
-
-- **2.3.0 (2026-06-12)** — Deepened the Fullstack persona with 2026 backend best practices, folded into `FULLSTACK_WORKFLOW.md` §6 (API contracts, DB migrations via expand→migrate→contract, OpenTelemetry observability, backend definition-of-done) plus a testing-pyramid table in Phase 5. Also added §7 Frontend engineering (Core Web Vitals, server-vs-client state with TanStack Query, loading/empty/error/success states + error boundaries, accessible forms) and §8 Testing the frontend (RTL, vitest-axe + axe-core/playwright gate, MSW, Playwright); `agents/fullstack.md` references all of it. Added a root `AGENTS.md` shim so non-Claude agents (Cursor, Codex, Copilot, …) inherit the laws.
-
-- **2.2.0 (2026-06-09)** — Research/deck mode now asks the user for their own PowerPoint template (`.pptx`/`.potx`) and builds slides on top of it — Design Forge ships no built-in/corporate theme (`UX_RESEARCH_GUIDE.md §5.3`). Removed the dangling `PPT_TEMPLATE.md` references (the file and `ppt-template/` skill never existed) from Law 4, the research agent, the deck skill, and the maintainer doc. Added **Law 28** (notify consuming sessions when a newer rules version exists — one-line prompt to run `update rules`, no auto-pull) and wired it into the session-start check. Extended Law 10: scaffolded projects ship with **Dependabot** (`.github/dependabot.yml`, weekly npm + github-actions update PRs); added a `dependabot.yml` to this repo too. Fixed the README law count (26 → 28). Hardened Law 2 (announce understanding + wait for explicit approval; silence ≠ approval) and Law 7 (Claude never merges under any phrasing — no merge button/API/squash/rebase/fast-forward/local merge) after repeated merge-process issues.
-
-- **2.1.0 (2026-06-09)** — Renamed the Pendo persona to a tool-agnostic **Analyst** persona (`analyst mode`; `pendo mode` removed). Works with whichever analytics MCP is connected — Pendo, Amplitude, Mixpanel, PostHog, FullStory, Contentsquare/Heap, Adobe Analytics, GA4, LogRocket, Statsig. New `knowledge/ANALYTICS_GUIDE.md` (Pendo kept as the worked example); `agents/pendo.md` → `agents/analyst.md`, `skills/pendo-analyst/` → `skills/analyst/`.
-
-- **2.0.0 (2026-06-09)** — Public release. Added Law 26 (`dry run` mode — Claude prints git/gh commands for the user to run instead of spending tokens executing them) and Law 27 (plugin-standards compliance — valid manifest + marketplace.json, root component layout, version sync across all four files, quality/security gate for official-directory submission). Repo prepared for public use: `projects.yaml` gitignored with a committed `projects.example.yaml`; no personal project data shipped. New professional README, `.claude-plugin/marketplace.json` so the repo is installable via `/plugin marketplace add`.
-
-- **1.2.1 (2026-06-09)** — Law 9 + Law 25: post-merge branch cleanup is now a proactive Claude duty. Once a PR is merged, Claude verifies the branch is merged into `main` and deletes it (remote + local) without being asked, and the session-start checklist sweeps any orphaned merged branches. Mirrored in FULLSTACK_WORKFLOW Phase 9.
-
-- **1.2.0 (2026-06-08)** — Added Law 25: session-start checklist — always pull main and check open PRs before any code work.
-
-- **1.1.0 (2026-06-07)** — Added 4 new laws preventing bloated code and hallucination: Law 21 (YAGNI — no over-engineering), Law 22 (edge-case thinking upfront), Law 23 (verify before claiming — no hallucination), Law 24 (question and reason before executing). Claude now reasons out loud about requirements, tradeoffs, and best practices before implementation.
-
-- **1.0.0 (2026-06-06)** — Initial Design Forge release. Library-agnostic governance: general engineering laws (Laws 1–20), the four-file component pattern, the no-inline-styles rule, and the full methodology (research, UX writing, developer handoff, feature workflow, fullstack workflow).
+Version history lives in [`RELEASES.md`](./RELEASES.md) — one source of truth.
