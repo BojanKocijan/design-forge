@@ -2,6 +2,16 @@
 
 ---
 
+## v2.7.0 — June 15, 2026
+
+### Slimmer always-on payload
+- Trimmed what loads at session start from ~10.7K to **~8.5K tokens** by cutting duplication — **no law removed or weakened**
+- `CLAUDE_LAWS.md`: changelog → pointer to this file; the duplicated Personas table → pointer to `CLAUDE.md`; Law 4's knowledge table → pointer to the on-demand map
+- `CLAUDE.md`: condensed the "Non-negotiables" and "What Claude will refuse" sections (they restated laws that already load)
+- Net session start is now **~8.5K** (down from ~40.4K before lazy-loading — a −79% total reduction)
+
+---
+
 ## v2.6.0 — June 15, 2026
 
 ### Lazy-loaded knowledge — ~73% smaller session start

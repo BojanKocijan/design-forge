@@ -71,20 +71,9 @@ If any import fails (file missing), stop and tell the user which file — do not
 
 ---
 
-## Non-negotiables (summary — full set in [`CLAUDE_LAWS.md`](./CLAUDE_LAWS.md))
+## Non-negotiables
 
-- **English only.** If the user writes in another language, reply: *"Please provide instructions in English only."* and stop.
-- **Announce before executing.** Use the required format from Law 2 in [`CLAUDE_LAWS.md`](./CLAUDE_LAWS.md): `Understanding / Updating / Severity / Data layer / Affected / Code change / Branch / Issue`. Wait for confirmation before executing.
-- **Branch + Issue before writing code.**
-- **Mocks + `localStorage` are the default data layer.** Any real database requires the `Data layer:` line in the announcement and is **Medium** severity at minimum.
-- **No inline styles in component files.** Every component is a 4-file folder (`Component.tsx` + `Component.styles.ts` + `Component.types.ts` + `index.ts`). No `style={{}}`, no template literals in `.tsx`, no CSS modules (unless the chosen library requires it). See [`knowledge/FRONTEND_GUIDE.md`](./knowledge/FRONTEND_GUIDE.md).
-- **No direct push to `main`** — PRs only. **Claude never merges, under any phrasing** (no `gh pr merge`, merge button, API, squash/rebase/fast-forward, or local merge). "merge it"/"ship it"/"done" = *open/finish the PR and stop.* The merge is always the human's (Law 7).
-- **No file deletion** without explicit human approval.
-- **Close issues + link PRs** — close the issue as soon as the PR exists.
-- **Maintain `PROJECT_KNOWLEDGE.md`** — update before opening PRs for new components and when making significant architectural decisions.
-- **Developer handoff = two surfaces, 13 sections.** When asked to "hand off", generate `docs/handoffs/<story-id>.md` and open a tracking issue in the downstream dev repo.
-- **Triage-first.** Before implementing any non-trivial UI, run one `AskUserQuestion` with up to 4 focused questions.
-- **Localhost preview must stay running (Law 18).** Once editing source, `npm run dev` runs in the background. Every response ends with `Preview: <url> · status: <...>`.
+The binding set is in [`CLAUDE_LAWS.md`](./CLAUDE_LAWS.md) (loaded above) — don't restate it here. The ones that bite most often: announce + wait before executing (Law 2) · branch + issue before code (Law 5) · **never push to `main`, never merge** (Law 7) · no file deletion without approval (Law 8) · no inline styles, 4-file components (Law 12) · secret scan + no real PII (Laws 14–15) · triage-first on non-trivial UI (Law 17) · keep the `npm run dev` preview footer (Law 18).
 
 ---
 
@@ -141,15 +130,7 @@ If any import fails (file missing), stop and tell the user which file — do not
 
 ## What Claude will refuse
 
-- Writing code before a branch + issue exist.
-- Skipping the pre-execution announcement.
-- Inline styles in `*.tsx` (every component must have a colocated `*.styles.ts`).
-- Adding a real database silently — must declare in the `Data layer:` field.
-- Pushing directly to `main`.
-- **Merging anything, ever** — no `gh pr merge`, merge button, API, squash/rebase/fast-forward, or local merge to `main`. "merge it"/"ship it"/"done" never authorizes it; the merge is the human's (Law 7).
-- **Executing before explicit approval** — Claude announces understanding and waits; silence or "ok" is not a go-ahead (Law 2).
-- Deleting files without explicit human approval.
-- Responding in any language other than English.
+Claude refuses to: **merge anything, ever** (Law 7) · execute before explicit approval (Law 2) · push to `main`, write code before a branch + issue (Laws 5, 7) · delete files without approval (Law 8) · ship inline styles in `*.tsx` (Law 12) · add a real DB silently or commit secrets/PII (Laws 14–15) · reply in any language but English (Law 1). Full set in [`CLAUDE_LAWS.md`](./CLAUDE_LAWS.md).
 
 ---
 
