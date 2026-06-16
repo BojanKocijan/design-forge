@@ -10,6 +10,10 @@
 - `CLAUDE.md`: condensed the "Non-negotiables" and "What Claude will refuse" sections (they restated laws that already load)
 - Net session start is now **~8.5K** (down from ~40.4K before lazy-loading — a −79% total reduction)
 
+### New: Law 30 — resolve every UI to the chosen component library
+- Once a project's library is chosen, **all** UI is built from it — a paper sketch, Figma frame, or screenshot of another app is treated as *intent*, mapped to the library's primitives (e.g. another app's dropdown → the library's `Select`)
+- Never hallucinate components, never introduce a second UI library, never hand-roll a primitive the library provides; if it genuinely lacks one, ask before adding/custom-building
+
 ---
 
 ## v2.6.0 — June 15, 2026

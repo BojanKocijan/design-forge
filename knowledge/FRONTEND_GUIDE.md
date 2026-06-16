@@ -22,6 +22,8 @@
 
 **UI library:** chosen at scaffold time (shadcn/ui | MUI | Ant Design | Chakra UI | local). Every project uses whatever was chosen during `new project`. Claude never switches the library mid-project without explicit approval.
 
+**Resolve every UI to the chosen library (Law 30).** Whatever the input — a paper sketch, a Figma frame, or a **screenshot of another app** — it's a description of *intent*, not a component source. Map each element to the nearest primitive in the project's library (another app's dropdown → the library's `Select`, its card → `Card`, its tab bar → `Tabs`). Never hallucinate components, never pull in a second UI library, never hand-roll a primitive the library already provides. If the library genuinely lacks something, say so and ask before adding a dependency or building custom — don't improvise.
+
 **Routing:** any app with more than one screen uses React Router. Navigation is always `useNavigate()` (or `<Link>`), never an `onNav`/`onBack`/`setScreen` callback threaded through props. Pages stay route-agnostic; a thin route-wrapper component injects data and navigation. Shared app state is provided once at the root via context and read with a `useAppContext()` hook — not prop-drilled across route boundaries. Transient route-to-route payloads travel in `location.state` with a `returnTo`. See [`COMPONENT_PATTERNS.md`](./COMPONENT_PATTERNS.md) Patterns 15–17.
 
 ---
