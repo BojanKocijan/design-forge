@@ -10,6 +10,11 @@
 - `CLAUDE.md`: condensed the "Non-negotiables" and "What Claude will refuse" sections (they restated laws that already load)
 - Net session start is now **~8.5K** (down from ~40.4K before lazy-loading — a −79% total reduction)
 
+### Leaner skills (no behavior change)
+- The 10 knowledge-backed skills are now **thin routers**: each triggers on its task and points to the canonical `knowledge/` file instead of re-hosting a (drift-prone) copy — skill bodies dropped ~12.2K → ~6.7K tokens, and an invoked skill no longer loads the same content twice
+- Fixed the stale `claude-laws` skill (it listed "19 laws / v1.0.0")
+- Self-contained skills (ux-writing, design-critique, design-resources, figma-craft, developer-handoff) unchanged — they *are* the source
+
 ### New: Law 30 — resolve every UI to the chosen component library
 - Once a project's library is chosen, **all** UI is built from it — a paper sketch, Figma frame, or screenshot of another app is treated as *intent*, mapped to the library's primitives (e.g. another app's dropdown → the library's `Select`)
 - Never hallucinate components, never introduce a second UI library, never hand-roll a primitive the library provides; if it genuinely lacks one, ask before adding/custom-building
