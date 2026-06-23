@@ -113,12 +113,13 @@ Design Forge has three layers:
 30 binding rules Claude must follow. Highlights:
 
 - English-only · pre-execution announcement before any change
-- Pull `main` → branch + issue → code → PR · **never push to `main`, never merge for you**
+- Pull default branch → branch + issue → code → PR · **never push to the default branch, never merge for you**
 - Check for existing PRs before starting (no duplicate work)
-- Proactive branch cleanup after merge
+- **Immediate branch cleanup after every merge** — same response, no prompt
 - No inline styles (4-file component folders) · Conventional Commits · secret scanning · PII-free mock data · WCAG 2.2 AA
 - YAGNI · edge-case thinking · verify-before-claiming · reason-before-executing
 - `dry run` mode — print git/gh commands for you to run instead of spending tokens
+- `disarm` / `arm` — suspend or restore all laws for a session; three hard-safety rails (never merge · no secrets · no PII) always survive
 
 ### 2. Personas — a team that works one pipeline
 
