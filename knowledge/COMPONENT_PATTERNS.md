@@ -1,8 +1,10 @@
 # Component Patterns — Design Forge
 
-**Version:** 1.4.0
-**Last Updated:** 2026-06-11
+**Version:** 1.5.0
+**Last Updated:** 2026-06-16
 **Binding:** Yes — these patterns represent validated, reusable solutions established across projects. Apply them before building from scratch.
+
+> **Domain-agnostic.** The patterns here are universal. Code examples use a generic CRUD domain (entities like `Customer`, `Order`, `Invoice`, `Task`) **purely as illustration** — substitute your project's own entities. Nothing in this file is tied to a specific project; project-specific component inventories live in that project's `PROJECT_KNOWLEDGE.md §3`, never here.
 
 ---
 
@@ -196,7 +198,7 @@ Only add emojis if the user explicitly requests them.
 
 ## 10. Touch target sizing (mobile-first apps)
 
-For apps used on-site by contractors, tradespeople, or anyone who may be using a phone with one hand:
+For apps used on the go — in the field, on-site, or one-handed on a phone:
 
 | Element | Minimum size |
 |---|---|
@@ -524,16 +526,11 @@ When promoting a page-level component to shared:
 | Shape | When | Example |
 |---|---|---|
 | **Flat file** (`.tsx` only) | Simple, stateless, no complex styling | `Avatar.tsx`, `StatusBadge.tsx` |
-| **Folder** (4 files) | Has styles, types, or will grow | `KvKInput/`, `FilterBar/`, `InvoiceTimeline/` |
+| **Folder** (4 files) | Has styles, types, or will grow | `FilterBar/`, `ValidatedInput/`, `Timeline/` |
 
 New promotions always start as a **folder** — simpler components can be flattened later but folders never need to be restructured as the component grows.
 
-### Known Frank Beam promotion candidates (as of 2026-06-11)
-
-| Component | Currently in | Promote when |
-|---|---|---|
-| `ClientCard` | `src/pages/Clients/Clients.tsx` | Home dashboard adds client cards, or admin panel needs a client preview |
-| `InvoiceCard` | `src/pages/Invoices/Invoices.tsx` | Home dashboard adds recent invoices, or client detail shows invoice cards |
+**Track candidates per project, not here.** Keep your project's promotion candidates (component, where it currently lives, promote-when) in that project's `PROJECT_KNOWLEDGE.md §3` — this shared file stays domain-agnostic.
 
 ---
 
@@ -639,16 +636,17 @@ Transitions that are computed (like `overdue`) must never be stored — derive t
 
 ---
 
-### Applied to Frank Beam — components to design with state-first
+### Example — a state inventory for common component types
+
+(Generic; map to your own entities.)
 
 | Component | Content states | Key edge cases | Interaction states |
 |---|---|---|---|
-| `InvoiceCard` | outstanding · overdue · sent · viewed · paid | No number · no due date · very long client name · email-failed overlay | hover (lift) · focus-within (ring) |
-| `ClientCard` | active (has open invoices) · owing (has overdue) · settled (all paid) · new (no invoices) | No email · no phone · very long business name · 0 invoices | hover (lift) · 3-dot menu reveal |
-| `KvKInput` | default · validating (future API check) · verified (checkmark) · invalid (error) · disabled | Paste with spaces/dashes stripped · partial entry (< 8 digits) | focus (ring) · error border |
-| `StatusBadge` | paid · outstanding · overdue · sent · viewed | Long custom status string (truncate) | none (display only) |
-| `Avatar` | with name (initials) · no name (? placeholder) · future: with photo | Single-word name (one initial) · emoji in name · very short names | none |
-| `EmptyState` | no data · loading · error (with retry CTA) | Illustration missing (fallback to icon) | CTA button hover/focus |
+| `EntityCard` | the entity's business statuses (e.g. `active` · `pending` · `overdue` · `done`) | missing optional field · very long name (truncate) · failed-action overlay | hover (lift) · focus-within (ring) · 3-dot menu reveal |
+| `ValidatedInput` | default · validating · valid (checkmark) · invalid (error) · disabled | paste with stray chars stripped · partial entry | focus (ring) · error border |
+| `StatusBadge` | one per business status | long/custom status string (truncate) | none (display only) |
+| `Avatar` | with name (initials) · no name (placeholder) · with photo | single-word name (one initial) · very short name | none |
+| `EmptyState` | no data · loading · error (with retry CTA) | illustration missing (fallback to icon) | CTA hover/focus |
 
 ---
 
@@ -665,12 +663,14 @@ Transitions that are computed (like `overdue`) must never be stored — derive t
 
 ## Changelog
 
-- **1.4.0 (2026-06-11)** — Added Pattern 19: State-first component design — the four state categories (data/interaction/content/edge), TypeScript union over boolean flags, the state matrix comment contract, state transition documentation, applied state inventory for Frank Beam (InvoiceCard, ClientCard, KvKInput, StatusBadge, Avatar, EmptyState), and the pre-build checklist.
+- **1.5.0 (2026-06-16)** — Universalized the file: examples reframed as a generic CRUD domain (illustrative, domain-agnostic), removed the project-specific component inventories (they belong in each project's `PROJECT_KNOWLEDGE.md §3`), and genericized provenance. No pattern changed.
 
-- **1.3.0 (2026-06-11)** — Added Pattern 18: Shared component promotion — the rule (2+ surfaces / domain logic / visual identity), the session protocol (list §3b + §3c before starting component work), the 4-file promotion checklist, flat-vs-folder guidance, and the Frank Beam candidate inventory (ClientCard, InvoiceCard).
+- **1.4.0 (2026-06-11)** — Added Pattern 19: State-first component design — the four state categories (data/interaction/content/edge), TypeScript union over boolean flags, the state-matrix comment contract, state-transition documentation, an example state inventory, and the pre-build checklist.
 
-- **1.2.1 (2026-06-09)** — Added Patterns 15–17: React Router navigation via `useNavigate` (route-wrapper pattern, `<Outlet/>` shell, no `onNav`/`onBack` prop drilling), route-level data via root context, and transient route-to-route state via `location.state` + `returnTo`. Extracted from ReMoDo feat/landing-page (PR #80).
+- **1.3.0 (2026-06-11)** — Added Pattern 18: Shared component promotion — the rule (2+ surfaces / domain logic / visual identity), the session protocol (list §3b + §3c before starting component work), the 4-file promotion checklist, and flat-vs-folder guidance.
 
-- **1.2.0 (2026-06-08)** — Added Pattern 13 (Desktop Add new popover mirrors mobile FAB) and Pattern 14 (FAB pointer-events-none + pb-28 scroll clearance). Extracted from ReMoDo fix/mobile-layout and feat/sidebar-add-new.
-- **1.1.0 (2026-06-08)** — Added Pattern 12: Create = Edit (one component per entity). Extracted from ReMoDo feat/invoice-edit-mode. Binding rule going forward.
-- **1.0.0 (2026-06-06)** — Initial version. Patterns extracted from ReMoDo project (invoicing SaaS for Dutch contractors). Covers: ResponsiveModal, speed-dial FAB, breakpoint view toggle, underline tabs, data tables, card primary action, live avatar, form layout, no-emoji rule, mobile touch sizing.
+- **1.2.1 (2026-06-09)** — Added Patterns 15–17: React Router navigation via `useNavigate` (route-wrapper pattern, `<Outlet/>` shell, no `onNav`/`onBack` prop drilling), route-level data via root context, and transient route-to-route state via `location.state` + `returnTo`.
+
+- **1.2.0 (2026-06-08)** — Added Pattern 13 (Desktop Add new popover mirrors mobile FAB) and Pattern 14 (FAB pointer-events-none + pb-28 scroll clearance).
+- **1.1.0 (2026-06-08)** — Added Pattern 12: Create = Edit (one component per entity). Binding rule going forward.
+- **1.0.0 (2026-06-06)** — Initial version. Covers: ResponsiveModal, speed-dial FAB, breakpoint view toggle, underline tabs, data tables, card primary action, live avatar, form layout, no-emoji rule, mobile touch sizing.
