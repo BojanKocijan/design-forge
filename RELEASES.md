@@ -2,6 +2,24 @@
 
 ---
 
+## v2.9.0 — June 23, 2026
+
+### Arm / disarm — soft governance toggle
+- New skill: `skills/arm-disarm/SKILL.md` — type `disarm` to suspend all Design Forge laws for a session; type `arm` to restore them
+- Hard-safety rails survive disarm and cannot be toggled off: **never merge** (Law 7) · **secret scan** (Law 14) · **no real PII** (Law 15)
+- A visible `⚠ DISARMED` banner appears on every response while governance is suspended
+- State resets to armed at every new session start — disarm never persists
+
+### Default branch, not just `main`
+- Law 5 and Law 7 now say **"default branch"** instead of `main` — detects `main`/`master`/`trunk`/`develop` or any other protected base via `git symbolic-ref refs/remotes/origin/HEAD`
+- Prevents accidental direct pushes in repos where the default branch isn't `main`
+
+### Immediate branch cleanup after merge (Law 9)
+- Branch cleanup is now Claude's **immediate duty in the same response** where a merge is confirmed — no prompt, no reminder needed
+- Explicit report line required: `Branch \`feat/…\` deleted (remote + local). Issue #N closed.`
+
+---
+
 ## v2.8.0 — June 16, 2026
 
 ### Universal COMPONENT_PATTERNS (no project coupling)

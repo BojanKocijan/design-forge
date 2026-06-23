@@ -93,6 +93,8 @@ The binding set is in [`CLAUDE_LAWS.md`](./CLAUDE_LAWS.md) (loaded above) — do
 | **`research mode`** | Activate Research persona per [`agents/research.md`](./agents/research.md). Applies `knowledge/UX_RESEARCH_GUIDE.md`. Produces the **default 6-slide outcome deck**. |
 | **`research mode full`** | Same as `research mode` but produces the **full 12–18 slide research deck**. |
 | **`analyst mode`** | Activate Analyst persona per [`agents/analyst.md`](./agents/analyst.md). Applies `knowledge/ANALYTICS_GUIDE.md`. Works with whichever analytics MCP is connected (Pendo, Amplitude, Mixpanel, PostHog, FullStory, Contentsquare/Heap, Adobe, GA4, LogRocket, Statsig). |
+| **`disarm`** | Suspend all Design Forge laws for this session. Hard-safety rails survive (never merge · no secrets · no PII). Claude prints `⚠ DISARMED` banner on every response. See [`skills/arm-disarm/SKILL.md`](./skills/arm-disarm/SKILL.md). |
+| **`arm`** | Restore full governance. Prints `✓ ARMED` once and continues normally. State is always armed at session start — disarm never persists. |
 | **`dry run`** | Enter `dry run` mode (Law 26). Claude stops executing git/gh write operations; after edits it prints a copy-paste terminal command block and offers to run it. |
 | **`auto git`** | Exit `dry run` mode — Claude resumes running git/gh operations itself (never merges, Law 7). |
 | **`stop preview`** | Stop the background `npm run dev`. Report `Preview: stopped` and omit the footer until `start preview` or the next source edit. |
