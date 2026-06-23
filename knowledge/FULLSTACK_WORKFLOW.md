@@ -1,7 +1,7 @@
 # Fullstack Developer Workflow — Design Forge
 
-**Version:** 1.3.0
-**Last Updated:** 2026-06-12
+**Version:** 1.4.0
+**Last Updated:** 2026-06-23
 **Binding:** Yes — this file is law. Claude must follow this runbook whenever the Fullstack persona is active (trigger: `fullstack mode`).
 
 > This is the canonical runbook for developers working on **existing** projects with the Fullstack persona. It is **not** about scaffolding new projects (see [`PROJECT_SCAFFOLD.md`](./PROJECT_SCAFFOLD.md) for that) — it's about how Claude pair-programs with the human dev to ship a PR in a repo that already exists.
@@ -276,7 +276,47 @@ When shipping backend code, instrument it — an endpoint with no signals is a b
 
 ### 6.4 What "done" means for backend work
 
-Contract updated + tested · migration reversible + tested · the path has unit + integration coverage · traces/logs/errors are wired · no secrets or PII in code, logs, or fixtures.
+Contract updated + tested · migration reversible + tested · the path has unit + integration coverage · traces/logs/errors are wired · no secrets or PII in code, logs, or fixtures · any new serverless function passes the §6.5 security checklist.
+
+### 6.5 Serverless function security
+
+Every Netlify Function (or equivalent: Vercel Edge, Cloudflare Worker, AWS Lambda) that performs a privileged action — sending email, writing to a DB, calling a paid third-party API — **must pass this checklist before a PR is opened.** A serverless function is a public HTTP endpoint the moment it is deployed. There is no perimeter.
+
+**Mandatory, in this order:**
+
+1. **Authentication first.** Validate the caller's identity before executing any business logic. For Supabase-backed apps: extract the `Authorization: Bearer <token>` header, call `/auth/v1/user` with it, and reject with `401` if the token is missing, malformed, or invalid. No exceptions for "internal" endpoints — if it's deployed, it's public.
+
+2. **CORS preflight.** Return `204` with the correct `Access-Control-Allow-*` headers for `OPTIONS` requests. Without this, browser preflight checks silently fail.
+
+3. **Input validation at the boundary.** Treat every field of the request body as untrusted. Validate and constrain:
+   - Sender / from address locked to your domain (prevents relay abuse)
+   - Recipient email format (`/^[^\s@]+@[^\s@]+\.[^\s@]+$/`, max 254 chars)
+   - String fields: require non-empty, set a max length
+   - Arrays: check `Array.isArray`, enforce a max item count
+   - File attachments: check extension allowlist, enforce a max decoded size
+   
+   Return `400` with a clear error for any violation.
+
+4. **Sanitize error responses.** Return generic messages to the caller (`'Email service error'`, `'Invalid request'`). Log the real error server-side with `console.error`. Never return `error.message` or stack traces — they leak implementation details.
+
+5. **Centralise response headers.** Extract the full header object as a `const` at the top of the file so every response (success, error, preflight) returns identical CORS and content-type headers. Inline `headers: { … }` per-return is error-prone.
+
+**Worked example (Supabase auth check):**
+
+```js
+async function authenticateSupabaseUser(event) {
+  const match = (event.headers.authorization || '').match(/^Bearer\s+(.+)$/i)
+  if (!match) return { ok: false, statusCode: 401, error: 'Authentication required' }
+  const res = await fetch(`${process.env.VITE_SUPABASE_URL}/auth/v1/user`, {
+    headers: { apikey: process.env.VITE_SUPABASE_ANON_KEY, Authorization: `Bearer ${match[1]}` },
+  })
+  if (!res.ok || !(await res.json())?.id)
+    return { ok: false, statusCode: 401, error: 'Invalid session' }
+  return { ok: true }
+}
+```
+
+**What happens without this:** An unauthenticated email-relay function lets anyone send unlimited emails from your domain using your Resend/SendGrid key. This is OWASP A05:2021 — Security Misconfiguration, and it will burn through your sending quota and damage your domain's deliverability reputation.
 
 ---
 
@@ -343,6 +383,8 @@ These go in the component's `*.test.tsx` (RTL + `user-event`) and in the Playwri
 ---
 
 ## Changelog
+
+- **1.4.0 (2026-06-23)** — Added §6.5 Serverless function security checklist: authentication-first, CORS preflight, input validation at the boundary, sanitised error responses, centralised headers. Includes a worked Supabase auth example and explains the OWASP A05 risk of an open relay. §6.4 updated to require the checklist before any serverless PR.
 
 - **1.3.0 (2026-06-12)** — Added §8.1 Accessibility testing — explicit keyboard/focus tests beyond an axe scan: tab order, visible focus, keyboard-only operation, focus management/trap on modals + route change, roles & accessible names, live regions. The Tester owns it; a green axe scan alone doesn't pass the a11y gate.
 
