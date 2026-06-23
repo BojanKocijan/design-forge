@@ -1,7 +1,7 @@
 # Master Claude Laws — Design Forge
 
-**Version:** 2.8.0
-**Last Updated:** 2026-06-16
+**Version:** 2.9.0
+**Last Updated:** 2026-06-23
 **Rules Repo:** https://github.com/bojankocijan/design-forge
 **Inspired by:** Asimov's Three Laws of Robotics
 
@@ -34,9 +34,10 @@
 
 4. **All knowledge files are binding — and loaded on demand.** The files in `knowledge/` (FRONTEND_GUIDE, PROJECT_SCAFFOLD, SKILLS, UX_RESEARCH_GUIDE, FULLSTACK_WORKFLOW, FEATURE_WORKFLOW, TEAM_WORKFLOW, ANALYTICS_GUIDE, COMPONENT_PATTERNS) govern Claude's behavior in their scope. Claude **reads the relevant file with the Read tool the first time a task enters its scope** — they are **not** auto-imported at session start (only `CLAUDE_LAWS.md` is), so a session pulls in only the files it uses. The file → trigger/scope mapping is the "Knowledge — loaded on demand" table in [`CLAUDE.md`](./CLAUDE.md). Deviation from a file's rules requires explicit user override.
 
-5. **Pull latest `main`, then branch + issue before code.** Before writing a single line, Claude must:
-    1. Check out `main` and pull: `git checkout main && git pull origin main`
-    2. Create a new feature branch from that up-to-date `main`: `git checkout -b feat/<kebab-description>`
+5. **Pull latest default branch, then branch + issue before code.** Before writing a single line, Claude must:
+    1. Detect the default branch: `git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'` (falls back to `main` if unset).
+    2. Check out and pull: `git checkout <default-branch> && git pull origin <default-branch>`
+    3. Create a new feature branch from that up-to-date base: `git checkout -b feat/<kebab-description>`
     3. Open (or confirm there is already) a GitHub issue for the work. Read `PROJECT_KNOWLEDGE.md §9 GitHub Issues repo` to determine where to open it. If set, use `gh issue create --repo <owner/repo>`; if not set, default to the current project repo.
 
     No code is written on a stale branch, on `main` directly, or without a corresponding issue.
@@ -51,7 +52,7 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 
 6. **Ask to clarify, not to iterate.** Ask every question needed up front so we don't loop.
 
-7. **No direct push to `main`. Merge is always a human action — Claude never merges.** All changes must go through a feature branch and a Pull Request. Claude must never attempt to push directly to `main`.
+7. **No direct push to the default branch. Merge is always a human action — Claude never merges.** The default branch is whatever the repo uses — `main`, `master`, `trunk`, `develop`, or any other protected base. Detect it at session start: `git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'`. All changes must go through a feature branch and a Pull Request. Claude must never attempt to push directly to the default branch.
 
     Once the PR is open and CI is green, Claude must output this exact PR summary and then stop — no further action:
 
@@ -69,7 +70,7 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
 
     A `merge it` / `merge the PR` / `ship it` instruction from the user does **not** authorize Claude to merge. Claude never runs `gh pr merge` or any merge automation.
 
-    **Claude never merges — under any circumstance or phrasing.** Not `gh pr merge`, not the GitHub merge button, not the REST/GraphQL API, not squash/rebase/fast-forward, not a local `git merge` or `git push` that advances `main`. No instruction — "merge it", "merge the PR", "ship it", "done", "go", "approved" — authorizes a merge; every such phrase means *"open or finish the PR, then stop."* Merging `main` (or any base branch) is **exclusively the human's action**, performed in the GitHub UI. Claude's job ends at "PR open, CI green."
+    **Claude never merges — under any circumstance or phrasing.** Not `gh pr merge`, not the GitHub merge button, not the REST/GraphQL API, not squash/rebase/fast-forward, not a local `git merge` or `git push` that advances the default branch. No instruction — "merge it", "merge the PR", "ship it", "done", "go", "approved" — authorizes a merge; every such phrase means *"open or finish the PR, then stop."* Merging the default branch is **exclusively the human's action**, performed in the GitHub UI. Claude's job ends at "PR open, CI green."
 
 8. **No file deletion.** Claude must never delete files from any repository. If a file is no longer needed, Claude flags it for review and waits for explicit human approval before any removal.
 
@@ -77,13 +78,14 @@ This prevents duplicate work, stale branch conflicts, and lost effort on already
     - Reference the issue in the PR body with `Closes #N` so GitHub auto-closes it on merge.
     - Close the issue manually via `gh issue close <N>` with a comment linking to the PR.
     - Never leave an issue open after the corresponding PR has been created.
-    - The merge itself is performed by the human (Law 7). **Once the PR is merged, branch cleanup is Claude's proactive duty — not something the user has to ask for.** As soon as Claude observes a PR is merged, it must:
-        1. Verify the branch is fully merged into `main`: `git fetch --prune origin && git merge-base --is-ancestor origin/<branch> origin/main`. Only proceed if it is an ancestor (or the content was re-landed elsewhere and the PR shows `MERGED`).
+    - The merge itself is performed by the human (Law 7). **Once the PR is merged, branch cleanup is Claude's immediate duty — do it in the same response where the merge is confirmed, without being asked.** As soon as Claude observes or is told a PR is merged, it must run all four steps before doing anything else:
+        1. Verify the branch is fully merged: `git fetch --prune origin && git merge-base --is-ancestor origin/<branch> origin/<default-branch>`. Only proceed if it is an ancestor (or the PR shows `MERGED`).
         2. Delete the remote branch if GitHub's `delete_branch_on_merge` did not already remove it: `git push origin --delete <branch>`.
         3. Delete the local branch: `git branch -D <branch>`.
-        4. Confirm the linked issue is closed; close it if not.
+        4. Confirm the linked issue is closed; close it via `gh issue close <N>` if not.
+    - **Report cleanup in every response after a merge**, e.g.: `Branch \`feat/my-feature\` deleted (remote + local). Issue #N closed.`
     - **Never delete an unmerged branch.** If the ancestor check fails and the PR is not `MERGED`, leave the branch and report it.
-    - At session start (Law 25), Claude also sweeps for orphaned merged branches and clears them.
+    - At session start (Law 25), Claude also sweeps for orphaned merged branches and clears them without being asked.
 
 10. **Every new project Claude builds ships with CI and tests.** Before any scaffold step, Claude runs `gh auth status` to verify authentication. Non-negotiable per project:
     - CI on every push + every PR: ESLint, `tsc --noEmit`, Vitest unit + component, `vitest-axe` accessibility, Playwright + `@axe-core/playwright` E2E smoke + full-page axe, and `vite build`.

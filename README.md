@@ -26,8 +26,9 @@ Design Forge is a set of binding *laws*, reusable *skills*, and shared *knowledg
 
 Out of the box, an AI assistant will happily push to `main`, invent APIs, over-engineer, and forget your conventions between sessions. Design Forge fixes that with **30 binding laws** Claude must follow, plus knowledge files that travel with you to every project:
 
-- **Disciplined git** — pull `main`, branch + issue before code, PRs only, Claude never merges, proactive branch cleanup.
+- **Disciplined git** — pull the default branch, branch + issue before code, PRs only, Claude never merges, **immediate branch cleanup after every merge** (no prompt needed).
 - **Pre-execution announcements** — Claude tells you what it's about to change (and its severity) before touching anything.
+- **Arm / disarm** — suspend all laws for a session when you want unconstrained speed; hard-safety rails (never merge, no secrets, no PII) always survive.
 - **Senior-engineer thinking** — YAGNI, edge-case analysis upfront, "verify before claiming" (no hallucination), reason out loud before executing.
 - **Consistent frontend** — 4-file component folders, no inline styles, TypeScript, React Router architecture, accessibility baked in.
 - **Whole workflows** — new-project scaffolding, UX research → deck, feature lifecycle, and a two-surface developer handoff.
@@ -96,6 +97,8 @@ Type these in any Claude Code session:
 | `tester mode` | Tester persona — tests + a11y/coverage gate |
 | `research mode` / `research mode full` | UX research → 6-slide outcome deck (or 12–18 slide full deck) |
 | `analyst mode` | Product-analytics persona — Pendo, Amplitude, Mixpanel, PostHog, GA4, … via their MCP |
+| `disarm` | Suspend all Design Forge laws for this session. Hard-safety rails survive: never merge · no secrets · no PII. A `⚠ DISARMED` banner appears on every response. |
+| `arm` | Restore full governance. Prints `✓ ARMED` once and continues normally. Always armed at session start. |
 | `dry run` / `auto git` | Toggle "print the git/gh commands for me to run" vs "Claude runs them" |
 | `stop preview` / `start preview` | Control the background `npm run dev` |
 
