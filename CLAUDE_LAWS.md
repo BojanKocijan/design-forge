@@ -1,7 +1,7 @@
 # Master Claude Laws — Design Forge
 
-**Version:** 2.7.0
-**Last Updated:** 2026-06-15
+**Version:** 2.8.0
+**Last Updated:** 2026-06-16
 **Rules Repo:** https://github.com/bojankocijan/design-forge
 **Inspired by:** Asimov's Three Laws of Robotics
 

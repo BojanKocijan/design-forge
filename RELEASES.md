@@ -2,6 +2,15 @@
 
 ---
 
+## v2.8.0 — June 16, 2026
+
+### Universal COMPONENT_PATTERNS (no project coupling)
+- Reframed examples as a generic CRUD domain (illustrative, domain-agnostic) — substitute your own entities
+- Removed the project-specific component inventories (those belong in each project's `PROJECT_KNOWLEDGE.md §3`)
+- Genericized provenance; **no pattern changed** — purely a portability/clarity pass
+
+---
+
 ## v2.7.0 — June 15, 2026
 
 ### Slimmer always-on payload
