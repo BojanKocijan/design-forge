@@ -1,7 +1,7 @@
 # Master Claude Laws — Design Forge
 
-**Version:** 2.9.0
-**Last Updated:** 2026-06-23
+**Version:** 2.10.0
+**Last Updated:** 2026-06-29
 **Rules Repo:** https://github.com/bojankocijan/design-forge
 **Inspired by:** Asimov's Three Laws of Robotics
 
@@ -226,6 +226,60 @@ Team roles (Lead · Frontend · Backend · Tester) compose into one pipeline; De
 29. **Agents obey the rules; when tempted to act outside them, ask first.** Every persona/role (Lead, Frontend, Backend, Tester, Docs, Design, Research, Analyst) is fully bound by these laws — the laws override any role-specific instinct. If an agent believes the right move is something the rules don't allow or don't cover — skip a gate, merge, delete a file, push to `main`, take an undocumented shortcut, add a dependency/DB/pattern, deviate from the announced plan — it **stops and asks the human** with its reasoning, rather than acting on its own. A better idea is raised as a question, not executed unilaterally. The rules are binding, not advisory; "I thought it was better" never justifies a deviation.
 
 30. **Resolve every UI to the project's chosen component library — never invent or import foreign components.** Once a project's component library is chosen (recorded in `PROJECT_KNOWLEDGE.md §5` at scaffold), **every** UI Claude builds is composed from *that* library's components — no matter what the input is. A paper sketch, a Figma frame, or a **screenshot of another app** is a description of *intent*, not a component source. Claude maps each element to the nearest primitive in the project's library (a screenshot's custom dropdown → the library's `Select`; a hand-drawn card → the library's `Card`; another app's tab bar → the library's `Tabs`). Claude **never hallucinates components**, never silently introduces a second UI library, and never hand-rolls a primitive the library already provides (Law 12). Visual intent (layout, hierarchy, copy) is honored only insofar as the library + theme tokens allow — pixel-copying another app's bespoke styling is not a goal. If the chosen library genuinely lacks a needed primitive, Claude **says so and asks** before adding a dependency or building custom (Law 29) — it does not improvise.
+
+31. **Small, atomic PRs — split work into the smallest shippable chunks.** Every PR Claude opens must be **small, focused, and independently shippable**. Research consistently shows review effectiveness drops sharply after 200–400 lines changed (SmartBear/Cisco), and median time-to-review doubles for every additional 100 lines (Google). Claude treats these as hard constraints, not guidelines.
+
+    **Sizing rules:**
+
+    | Metric | Target | Hard ceiling |
+    |---|---|---|
+    | Lines changed (additions + deletions) | < 200 | 400 — if a PR exceeds this, Claude must split it before opening |
+    | Files touched | < 5 | 10 |
+    | Review time | Minutes, not hours | — |
+    | Work unit | 30–60 min of focused work | Never exceed 4 hours of work in a single PR |
+
+    **Splitting strategies — how Claude breaks work down:**
+
+    1. **Separate by type.** Refactoring, bug fixes, new features, test additions, and documentation are **never mixed** in the same PR. A refactor that enables a feature ships as PR 1 (refactor) → PR 2 (feature).
+    2. **Vertical slices over horizontal layers.** One complete slice of functionality (e.g., "add the CSV export button + handler + test") beats a horizontal layer ("add all buttons across the app").
+    3. **Infrastructure first.** Types/interfaces, utility functions, config changes, and migrations ship in their own PR before the code that uses them.
+    4. **Tests travel with their code.** Never isolate tests into a separate PR — the code and its tests are one atomic unit. Exception: adding tests to previously untested code (test-only PR is fine).
+    5. **Sequential stacking when needed.** For large features, Claude plans a numbered sequence of PRs upfront (e.g., `feat/csv-export-1-types`, `feat/csv-export-2-ui`, `feat/csv-export-3-integration`) and announces the plan in the first PR's description. Each PR in the stack is independently mergeable and leaves the codebase in a valid, green state.
+
+    **Every commit within a PR is atomic.** Each commit represents one logical change, passes all tests, and leaves the codebase buildable. No "WIP" commits, no commented-out code, no TODOs that break the build. Commits tell a clear story of how the change evolved — a reviewer reading commit-by-commit should understand the progression.
+
+    **Pre-PR self-check (Claude runs this before `gh pr create`):**
+
+    - [ ] Total diff is under 400 lines changed?
+    - [ ] PR does one thing — can I describe it in one sentence without "and"?
+    - [ ] Every commit passes CI independently?
+    - [ ] No mixed concerns (refactor + feature, fix + new code)?
+    - [ ] Could this be split further without losing coherence?
+
+    If any check fails, Claude splits the work into multiple PRs and opens them sequentially, linking each to the tracking issue.
+
+    **PR description discipline.** Every PR body includes:
+    - **What** — one sentence, no "and"
+    - **Why** — the motivation or issue link
+    - **How to test** — specific steps a reviewer can follow
+    - **Sequence** — if part of a stacked series: "PR 2/4 for #<issue>" with links to the others
+
+    **Repository hygiene — keep the repo clean:**
+
+    - **Delete merged branches immediately** (Law 9 already covers this via auto-delete settings).
+    - **Squash-merge by default** — one atomic commit per PR on the default branch keeps `git log` scannable. Configure via repo settings: `Settings → General → Pull Requests → Allow squash merging` (default merge message: PR title + number).
+    - **No stale branches.** Law 25 already sweeps stale branches at session start. Any branch with no activity for 14+ days and no open PR is flagged for deletion.
+    - **No orphaned issues.** Every open issue must have either an active branch/PR or a comment explaining the delay. Claude flags orphaned issues at session start.
+    - **Clean PR list.** Draft PRs older than 7 days without activity are flagged. Abandoned PRs are closed with a comment explaining why.
+
+    **README and documentation standards:**
+
+    - The project README must always reflect the **current** state of the project — not aspirational features, not stale install instructions.
+    - Every PR that changes user-facing behavior, CLI commands, configuration, or install steps **must update the README in the same PR** — never in a follow-up.
+    - README structure follows the professional standard: project title + one-line description, badges (CI status, version, license), table of contents, install/quickstart, usage, configuration, contributing, license. No empty sections. No broken links.
+    - `RELEASES.md` / changelog is updated with every `feat:` and `fix:` PR — not batched.
+
+    **Why this is binding.** Small PRs get reviewed faster, catch more defects per line, merge with fewer conflicts, revert cleanly, and keep the default branch's history readable. A 1000-line PR is not a feature — it's a review burden that hides bugs. Claude's job is to make the human reviewer's life easy, not to minimize the number of PRs.
 
 ---
 
