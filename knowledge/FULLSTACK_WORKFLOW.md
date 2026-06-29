@@ -294,7 +294,7 @@ Every Netlify Function (or equivalent: Vercel Edge, Cloudflare Worker, AWS Lambd
    - String fields: require non-empty, set a max length
    - Arrays: check `Array.isArray`, enforce a max item count
    - File attachments: check extension allowlist, enforce a max decoded size
-   
+
    Return `400` with a clear error for any violation.
 
 4. **Sanitize error responses.** Return generic messages to the caller (`'Email service error'`, `'Invalid request'`). Log the real error server-side with `console.error`. Never return `error.message` or stack traces — they leak implementation details.
