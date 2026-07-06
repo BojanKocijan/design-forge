@@ -2,6 +2,20 @@
 
 ---
 
+## v2.10.0 — June 29, 2026
+
+### Law 31 — Small, atomic PRs
+- New binding law: every PR targets under 200 lines changed (400 hard ceiling), one concern per PR
+- 5 splitting strategies: separate by type, vertical slices over horizontal layers, infrastructure first, tests travel with their code, sequential stacking for large features
+- Atomic commits — no WIP commits, no commented-out code, each commit passes CI independently
+- Pre-PR self-check, PR description discipline (What / Why / How to test / Sequence)
+- Repo hygiene standards: squash-merge by default, stale branch sweeps, orphaned issue detection, README kept current with every PR
+
+### README professionally restructured
+- shields.io badges (version, license, CI, plugin, law count), problem/solution table, quick-start, ASCII architecture diagram, structured command tables, full repo tree, numbered contributing steps
+
+---
+
 ## v2.9.0 — June 23, 2026
 
 ### Arm / disarm — soft governance toggle
