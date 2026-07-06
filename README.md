@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/version-2.10.0-blue?style=flat-square" alt="Version" />
   <img src="https://img.shields.io/github/license/BojanKocijan/design-forge?style=flat-square" alt="License" />
-  <img src="https://img.shields.io/github/actions/workflow/status/BojanKocijan/design-forge/markdownlint.yml?branch=main&style=flat-square&label=lint" alt="CI" />
+  <img src="https://img.shields.io/github/actions/workflow/status/BojanKocijan/design-forge/markdown-lint.yml?branch=main&style=flat-square&label=lint" alt="CI" />
   <img src="https://img.shields.io/badge/claude_code-plugin-blueviolet?style=flat-square" alt="Claude Code Plugin" />
   <img src="https://img.shields.io/badge/laws-31-orange?style=flat-square" alt="31 Laws" />
 </p>
@@ -312,7 +312,7 @@ design-forge/
 ├── docs/                        # Additional documentation
 └── .github/
     └── workflows/
-        └── markdownlint.yml     # CI — lint on every push and PR
+        └── markdown-lint.yml    # CI — lint on every push and PR
 ```
 
 ---
