@@ -1,7 +1,7 @@
 # Fullstack Developer Workflow — Design Forge
 
-**Version:** 1.4.0
-**Last Updated:** 2026-06-23
+**Version:** 1.6.0
+**Last Updated:** 2026-07-20
 **Binding:** Yes — this file is law. Claude must follow this runbook whenever the Fullstack persona is active (trigger: `fullstack mode`).
 
 > This is the canonical runbook for developers working on **existing** projects with the Fullstack persona. It is **not** about scaffolding new projects (see [`PROJECT_SCAFFOLD.md`](./PROJECT_SCAFFOLD.md) for that) — it's about how Claude pair-programs with the human dev to ship a PR in a repo that already exists.
@@ -276,7 +276,7 @@ When shipping backend code, instrument it — an endpoint with no signals is a b
 
 ### 6.4 What "done" means for backend work
 
-Contract updated + tested · migration reversible + tested · the path has unit + integration coverage · traces/logs/errors are wired · no secrets or PII in code, logs, or fixtures · any new serverless function passes the §6.5 security checklist.
+Contract updated + tested · migration reversible + tested · the path has unit + integration coverage · traces/logs/errors are wired · no secrets or PII in code, logs, or fixtures · any new serverless function passes the §6.5 security checklist · any offline-first localStorage/sync-queue layer passes the §6.6 checklist.
 
 ### 6.5 Serverless function security
 
@@ -318,6 +318,54 @@ async function authenticateSupabaseUser(event) {
 
 **What happens without this:** An unauthenticated email-relay function lets anyone send unlimited emails from your domain using your Resend/SendGrid key. This is OWASP A05:2021 — Security Misconfiguration, and it will burn through your sending quota and damage your domain's deliverability reputation.
 
+**Beyond the basics — privileged mutations, capability tokens, and public reads.** The five mandatory items above stop the open-relay class of bug. These next patterns apply once a function writes to a DB, exposes a shareable link, or serves data to an unauthenticated viewer:
+
+6. **Server-authoritative narrow mutations — never accept a full entity payload for a privileged write.** When a function mutates a privileged field (a share token, a `viewed_at`, a role, a balance), the browser sends only the *identifier* of the row to act on — never the new value of the sensitive field, and never the whole entity. The server generates the sensitive value itself (e.g. `crypto.randomUUID()` token + a computed expiry), and issues an `update` constrained to exactly those columns. Reject a body with any extra keys (`if (Object.keys(body).length !== 1) return 400`) and validate the id against a strict format allowlist (`/^[A-Za-z0-9_-]{1,128}$/`). A function that upserts whatever JSON the client sent is a mass-assignment hole.
+
+7. **Service-role key bypasses RLS — re-impose ownership by hand.** The moment a function uses `SUPABASE_SERVICE_ROLE_KEY` (or any admin/superuser DB credential), Row-Level Security no longer protects you — the query can touch every user's rows. Every such query MUST re-add the owner filter explicitly: `…?id=eq.${id}&user_id=eq.${authUserId}`. Derive `authUserId` from the verified token (item 1), never from the request body. Then confirm the write hit exactly one row (`rows.length !== 1 → 404`) so a mismatched owner can't silently no-op or over-reach.
+
+8. **Sign capability tokens for unauthenticated action endpoints; compare in constant time.** An endpoint reachable without a login (a tracking pixel, an unsubscribe link) must not trust a raw id in the query string — anyone could enumerate ids and forge the action. Carry the parameters in an HMAC-signed token (`payload.signature`, `HMAC-SHA256(secret, payload)`), verify the signature with `crypto.timingSafeEqual` (not `===` — string compare leaks timing), and only then act. The secret is a server-only env var, never shipped to the browser. Split availability from integrity: a tracking pixel should **fail-open** (always return the 1×1 GIF so email rendering never breaks) while its DB write **fails-safe** (only runs when the token verifies, and guards first-write-only with `&viewed_at=is.null`).
+
+9. **Explicit column allowlist on any read an unauthenticated caller can reach.** A public share endpoint must never `select=*` — that leaks internal columns (other share tokens, email-delivery status, reminder history, internal refs) to whoever has the link. Declare a `PUBLIC_*_SELECT` const listing only the columns the public view needs, and select exactly those. Validate the HTTP method too (`GET`-only reads, `POST`-only writes → `405` otherwise). This is the read-side mirror of the write-side field allowlist (§6.6).
+
+**Output-encode untrusted data before it lands in generated HTML.** Any user-controlled string (client name, company name, IBAN, notes) interpolated into an HTML template string — an email body, a PDF-via-HTML, a preview — must be HTML-escaped (`& < > " '`) at the point of interpolation. Template literals do no escaping; a client named `<img onerror=…>` becomes stored XSS in every email you send. Escape once, per value, right before it goes into the markup.
+
+### 6.6 Offline-first data layer: localStorage cache + remote source of truth
+
+Local-first apps (localStorage/IndexedDB cache with a remote DB as source of truth, e.g. Supabase) need discipline beyond a normal CRUD backend. Apply this whenever a project's data layer is "local cache + sync queue", not just a thin API client.
+
+- **Scope every local key to the authenticated user.** A bare key like `app_clients` bleeds data across accounts on a shared device/browser profile. Namespace every localStorage key by user id (`app:${userId}:clients`), keep a module-level `activeUserId` set via `storage.setActiveUser(id)` on login/logout, and route every read/write helper through that scope — a `null` active user means reads return empty and writes are no-ops (never silently fall back to writing an unscoped key). Keep a `LEGACY_KEYS` list of the old unscoped names and clear them explicitly (`clearLegacyLocalData()`) so stale data doesn't linger as a second source of truth after a migration.
+
+- **Never clear local data if a sync queue is pending.** Sign-out / switch-user must check `hasPendingSync(userId)` before wiping that user's cache. Wiping while offline writes are still queued is silent data loss. Write the regression test for the negative case explicitly — e.g. "clearLocalData is NEVER called just because a userId became available" and "…while the queue is non-empty" — not just the happy path.
+
+- **Allowlist every field sent to the remote table.** Don't spread the local object straight into an `upsert()`. Declare the table's writable columns once (`const TABLE_FIELDS = [...] as const satisfies readonly (keyof T)[]`) and build the payload by iterating that list, remapping any client-only field name explicitly (e.g. `number` → `invoice_number`). A blind spread breaks the moment the local type gains a computed/derived field the table doesn't have, or a field the table names differently.
+
+- **Write path: optimistic cache → try direct remote write → queue only on failure.** On every mutation, update the local cache immediately for instant UI, then attempt the write straight to the remote if online + authenticated. Only push an op onto the offline sync queue if that direct attempt fails (offline, network error, or write error). This keeps the queue reserved for genuine offline gaps instead of routing every write through a poll/flush cycle.
+
+- **Reconcile with a pull after every successful write or flush.** After a direct write succeeds, or after the queue flush applies an op, re-pull that resource from the remote and replace the local cache with the server's shape. Don't trust the optimistic local object indefinitely — the server may compute or normalize fields (timestamps, ordering) the client doesn't know about.
+
+- **Overlay pending ops on top of a pull.** When pulling a remote list, replay any still-queued ops for that resource on top of the freshly fetched rows (merge-by-id) before writing to the local cache. Otherwise a pull that races an unflushed offline edit clobbers it.
+
+- **Guard the queue itself.** Only enqueue when there's an authenticated active user — an anonymous/local-only session building an ever-growing queue that can never flush is a leak, not a feature.
+
+- **Definition of done for this layer:** per-user key scoping in place · legacy key migration/cleanup · explicit field allowlist per table (no blind spreads) · direct-write-then-queue-fallback on every mutation · pull-and-reconcile after writes/flush · pending-ops overlay on every pull · sign-out data-loss guard test · queue never grows for unauthenticated sessions.
+
+### 6.7 Server-backed paginated reads (PostgREST / Supabase)
+
+Not every resource belongs in the offline-first cache of §6.6. A large, list-heavy, or filter-heavy resource (a projects table, an admin list) is better served **directly from the DB with server-side pagination** — the client holds one page at a time, not the whole table. When you build that read path against PostgREST / the Supabase JS client:
+
+- **Paginate on the server.** Use `.range(from, to)` for the page window and `.select('*', { count: 'exact' })` to get the total in the same round-trip — never fetch the whole table and slice client-side. For counts alone (filter chips, tab badges) use `.select('id', { count: 'exact', head: true })` so no rows travel the wire.
+
+- **Sanitize search before it reaches a `.or()` / `.ilike()` filter — PostgREST filter injection is real.** In `.or('name.ilike.%term%,city.ilike.%term%')` the comma separates filter conditions and `%`/`*` are wildcards, so a raw user string can inject extra conditions or break the query. Strip the filter metacharacters first (`value.trim().replace(/[%,]/g, ' ')`) before interpolating. Treat this with the same seriousness as SQL injection.
+
+- **Scope every query by owner even though RLS exists — defense in depth.** Add `.eq('user_id', userId)` on every read/write. RLS is the backstop; an explicit owner filter means a misconfigured or disabled policy doesn't instantly expose everyone's rows.
+
+- **Make queries cancellable.** Thread an `AbortSignal` through (`.abortSignal(signal)`) so a fast typer or a page-flip cancels the in-flight request instead of racing stale results into the UI.
+
+- **Confirm the writes.** On `insert`/`update`, chain `.select('*').single()` and check the returned row — a scoped `update` that matches nothing should surface as an error/empty, not a silent success.
+
+- **When to use which:** small, always-needed, edit-offline data (clients, invoices, the contractor profile) → §6.6 offline-first cache. Large, browse-and-filter, online-only data (projects, admin tables) → this §6.7 server-paginated path. Don't force one model onto both — mixing them (e.g. an offline queue for a table you also paginate server-side) creates two conflicting sources of truth.
+
 ---
 
 ## 7. Frontend engineering checklist
@@ -348,7 +396,17 @@ Every data-driven view designs **all four**: **loading** (skeleton, not blank) �
 
 ### 7.5 Frontend definition of done
 
-CWV budgets respected · server vs client state split correctly · loading/empty/error/success all designed · error boundary in place · forms accessible + keyboard-navigable · axe-clean.
+CWV budgets respected · server vs client state split correctly · loading/empty/error/success all designed · error boundary in place · forms accessible + keyboard-navigable · axe-clean · §7.6 client-side security hygiene met.
+
+### 7.6 Client-side security hygiene
+
+The frontend has its own attack surface — the server checklist (§6.5) doesn't cover the browser:
+
+- **Ship a Content-Security-Policy + hardening headers** at the edge (Netlify `[[headers]]`, or equivalent). A tight baseline: `default-src 'self'`; `object-src 'none'`; `base-uri 'self'`; `frame-ancestors 'none'`; `form-action 'self'`; and a `connect-src` allowlisting only your API origins (e.g. `https://*.supabase.co wss://*.supabase.co`). Add `Permissions-Policy` disabling every sensor/payment/`browsing-topics` feature you don't use, plus `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`. Widen a directive only for a real dependency (e.g. `img-src … https://*.googleusercontent.com` for Google OAuth avatars) — one host at a time, never `*`.
+
+- **Never cache private or side-effect API responses in the PWA service worker.** A `NetworkFirst`/`StaleWhileRevalidate` rule over your authenticated API (`*.supabase.co/*`) writes another user's private data into a cache that survives logout and is shared across accounts on the device. Leave authenticated API calls uncached (let them hit the network), and mark side-effect endpoints (email, payments) `NetworkOnly`. Cache only static assets and public, non-personal responses.
+
+- **Output-encode before generating HTML** — see §6.5's output-encoding rule. Any user string going into an email/PDF/preview template is escaped at interpolation.
 
 ---
 
@@ -383,6 +441,10 @@ These go in the component's `*.test.tsx` (RTL + `user-event`) and in the Playwri
 ---
 
 ## Changelog
+
+- **1.6.0 (2026-07-20)** — Distilled a full multi-PR backend/security pass into knowledge. Extended §6.5 with four "beyond the basics" serverless patterns — server-authoritative narrow mutations (no full-entity payload for privileged writes), manual owner re-scoping whenever the service-role key bypasses RLS, HMAC-signed capability tokens with `timingSafeEqual` + fail-open/fail-safe split for unauthenticated action endpoints, and explicit column allowlists on public reads (no `select=*`) — plus an output-encoding rule for untrusted data in generated HTML/email. Added §6.7 Server-backed paginated reads (PostgREST/Supabase): `.range()` + `count:'exact'`, PostgREST filter-injection sanitization for `.or()`/`.ilike()`, defense-in-depth owner scoping, `AbortSignal` cancellation, and when to choose §6.7 vs the §6.6 offline-first cache. Added §7.6 Client-side security hygiene: CSP + hardening headers baseline, never caching private/side-effect API responses in the PWA service worker, and output encoding.
+
+- **1.5.0 (2026-07-20)** — Added §6.6 Offline-first data layer: localStorage cache + remote source of truth. Distilled from a real multi-PR hardening pass: per-user localStorage key scoping (+ legacy-key cleanup on sign-out), never wiping local data while a sync queue is pending, allowlisting every field sent to the remote table instead of spreading the local object, an optimistic-cache → direct-write → queue-on-failure write path, pull-and-reconcile after every write/flush, and overlaying still-queued ops on top of a fresh pull so unflushed offline edits survive a race. §6.4 updated to require the §6.6 checklist for any offline-first data layer.
 
 - **1.4.0 (2026-06-23)** — Added §6.5 Serverless function security checklist: authentication-first, CORS preflight, input validation at the boundary, sanitised error responses, centralised headers. Includes a worked Supabase auth example and explains the OWASP A05 risk of an open relay. §6.4 updated to require the checklist before any serverless PR.
 
